@@ -76,10 +76,13 @@ M  END
 
 > <example>
 4
+
 > <part>
 checker
+
 > <reason>
 3D coordinates one value of -0.0001
+
 $$$$
 
   SciTegic12171312593D
@@ -134,10 +137,13 @@ $$$$
 M  END
 > <example>
 64
+
 > <part>
 checker
+
 > <reason>
 3D coordinates
+
 $$$$
 
   SciTegic02211800332D
@@ -194,10 +200,13 @@ $$$$
 M  END
 > <example>
 10
+
 > <part>
 checker
+
 > <reason>
 stereobond between stereocentres
+
 $$$$
 
   Mrv1712 11011817452D          
@@ -251,10 +260,13 @@ M  END
 
 > <example>
 2
+
 > <part>
 checker
+
 > <reason>
 v3000 molfile
+
 $$$$
 
   Mrv1712 11011818032D          
@@ -311,10 +323,13 @@ M  END
 
 > <example>
 3
+
 > <part>
 checker
+
 > <reason>
 v3000 molfile with non v2000 functionality
+
 $$$$
 
   Mrv1712 11021814012D          
@@ -351,10 +366,13 @@ $$$$
 M  END
 > <example>
 29
+
 > <part>
 standardiser
+
 > <reason>
 straighten alkyne bonds
+
 $$$$
 
   SciTegic05301215442D
@@ -395,10 +413,13 @@ $$$$
 M  END
 > <example>
 56
+
 > <part>
 standardiser
+
 > <reason>
 alkyne bond not straightened in ChEMBL
+
 $$$$
 
   Mrv1712 11201816292D          
@@ -437,10 +458,13 @@ $$$$
 M  END
 > <example>
 65
+
 > <part>
 standardiser
+
 > <reason>
 wiggly bond and allene
+
 $$$$
 
   Mrv1712 11201816332D          
@@ -480,10 +504,13 @@ M  END
 
 > <example>
 30
+
 > <part>
 standardiser
+
 > <reason>
 straighten allene bonds
+
 $$$$
 
   Mrv1712 11021816142D          
@@ -528,13 +555,15 @@ $$$$
  19 12  1  0  0  0  0
  18 14  1  0  0  0  0
 M  END
-
 > <example>
 31
+
 > <part>
 standardiser
+
 > <reason>
 standardise NO2 groups
+
 $$$$
 
   Mrv1712 11201816362D          
@@ -591,26 +620,30 @@ $$$$
  22 23  1  0  0  0  0
  18 24  1  0  0  0  0
 M  END
-
 > <example>
 57
+
 > <part>
 standardiser
+
 > <reason>
 standardise sulphoxide groups with stereo
+
 $$$$
  
   Mrv0541 01311813572D          
 
   0  0  0  0  0  0            999 V2000
 M  END
-
 > <example>
 1
+
 > <part>
 checker
+
 > <reason>
 empty ctab
+
 $$$$
 
   MJ171200
@@ -792,13 +825,15 @@ M  SAL   3 13  49  75  30  67  29  66  32  33  41  42  34  43  59
 M  SMT   3 n
 M  SBL   3  2  46  76
 M  END
-
 > <example>
 5
+
 > <part>
 checker
+
 > <reason>
 polymer
+
 $$$$
 
   Mrv0541 04191616472D          
@@ -875,13 +910,15 @@ $$$$
  32 33  2  0  0  0  0
  27 33  1  0  0  0  0
 M  END
-
 > <example>
 6
+
 > <part>
 checker
+
 > <reason>
 illegal bond stereo (wiggly bond)
+
 $$$$
 
   SciTegic11201309402D
@@ -958,10 +995,13 @@ $$$$
 M  END
 > <example>
 7
+
 > <part>
 checker
+
 > <reason>
 overlapping atoms
+
 $$$$
  
   Mrv0541 06121812052D          
@@ -1049,10 +1089,13 @@ $$$$
 M  END
 > <example>
 9
+
 > <part>
 checker
+
 > <reason>
 stereobond in ring
+
 $$$$
 
   SciTegic05161817482D
@@ -1138,10 +1181,13 @@ $$$$
 M  END
 > <example>
 11
+
 > <part>
 checker
+
 > <reason>
 cross bonds in ring
+
 $$$$
 
   Mrv1712 11201815392D          
@@ -1195,13 +1241,15 @@ $$$$
 M  CHG  2   2  -1   5   1
 M  RAD  1  20   2
 M  END
-
 > <example>
 13
+
 > <part>
 checker
+
 > <reason>
 radical not allowed
+
 $$$$
 
   SciTegic01201417202D
@@ -1288,10 +1336,13 @@ $$$$
 M  END
 > <example>
 15
+
 > <part>
 checker
+
 > <reason>
 StereoCentersMOL/INCHI/CSMILES mismatch
+
 $$$$
 BDBM250863
      RDKit          2D
@@ -1377,13 +1428,15 @@ BDBM250863
  24 26  1  0
  24 27  1  0
 M  END
-
 > <example>
 16
+
 > <part>
 checker
+
 > <reason>
 StereoCentersMOL_CSMILES/INCHI mismatch
+
 $$$$
  
   Mrv0541 04181718392D          
@@ -1511,10 +1564,13 @@ $$$$
 M  END
 > <example>
 17
+
 > <part>
 checker
+
 > <reason>
 StereoCentersMOL_INCHI/CSMILES mismatch 
+
 $$$$
  
   Mrv0541 05151812142D          
@@ -1580,10 +1636,13 @@ $$$$
 M  END
 > <example>
 18
+
 > <part>
 checker
+
 > <reason>
 StereoCentersINCHI_CSMILES/MOL mismatch
+
 $$$$
 BDBM163075
      RDKit          2D
@@ -1650,10 +1709,13 @@ M  CHG  2  15  -1  27   1
 M  END
 > <example>
 20
+
 > <part>
 checker
+
 > <reason>
 InChI warning Accepted unusual valence(s): O(4)
+
 $$$$
 
           11280716022D 1   1.00000     0.00000     0
@@ -1740,10 +1802,13 @@ $$$$
 M  END
 > <example>
 28
+
 > <part>
 checker
+
 > <reason>
 >7 Boron atoms
+
 $$$$
 
   Mrv0541 12141712012D          
@@ -1865,10 +1930,13 @@ M  SED   2 RS
 M  END
 > <example>
 21
+
 > <part>
 standardiser
+
 > <reason>
 clears S Group data I think this is an example
+
 $$$$
 
   Marvin  02111115002D          
@@ -1948,10 +2016,13 @@ $$$$
  32 34  1  0  0  0  0
 > <example>
 22
+
 > <part>
 standardiser
+
 > <reason>
 Kekulise structure
+
 $$$$
 
   Mrv1712 10311810352D          
@@ -2008,13 +2079,15 @@ $$$$
  10  9  1  0  0  0  0
  12 14  2  0  0  0  0
 M  END
-
 > <example>
 23
+
 > <part>
 standardiser
+
 > <reason>
 bad valence fix
+
 $$$$
 
   -ISIS-  07221316372D
@@ -2041,13 +2114,15 @@ $$$$
   4  5  1  0  0  0  0
   9 10  1  0  0  0  0
 M  END
-
 > <example>
 24
+
 > <part>
 standardiser
+
 > <reason>
 Fix KO to K+ O- and NaO to Na+ O-
+
 $$$$
 
   Mrv1712 11021813482D          
@@ -2099,13 +2174,15 @@ $$$$
  20 21  1  0  0  0  0
  23  5  2  0  0  0  0
 M  END
-
 > <example>
 26
+
 > <part>
 standardiser
+
 > <reason>
 Remove stereo from tartrate
+
 $$$$
 
   Mrv1712 10311810192D          
@@ -2169,13 +2246,15 @@ $$$$
   6 27  1  0  0  0  0
 M  CHG  2   3  -1   9   1
 M  END
-
 > <example>
 27
+
 > <part>
 standardiser
+
 > <reason>
 fix wiggly bonds on sp3 C?
+
 $$$$
  
  Mrv1712 11021816162D          
@@ -2232,13 +2311,15 @@ $$$$
  22 23  1  0  0  0  0
  18 24  1  0  0  0  0
 M  END
-
 > <example>
 32
+
 > <part>
 standardiser
+
 > <reason>
 standardise sulphoxide groups without stereo
+
 $$$$
 
   Mrv1712 11021817422D          
@@ -2328,13 +2409,15 @@ $$$$
  17 39  1  6  0  0  0
 M  CHG  3   7  -1  11   1  14  -1
 M  END
-
 > <example>
 35
+
 > <part>
 standardiser
+
 > <reason>
 internal salt example protonate/deprotonate
+
 $$$$
 
   Mrv1712 11081817342D          
@@ -2407,13 +2490,15 @@ $$$$
 M  CHG  1   8   1
 M  ISO  1  16  18
 M  END
-
 > <example>
 14
+
 > <part>
 salt stripper
+
 > <reason>
 mixture needs isotopes removing
+
 $$$$
 
   SciTegic10121516512D
@@ -2523,10 +2608,13 @@ M  CHG  2  36   1  42  -1
 M  END
 > <example>
 43
+
 > <part>
 salt stripper
+
 > <reason>
 don't protonate/deprotonate after salt stripping quat example
+
 $$$$
 
   SciTegic06231513572D
@@ -2618,10 +2706,13 @@ M  CHG  2   4   1  27  -1
 M  END
 > <example>
 44
+
 > <part>
 standardiser
+
 > <reason>
 protonate/deprotonate not needed quat complex  example record_id=2993605
+
 $$$$
 
   SciTegic11301210262D
@@ -2635,10 +2726,13 @@ M  ISO  1   3  85
 M  END
 > <example>
 45
+
 > <part>
 salt stripper
+
 > <reason>
 No C atoms but need isotopes/solvent removed
+
 $$$$
 
   SciTegic12121213592D
@@ -2716,10 +2810,13 @@ M  CHG  6  11  -1  12  -1  13  -1  14   3  15   1  23  -1
 M  END
 > <example>
 46
+
 > <part>
 salt stripper
+
 > <reason>
 ranitidine bismuth citrate is an exception as it is needs stripping but not structure exclude
+
 $$$$
 
   Mrv1712 09011709262D          
@@ -2794,10 +2891,13 @@ $$$$
 M  END
 > <example>
 47
+
 > <part>
 checker
+
 > <reason>
 stereobond in ring and between stereocentres
+
 $$$$
 
   Mrv1712 09011715132D          
@@ -2871,13 +2971,15 @@ $$$$
  30 29  2  0  0  0  0
 M  CHG  2   3   1  12   1
 M  END
-
 > <example>
 48
+
 > <part>
 standardiser
+
 > <reason>
 fix wiggly bonds on double bonds
+
 $$$$
 
   Mrv1712 09011715142D          
@@ -2921,10 +3023,13 @@ $$$$
 M  END
 > <example>
 49
+
 > <part>
 standardiser
+
 > <reason>
 simple example wiggly bond on double bond
+
 $$$$
 144206291
   -OEChem-09011712422D
@@ -3005,10 +3110,13 @@ $$$$
 M  END
 > <example>
 50
+
 > <part>
 ?
+
 > <reason>
 incorrect stereo bond (on wrong atom) what do we do with this?
+
 $$$$
 
   Mrv1712 08071717442D          
@@ -3071,13 +3179,15 @@ $$$$
   6 26  1  0  0  0  0
   6 27  1  0  0  0  0
 M  END
-
 > <example>
 51
+
 > <part>
 standardiser
+
 > <reason>
 wiggly bond on sp3 C and incorrect NO2
+
 $$$$
 
   SciTegic12231509382D
@@ -3151,10 +3261,13 @@ $$$$
 M  END
 > <example>
 52
+
 > <part>
 standardiser
+
 > <reason>
 another bad valence
+
 $$$$
 
   SciTegic09081514172D
@@ -3246,10 +3359,13 @@ $$$$
 M  END
 > <example>
 53
+
 > <part>
 standardiser
+
 > <reason>
 another bad valence but not fixable (F in ring)
+
 $$$$
 
   SciTegic11261411102D
@@ -3314,10 +3430,13 @@ $$$$
 M  END
 > <example>
 54
+
 > <part>
 standardiser
+
 > <reason>
 bad valence 5 valent N
+
 $$$$
 
   SciTegic08071217342D
@@ -3395,10 +3514,13 @@ M  RAD  1  33   2
 M  END
 > <example>
 12
+
 > <part>
 checker
+
 > <reason>
 radical allowed
+
 $$$$
 
   SciTegic12231509382D
@@ -3456,10 +3578,13 @@ $$$$
 M  END
 > <example>
 8
+
 > <part>
 checker
+
 > <reason>
 zero coordinates
+
 $$$$
 
   SciTegic03231116552D
@@ -3512,10 +3637,13 @@ $$$$
  16 21  4  0
 > <example>
 55
+
 > <part>
 standardiser
+
 > <reason>
 not kekulised and wiggly bond
+
 $$$$
 
   MJ171200                      
@@ -3581,13 +3709,15 @@ $$$$
   7  8  1  0  0  0  0
   7 28  1  1  0  0  0
 M  END
-
 > <example>
 39
+
 > <part>
 salt stripper
+
 > <reason>
 isotopes removed as deuterium
+
 $$$$
 
   Mrv0541 10161417022D          
@@ -3645,10 +3775,13 @@ M  ISO  1   1 123
 M  END
 > <example>
 63
+
 > <part>
 salt stripper
+
 > <reason>
 isotopes remove (I)
+
 $$$$
 
   CDK    9/16/09,9:46
@@ -3831,10 +3964,13 @@ M  CHG  1  55  -1
 M  END
 > <example>
 62
+
 > <part>
 salt stripper
+
 > <reason>
 atovastatin example where 2:1 salt 
+
 $$$$
 BDBM192334
      RDKit          2D
@@ -3916,13 +4052,15 @@ BDBM192334
  23 29  1  0
  27 31  1  0
 M  END
-
 > <example>
 61
+
 > <part>
 checker
+
 > <reason>
 InChI warning Accepted unusual valence(s): H(2)
+
 $$$$
  
   Mrv0541 01171812432D          
@@ -4090,13 +4228,15 @@ $$$$
  22 46  1  0  0  0  0
  16 25  1  0  0  0  0
 M  END
-
 > <example>
 60
+
 > <part>
 checker
+
 > <reason>
 Multiple StereoBonds on StereoAtom
+
 $$$$
 
   Mrv1712 11021816472D          
@@ -4125,13 +4265,15 @@ $$$$
  10 11  2  0  0  0  0
 M  CHG  2   2  -1   3   1
 M  END
-
 > <example>
 25
+
 > <part>
 standardiser
+
 > <reason>
 Change NH+ Cl- to N and HCl
+
 $$$$
 
   Mrv1712 11021816492D          
@@ -4159,13 +4301,15 @@ $$$$
   9 10  2  0  0  0  0
 M  CHG  1   2   1
 M  END
-
 > <example>
 34
+
 > <part>
 standardiser
+
 > <reason>
 deprotonate example
+
 $$$$
 
   Mrv1712 11021816522D          
@@ -4208,13 +4352,15 @@ $$$$
  14 17  1  0  0  0  0
 M  CHG  1   1  -1
 M  END
-
 > <example>
 33
+
 > <part>
 standardiser
+
 > <reason>
 protonate example
+
 $$$$
 
           11280715542D 1   1.00000     0.00000     0
@@ -4269,10 +4415,13 @@ M  CHG  3   8   1  12  -1  13  -1
 M  END
 > <example>
 58
+
 > <part>
 standardiser
+
 > <reason>
 internal salt quat only protonate one (if possible)
+
 $$$$
 
   SciTegic06271217572D
@@ -4362,10 +4511,13 @@ M  CHG  5   4   1  29   1  35  -1  38  -1  39  -1
 M  END
 > <example>
 59
+
 > <part>
 standardiser
+
 > <reason>
 internal salt quat don't protonate acidis
+
 $$$$
 
   SciTegic01111613442D
@@ -4468,10 +4620,13 @@ $$$$
 M  END
 > <example>
 36
+
 > <part>
 salt stripper
+
 > <reason>
 stripped according to salt list sildenafil citrate example
+
 $$$$
 
   SciTegic07111213592D
@@ -4514,10 +4669,13 @@ $$$$
 M  END
 > <example>
 66
+
 > <part>
 salt stripper
+
 > <reason>
 stripped according to salt list HCl example
+
 $$$$
 
   Mrv17a0 06011715312D          
@@ -4600,13 +4758,15 @@ $$$$
  31 36  1  0  0  0  0
 M  CHG  2  22  -1  23   1
 M  END
-
 > <example>
 71
+
 > <part>
 salt stripper
+
 > <reason>
 stripped according to list e.g Na+ salt (needs protonating) not carboxyl
+
 $$$$
 
   SciTegic01111613442D
@@ -4663,10 +4823,13 @@ M  CHG  2   9  -1  13   1
 M  END
 > <example>
 37
+
 > <part>
 salt stripper
+
 > <reason>
 stripped according to list e.g K+ salt (needs protonating)
+
 $$$$
 
   SciTegic12231509382D
@@ -4687,10 +4850,13 @@ M  CHG  4   4  -1   5  -1   6   1   7   1
 M  END
 > <example>
 41
+
 > <part>
 salt stripper
+
 > <reason>
 empty salts both components are salts (recombine)
+
 $$$$
 
   SciTegic11261311332D
@@ -4801,10 +4967,13 @@ M  CHG  7   9  -1  12   1  14  -1  33  -1  36   1  38  -1  49   2
 M  END
 > <example>
 67
+
 > <part>
 salt stripper
+
 > <reason>
 2:1  Mg2+ salt
+
 $$$$
 
   SciTegic11261311332D
@@ -4919,10 +5088,13 @@ M  CHG  7   9  -1  12   1  14  -1  33  -1  36   1  38  -1  49   2
 M  END
 > <example>
 68
+
 > <part>
 salt stripper
+
 > <reason>
 complex example 2:1 Sr2+ salt and 4H20
+
 $$$$
 
   SciTegic10091514462D
@@ -5007,10 +5179,13 @@ M  CHG  2  25  -1  36   1
 M  END
 > <example>
 69
+
 > <part>
 salt stripper
+
 > <reason>
 Na+salt with water both need removing
+
 $$$$
 
   SciTegic10121516512D
@@ -5088,10 +5263,13 @@ M  CHG  2  17   1  32  -1
 M  END
 > <example>
 70
+
 > <part>
 salt stripper
+
 > <reason>
 quat bromide with H20 
+
 $$$$
 
   SciTegic11301210262D
@@ -5114,10 +5292,13 @@ M  CHG  4   2  -1   3  -1   6   1   7   1
 M  END
 > <example>
 42
+
 > <part>
 salt stripper
+
 > <reason>
 empty salts both components are salts (recombine) but solvent needs to be removed
+
 $$$$
 
   Mrv0541 09061315192D          
@@ -5173,10 +5354,13 @@ M  ISO  1  13   2
 M  END
 > <example>
 76
+
 > <part>
 salt stripper
+
 > <reason>
 isotope deuterium with D and ISO line
+
 $$$$
 
   Mrv0541 09061315192D          
@@ -5232,10 +5416,13 @@ M  ISO  1  13   2
 M  END
 > <example>
 77
+
 > <part>
 salt stripper
+
 > <reason>
 isotope deuterium but as H and ISO line
+
 $$$$
 
   SciTegic11261411062D
@@ -5311,10 +5498,13 @@ $$$$
 M  END
 > <example>
 38
+
 > <part>
 salt stripper
+
 > <reason>
 solvents removed according to solvent list
+
 $$$$
 
   SciTegic12231509382D
@@ -5401,10 +5591,13 @@ $$$$
 M  END
 > <example>
 72
+
 > <part>
 salt stripper
+
 > <reason>
 genuine mixture leave as is
+
 $$$$
 
   SciTegic03151315062D
@@ -5479,10 +5672,13 @@ $$$$
 M  END
 > <example>
 40
+
 > <part>
 salt stripper
+
 > <reason>
 mixture needs H20 removing
+
 $$$$
  
 SciTegic01161211252D
@@ -5529,10 +5725,13 @@ M  CHG  2   8  -1  17   1
 M  END
 > <example>
 73
+
 > <part>
 salt stripper
+
 > <reason>
 tetrazole K+ salt needs protonating
+
 $$$$
 
   SciTegic11301210262D
@@ -5579,13 +5778,15 @@ $$$$
   5  2  2  0
 M  ISO  2   7 131   8 131
 M  END
-
 > <example>
 74
+
 > <part>
 salt stripper
+
 > <reason>
 isotope needs removing and also salt
+
 $$$$
 
   Mrv1712 11261816432D          
@@ -5726,10 +5927,13 @@ $$$$
 M  END
 > <example>
 19
+
 > <part>
 standardiser
+
 > <reason>
 Remove explicit Hs from molecule
+
 $$$$
 
   Mrv1712 11271817142D          
@@ -5792,11 +5996,13 @@ $$$$
  10  5  2  0  0  0  0
  11  8  2  0  0  0  0
 M  END
-
 > <example>
 75
+
 > <part>
 salt stripper
+
 > <reason>
 Pt compound so SEF but needs water removing
+
 $$$$
