@@ -528,6 +528,25 @@ M  END
         self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
+        # another example, stereobonds *to* stereocenters do not count for this one:
+        nomatchBlock = """
+  Mrv1810 02111915582D          
+
+  5  4  0  0  0  0            999 V2000
+   -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0479    2.3631    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.4768    2.3631    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -2.8293    1.1702    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.5661    1.8059    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+  3  1  1  6  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  2  1  1  0  0  0
+M  END
+"""
+        self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
+            Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
+
     def test_stereobondInRing(self):
         matchBlock = """"
   Mrv1810 02111916052D          
