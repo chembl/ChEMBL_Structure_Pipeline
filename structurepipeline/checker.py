@@ -9,6 +9,11 @@
 import re
 from rdkit import Chem
 from rdkit import Geometry
+import rdkit
+
+rdkversion = rdkit.__version__.split(".")[:2]
+if rdkversion < ["2019", "03"]:
+    raise ValueError("need an RDKit version >= 2019.03.1")
 
 
 class CheckerBase(object):
