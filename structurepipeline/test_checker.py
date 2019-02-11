@@ -468,6 +468,160 @@ M  END
         for m in nomatches:
             self.failIf(checker.DisallowedRadicalMolChecker.check(m))
 
+    def test_illegalbondstereo(self):
+        matchBlock = """"
+  Mrv1810 0211191006          
+
+  2  1  0  0  0  0            999 V2000
+    1.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  4  0  0  0
+M  END
+"""
+        nomatchBlock = """
+  Mrv1810 0211191006
+
+  2  1  0  0  0  0            999 V2000
+   -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3127    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  1  0  0  0
+M  END
+"""
+        self.failUnless(checker.HasIllegalBondStereoMolChecker.check(
+            Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
+        self.failIf(checker.HasIllegalBondStereoMolChecker.check(
+            Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
+
+    def test_multiplebondstereo(self):
+        matchBlock = """"
+  Mrv1810 02111915582D          
+
+  5  4  0  0  0  0            999 V2000
+   -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0479    2.3631    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.4768    2.3631    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -2.8293    1.1702    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.5661    1.8059    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+  1  3  1  6  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  2  1  1  0  0  0
+M  END
+"""
+        nomatchBlock = """
+  Mrv1810 02111915582D          
+
+  5  4  0  0  0  0            999 V2000
+   -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0479    2.3631    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.4768    2.3631    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -2.8293    1.1702    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.5661    1.8059    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  2  1  1  0  0  0
+M  END
+"""
+        self.failUnless(checker.HasMultipleStereoBondsMolChecker.check(
+            Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
+        self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
+            Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
+
+    def test_stereobondInRing(self):
+        matchBlock = """"
+  Mrv1810 02111916052D          
+
+  7  7  0  0  0  0            999 V2000
+    3.3705    1.7732    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+    2.7031    1.2883    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.9580    0.5037    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.7830    0.5037    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0380    1.2883    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    3.1027    2.5536    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0380    2.2581    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  6  1  0  0  0  0
+  1  7  1  0  0  0  0
+  1  2  1  1  0  0  0
+M  END
+"""
+        nomatchBlock = """
+  Mrv1810 02111916062D          
+
+  7  7  0  0  0  0            999 V2000
+    3.3705    1.7732    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+    2.7031    1.2883    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.9580    0.5037    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.7830    0.5037    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0380    1.2883    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    3.1027    2.5536    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0380    2.2581    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  6  1  0  0  0  0
+  1  7  1  1  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        self.failUnless(checker.HasStereoBondInRingMolChecker.check(
+            Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
+        self.failIf(checker.HasStereoBondInRingMolChecker.check(
+            Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
+
+    def test_stereobondToStereocenter(self):
+        matchBlock = """"
+  Mrv1810 02111916122D          
+
+  8  7  0  0  0  0            999 V2000
+   -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788   -0.8152    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -1.2502   -0.8152    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5357   -2.0527    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3395   -1.4170    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+    0.8932   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788    0.0098    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+    0.9379   -0.5589    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  2  7  1  0  0  0  0
+  2  8  1  0  0  0  0
+  1  2  1  1  0  0  0
+  2  6  1  1  0  0  0
+M  END
+"""
+        nomatchBlock = """
+  Mrv1810 02111916122D          
+
+  8  7  0  0  0  0            999 V2000
+   -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788   -0.8152    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -1.2502   -0.8152    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5357   -2.0527    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3395   -1.4170    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+    0.8932   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788    0.0098    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+    0.9379   -0.5589    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  1  0  0  0
+  2  7  1  0  0  0  0
+  2  8  1  0  0  0  0
+  1  2  1  0  0  0  0
+  2  6  1  1  0  0  0
+M  END
+"""
+        self.failUnless(checker.HasStereoBondToStereocenterMolChecker.check(
+            Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
+        self.failIf(checker.HasStereoBondToStereocenterMolChecker.check(
+            Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
+
 
 if __name__ == '__main__':  # pragma: nocover
     unittest.main()

@@ -63,6 +63,37 @@ class HasIllegalBondTypeMolChecker(MolChecker):
         return False
 
 
+class HasIllegalBondStereoMolChecker(MolChecker):
+    name = "has_illegal_bond_stereo"
+    explanation = "molecule has a bond with an illegal stereo flag"
+    penalty = 5
+
+    @staticmethod
+    def check(mol):
+        for bond in mol.GetBonds():
+            if bond.HasProp("_MolFileBondStereo") and \
+                    bond.GetUnsignedProp("_MolFileBondStereo") == 4:
+                return True
+        return False
+
+
+class HasMultipleStereoBondsMolChecker(MolChecker):
+    name = "has_multiple_stereo_bonds"
+    explanation = "molecule has an atom with multiple stereo bonds"
+    penalty = 2
+
+    @staticmethod
+    def check(mol):
+        atomsSeen = [0]*mol.GetNumAtoms()
+        for bond in mol.GetBonds():
+            if bond.HasProp("_MolFileBondStereo") and \
+                    bond.GetUnsignedProp("_MolFileBondStereo"):
+                if atomsSeen[bond.GetBeginAtomIdx()]:
+                    return True
+                atomsSeen[bond.GetBeginAtomIdx()] = 1
+        return False
+
+
 class HasOverlappingAtomsMolChecker(MolChecker):
     name = "has_overlapping_atoms"
     explanation = "molecule has two (or more) atoms with exactly the same coordinates"
@@ -105,7 +136,44 @@ class HasCrossedRingBondMolChecker(MolChecker):
     @staticmethod
     def check(mol):
         for bond in mol.GetBonds():
-            if bond.GetBondType() == Chem.BondType.DOUBLE and bond.GetBondDir() == Chem.BondDir.EITHERDOUBLE and bond.IsInRing():
+            if bond.GetBondType() == Chem.BondType.DOUBLE and \
+                    bond.GetBondDir() == Chem.BondDir.EITHERDOUBLE and \
+                    bond.IsInRing():
+                return True
+        return False
+
+
+class HasStereoBondInRingMolChecker(MolChecker):
+    name = "has_stereobond_in_ring"
+    explanation = "molecule has a stereo bond in a ring"
+    penalty = 2
+
+    @staticmethod
+    def check(mol):
+        for bond in mol.GetBonds():
+            if bond.HasProp("_MolFileBondStereo") and \
+                    bond.GetUnsignedProp("_MolFileBondStereo") and \
+                    bond.IsInRing():
+                return True
+        return False
+
+
+class HasStereoBondToStereocenterMolChecker(MolChecker):
+    name = "has_stereo_bond_to_stereocenter"
+    explanation = "molecule has an stereo bond to a stereocenter"
+    penalty = 2
+
+    @staticmethod
+    def check(mol):
+        atomsSeen = [0]*mol.GetNumAtoms()
+        sbonds = []
+        for bond in mol.GetBonds():
+            if bond.HasProp("_MolFileBondStereo") and \
+                    bond.GetUnsignedProp("_MolFileBondStereo"):
+                atomsSeen[bond.GetBeginAtomIdx()] = 1
+                sbonds.append(bond)
+        for bond in sbonds:
+            if atomsSeen[bond.GetEndAtomIdx()]:
                 return True
         return False
 
