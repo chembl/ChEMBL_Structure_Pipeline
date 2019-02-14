@@ -181,7 +181,7 @@ class TestCase(unittest.TestCase):
  72 74  2  0  0  0  0
  49 75  1  6  0  0  0
 M  STY  3   1 SRU   2 SRU   3 SRU
-M  SCN  3   1 HT   2 HT   3 HT
+M  SCN  3   1 HT    2 HT    3 HT 
 M  SAL   1 15  55  50  51  54  57  58  56  46  68  62  63  69  64  70  61
 M  SAL   1 11  72  74  73  60  47  48  53  52  49  75  59
 M  SMT   1 b
@@ -201,7 +201,6 @@ M  SMT   3 n
 M  SBL   3  2  46  76
 M  END"""
         dataBlock = """
-
      RDKit          2D
 
   6  5  0  3  0  0  0  0  0  0999 V2000
@@ -218,7 +217,7 @@ M  END"""
   5  6  1  0
 M  STY  3   1 MUL   2 SUP   3 DAT
 M  SST  1   1 BLO
-M  SCN  1   1 HH
+M  SCN  1   1 HH 
 M  SDS EXP  1   1
 M  SPL  1   1   3
 M  SNC  1   1   7
