@@ -19,7 +19,7 @@ if rdkversion < ["2019", "03"]:
 
 def _get_molblock_inchi_and_warnings(mb):
     inchi, res, w1, w2, auxinfo = rdinchi.MolBlockToInchi(mb)
-    return inchi, w1
+    return inchi, w1, w2
 
 
 class CheckerBase(object):
@@ -68,19 +68,20 @@ class InchiChecker(CheckerBase):
     @staticmethod
     def check(molb):
         """ returns true if there is any warning """
-        i, w = get_inchi(molb)
-        if w:
+        inchi, w1, w2 = get_inchi(molb)
+        if (not inchi) or w1 or w2:
             return True
         return False
 
     @staticmethod
     def get_inchi_score(molb):
-        """ returns a tuple with (penalty, warning) pairs, if there are any """
-        inchi, warnings = get_inchi(molb)
+        inchi, warnings1, warnings2 = get_inchi(molb)
+        if not inchi:
+            return ((7, warnings2))
         res = []
-        for warning in warnings.split(';'):
+        for warning in warnings1.split(';'):
             warning = warning.strip()
-            if not warning: 
+            if warning == '':
                 continue
             matched = False
             for k in inchiWarnings:
@@ -89,7 +90,7 @@ class InchiChecker(CheckerBase):
                     matched = True
             if not matched:
                 # one that can't be handled by simple string matching:
-                if(warning.find('Atom')==0 and warning.find('has more than')>0 and warning.find("bonds")>0):
+                if(warning.find('Atom') == 0 and warning.find('has more than') > 0 and warning.find("bonds") > 0):
                     res.append((7, "Atom X has more than Y bonds"))
                 else:
                     res.append((2, 'Other InChI warning'))

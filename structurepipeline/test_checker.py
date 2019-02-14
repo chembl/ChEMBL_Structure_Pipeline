@@ -251,7 +251,7 @@ $$$$
 
     def test_v3000(self):
         v3000Block = """
-  Mrv1810 02111910072D          
+  Mrv1810 02111910072D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -267,7 +267,7 @@ M  V30 END CTAB
 M  END
         """
         v2000Block = """
-  Mrv1810 02111910062D          
+  Mrv1810 02111910062D
 
   2  1  0  0  0  0            999 V2000
    -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -280,7 +280,7 @@ M  END
 
     def test_has3d(self):
         matchBlock = """
-  Mrv1810 0211191006          
+  Mrv1810 0211191006
 
   2  1  0  0  0  0            999 V2000
    -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -304,7 +304,7 @@ M  END
 
     def test_bondtypes(self):
         baseBlock = """
-  Mrv1810 02111911082D          
+  Mrv1810 02111911082D
 
   3  3  0  0  0  0            999 V2000
    -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -326,7 +326,7 @@ M  END
 
     def test_overlappingCoords(self):
         matchBlock = """
-  Mrv1810 0211191006          
+  Mrv1810 0211191006
 
   3  2  0  0  0  0            999 V2000
    -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -354,7 +354,7 @@ M  END
 
     def test_zeroCoords(self):
         matchBlock = """
-  Mrv1810 0211191006          
+  Mrv1810 0211191006
 
   2  1  0  0  0  0            999 V2000
     0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -378,7 +378,7 @@ M  END
 
     def test_crossedRingbond(self):
         matchBlock = """
-  Mrv1810 02111912422D          
+  Mrv1810 02111912422D
 
  13 13  0  0  0  0            999 V2000
     4.9010   -4.1237    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -441,7 +441,7 @@ M  END
  12 13  2  0  0  0  0
 M  END
 """, """
-  Mrv1810 02111912422D          
+  Mrv1810 02111912422D
 
   4  3  0  0  0  0            999 V2000
     7.5223    0.2009    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -469,7 +469,7 @@ M  END
 
     def test_illegalbondstereo(self):
         matchBlock = """
-  Mrv1810 0211191006          
+  Mrv1810 0211191006
 
   2  1  0  0  0  0            999 V2000
     1.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -493,7 +493,7 @@ M  END
 
     def test_multiplebondstereo(self):
         matchBlock = """
-  Mrv1810 02111915582D          
+  Mrv1810 02111915582D
 
   5  4  0  0  0  0            999 V2000
    -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -508,7 +508,7 @@ M  END
 M  END
 """
         nomatchBlock = """
-  Mrv1810 02111915582D          
+  Mrv1810 02111915582D
 
   5  4  0  0  0  0            999 V2000
    -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -529,7 +529,7 @@ M  END
 
         # another example, stereobonds *to* stereocenters do not count for this one:
         nomatchBlock = """
-  Mrv1810 02111915582D          
+  Mrv1810 02111915582D
 
   5  4  0  0  0  0            999 V2000
    -2.7624    1.9506    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -548,7 +548,7 @@ M  END
 
     def test_stereobondInRing(self):
         matchBlock = """
-  Mrv1810 02111916052D          
+  Mrv1810 02111916052D
 
   7  7  0  0  0  0            999 V2000
     3.3705    1.7732    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
@@ -568,7 +568,7 @@ M  END
 M  END
 """
         nomatchBlock = """
-  Mrv1810 02111916062D          
+  Mrv1810 02111916062D
 
   7  7  0  0  0  0            999 V2000
     3.3705    1.7732    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
@@ -594,7 +594,7 @@ M  END
 
     def test_stereobondToStereocenter(self):
         matchBlock = """
-  Mrv1810 02111916122D          
+  Mrv1810 02111916122D
 
   8  7  0  0  0  0            999 V2000
    -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -615,7 +615,7 @@ M  END
 M  END
 """
         nomatchBlock = """
-  Mrv1810 02111916122D          
+  Mrv1810 02111916122D
 
   8  7  0  0  0  0            999 V2000
    -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -641,7 +641,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_inchiWarning(self):
-        matchBlock = """BDBM163075
+        mb = """BDBM163075
      RDKit          2D
 
  27 30  0  0  0  0  0  0  0  0999 V2000
@@ -705,32 +705,83 @@ M  END
 M  CHG  2  15  -1  27   1
 M  END
 """
-        nomatchBlock = """
-  Mrv1810 02111916122D          
-
-  8  7  0  0  0  0            999 V2000
-   -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    0.1788   -0.8152    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
-   -1.2502   -0.8152    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
-   -0.5357   -2.0527    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-   -1.3395   -1.4170    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
-    0.8932   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    0.1788    0.0098    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
-    0.9379   -0.5589    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
-  1  3  1  0  0  0  0
-  1  4  1  0  0  0  0
-  1  5  1  1  0  0  0
-  2  7  1  0  0  0  0
-  2  8  1  0  0  0  0
-  1  2  1  0  0  0  0
-  2  6  1  1  0  0  0
-M  END
-"""        
-        self.failUnless(checker.InchiChecker.check(matchBlock))
-        r = checker.InchiChecker.get_inchi_score(matchBlock)
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
         self.failUnlessEqual(
             r, ((6, 'Accepted unusual valence(s)'), (2, 'Other InChI warning')))
 
-        self.failIf(checker.InchiChecker.check(nomatchBlock))
-        r = checker.InchiChecker.get_inchi_score(nomatchBlock)
-        self.failUnlessEqual(r, ())
+    def test_inchiErrors(self):
+        mb = """
+  Mrv1810 02141913522D
+
+  2  2  0  0  0  0            999 V2000
+   -9.7074   -8.3118    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.7506   -9.1357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  1  1  0  0  0  0
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
+        self.failUnlessEqual(
+            r, ((7, 'Error 102 (no InChI; Multiple bonds between two atoms) inp')))
+
+        mb = """
+  Mrv1810 02141913522D
+
+  2  1  0  0  0  0            999 V2000
+   -9.7074   -8.3118    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.7506   -9.1357    0.0000 Pz  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
+        self.failUnlessEqual(
+            r, ((7, 'Error 190 (no InChI; Unknown element(s): Pz) inp')))
+
+        mb = """
+  Mrv1810 02141914092D          
+
+  5  4  0  0  0  0            999 V2000
+   -9.7074   -8.3118    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.7506   -9.1357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.5575   -9.3072    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.5947   -9.8813    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.9256   -9.1357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  2  5  4  0  0  0  0
+  2  4  4  0  0  0  0
+  2  3  4  0  0  0  0
+  1  2  4  0  0  0  0
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
+        self.failUnlessEqual(
+            r, ((7, 'Error 132 (no InChI; Atom has 1 or more than 3 aromatic bonds) inp')))
+
+        mb = """
+  Mrv1810 02141913522D
+
+  2  2  0  0  0  0            999 V2000
+   -9.7074   -8.3118    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.7506   -9.1357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  6  1  0  0  0  0
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
+        self.failUnlessEqual(
+            r, ((7, 'Error 101 (no InChI; Bond to nonexistent atom) inp')))
+
+        mb = """
+  Mrv1810 02141913522D
+
+  0  0  0  0  0  0            999 V2000
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(mb))
+        r = checker.InchiChecker.get_inchi_score(mb)
+        self.failUnlessEqual(
+            r, ((7, 'Error 98 (no InChI; Empty structure) inp')))
