@@ -77,7 +77,12 @@ class InchiChecker(CheckerBase):
     def get_inchi_score(molb):
         inchi, warnings1, warnings2 = get_inchi(molb)
         if not inchi:
-            return ((7, warnings2))
+            # no InChI was generated. This indicates either an error (penalty of 7) or an empty structure (penalty of 6)
+            if molb.find('\n  0  0  ') > 0 and \
+                    warnings2.find('Empty structure') > 0:
+                return ((6, warnings2))
+            else:
+                return ((7, warnings2))
         res = []
         for warning in warnings1.split(';'):
             warning = warning.strip()
@@ -89,11 +94,7 @@ class InchiChecker(CheckerBase):
                     res.append((inchiWarnings[k], k))
                     matched = True
             if not matched:
-                # one that can't be handled by simple string matching:
-                if(warning.find('Atom') == 0 and warning.find('has more than') > 0 and warning.find("bonds") > 0):
-                    res.append((7, "Atom X has more than Y bonds"))
-                else:
-                    res.append((2, 'Other InChI warning'))
+                res.append((2, 'Other InChI warning'))
         return tuple(sorted(res, reverse=True))
 
 
