@@ -705,7 +705,32 @@ M  END
 M  CHG  2  15  -1  27   1
 M  END
 """
+        nomatchBlock = """
+  Mrv1810 02111916122D          
+
+  8  7  0  0  0  0            999 V2000
+   -0.5357   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788   -0.8152    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -1.2502   -0.8152    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5357   -2.0527    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3395   -1.4170    0.0000 Br  0  0  0  0  0  0  0  0  0  0  0  0
+    0.8932   -1.2277    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1788    0.0098    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+    0.9379   -0.5589    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  1  0  0  0
+  2  7  1  0  0  0  0
+  2  8  1  0  0  0  0
+  1  2  1  0  0  0  0
+  2  6  1  1  0  0  0
+M  END
+"""        
         self.failUnless(checker.InchiChecker.check(matchBlock))
         r = checker.InchiChecker.get_inchi_score(matchBlock)
         self.failUnlessEqual(
             r, ((6, 'Accepted unusual valence(s)'), (2, 'Other InChI warning')))
+
+        self.failIf(checker.InchiChecker.check(nomatchBlock))
+        r = checker.InchiChecker.get_inchi_score(nomatchBlock)
+        self.failUnlessEqual(r, ())

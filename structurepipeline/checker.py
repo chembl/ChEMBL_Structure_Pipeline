@@ -54,7 +54,7 @@ inchiWarnings = {
     'Multiple bonds between two atoms': 7,
     'Atom has more than 3 aromatic bonds': 7,
     'Too many atoms': 7,
-    # 'Atom X has more than 20 bonds':7,
+    # 'Atom X has more than Y bonds':7,
     'Accepted unusual valence(s)': 6,
     'Empty structure': 6
 }
@@ -62,7 +62,7 @@ inchiWarnings = {
 
 class InchiChecker(CheckerBase):
     name = "checks for InChI warnings"
-    explanation = "checks for inchi warnings"
+    explanation = "checks for InChI warnings"
     penalty = 0
 
     @staticmethod
@@ -75,17 +75,24 @@ class InchiChecker(CheckerBase):
 
     @staticmethod
     def get_inchi_score(molb):
+        """ returns a tuple with (penalty, warning) pairs, if there are any """
         inchi, warnings = get_inchi(molb)
         res = []
         for warning in warnings.split(';'):
             warning = warning.strip()
+            if not warning: 
+                continue
             matched = False
             for k in inchiWarnings:
                 if warning.find(k) == 0:
                     res.append((inchiWarnings[k], k))
                     matched = True
             if not matched:
-                res.append((2, 'Other InChI warning'))
+                # one that can't be handled by simple string matching:
+                if(warning.find('Atom')==0 and warning.find('has more than')>0 and warning.find("bonds")>0):
+                    res.append((7, "Atom X has more than Y bonds"))
+                else:
+                    res.append((2, 'Other InChI warning'))
         return tuple(sorted(res, reverse=True))
 
 
