@@ -74,9 +74,9 @@ class InchiChecker(CheckerBase):
             # no InChI was generated. This indicates either an error (penalty of 7) or an empty structure (penalty of 6)
             if molb.find('\n  0  0  ') > 0 and \
                     warnings2.find('Empty structure') > 0:
-                return ((6, warnings2))
+                return ((6, warnings2),)
             else:
-                return ((7, warnings2))
+                return ((7, warnings2),)
         res = []
         for warning in warnings1.split(';'):
             warning = warning.strip()
@@ -311,7 +311,7 @@ _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
 def check_molblock(mb):
     mol = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
     if mol is None:
-        return (7, ((7, "Illegal input")))
+        return (7, ((7, "Illegal input"),))
     res = []
     score = 0
     for checker in _checkers:
@@ -324,4 +324,8 @@ def check_molblock(mb):
         if matched:
             score += checker.penalty
             res.append((checker.penalty, checker.explanation))
-    return score, tuple(res)
+    for penalty, msg in InchiChecker.get_inchi_score(mb):
+        print(">>>>>>", penalty, msg)
+        score += penalty
+        res.append((penalty, msg))
+    return score, tuple(sorted(res, reverse=True))
