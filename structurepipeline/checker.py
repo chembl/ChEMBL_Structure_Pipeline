@@ -221,7 +221,7 @@ class HasStereoBondInRingMolChecker(MolChecker):
     def check(mol):
         for bond in mol.GetBonds():
             if bond.HasProp("_MolFileBondStereo") and \
-                    bond.GetUnsignedProp("_MolFileBondStereo") and \
+                    bond.GetUnsignedProp("_MolFileBondStereo") != 3 and \
                     bond.IsInRing():
                 return True
         return False
@@ -299,3 +299,29 @@ class V3000FileChecker(MolFileChecker):
     @staticmethod
     def check(data):
         return V3000FileChecker._regex.search(data) is not None
+
+
+_checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
+             Has3DMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
+             HasMultipleStereoBondsMolChecker, HasOverlappingAtomsMolChecker, ZeroCoordsMolChecker,
+             HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
+             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, ]
+
+
+def check_molblock(mb):
+    mol = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
+    if mol is None:
+        return (7, ((7, "Illegal input")))
+    res = []
+    score = 0
+    for checker in _checkers:
+        if issubclass(checker, MolFileChecker):
+            matched = checker.check(mb)
+        elif issubclass(checker, MolChecker):
+            matched = checker.check(mol)
+        else:
+            raise ValueError(checker)
+        if matched:
+            score += checker.penalty
+            res.append((checker.penalty, checker.explanation))
+    return score, tuple(res)
