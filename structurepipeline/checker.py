@@ -9,11 +9,17 @@
 import re
 from rdkit import Chem
 from rdkit import Geometry
+from rdkit.Chem import rdinchi
 import rdkit
 
 rdkversion = rdkit.__version__.split(".")[:2]
 if rdkversion < ["2019", "03"]:
     raise ValueError("need an RDKit version >= 2019.03.1")
+
+
+def _get_molblock_inchi_and_warnings(mb):
+    inchi, res, w1, w2, auxinfo = rdinchi.MolBlockToInchi(mb)
+    return inchi, w1
 
 
 class CheckerBase(object):
@@ -26,6 +32,61 @@ class MolChecker(CheckerBase):
 
 class MolFileChecker(CheckerBase):
     __slots__ = ["name", "explanation", "penalty"]
+
+
+# used as a cache
+__inchiDict = {}
+
+
+def get_inchi(molb):
+    h = hash(molb)
+    if h not in __inchiDict:
+        # make sure the cache doesn't get huge:
+        if(len(__inchiDict) > 10000):
+            __inchiDict.clear()
+        __inchiDict[h] = _get_molblock_inchi_and_warnings(molb)
+    return __inchiDict[h]
+
+
+inchiWarnings = {
+    'Unknown element(s)': 7,
+    'Bond to nonexistent atom': 7,
+    'Multiple bonds between two atoms': 7,
+    'Atom has more than 3 aromatic bonds': 7,
+    'Too many atoms': 7,
+    # 'Atom X has more than 20 bonds':7,
+    'Accepted unusual valence(s)': 6,
+    'Empty structure': 6
+}
+
+
+class InchiChecker(CheckerBase):
+    name = "checks for InChI warnings"
+    explanation = "checks for inchi warnings"
+    penalty = 0
+
+    @staticmethod
+    def check(molb):
+        """ returns true if there is any warning """
+        i, w = get_inchi(molb)
+        if w:
+            return True
+        return False
+
+    @staticmethod
+    def get_inchi_score(molb):
+        inchi, warnings = get_inchi(molb)
+        res = []
+        for warning in warnings.split(';'):
+            warning = warning.strip()
+            matched = False
+            for k in inchiWarnings:
+                if warning.find(k) == 0:
+                    res.append((inchiWarnings[k], k))
+                    matched = True
+            if not matched:
+                res.append((2, 'Other InChI warning'))
+        return tuple(sorted(res, reverse=True))
 
 
 class NumAtomsMolChecker(MolChecker):

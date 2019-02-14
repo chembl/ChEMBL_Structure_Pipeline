@@ -6,7 +6,6 @@
 #  The contents are covered by the terms of the MIT license
 #  which is included in the file LICENSE, found at the root
 #  of the source tree.
-
 from . import checker
 import unittest
 from rdkit import Chem
@@ -267,7 +266,7 @@ M  V30 END BOND
 M  V30 END CTAB
 M  END
         """
-        v2000Block = """"
+        v2000Block = """
   Mrv1810 02111910062D          
 
   2  1  0  0  0  0            999 V2000
@@ -280,7 +279,7 @@ M  END
         self.failIf(checker.V3000FileChecker.check(v2000Block))
 
     def test_has3d(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 0211191006          
 
   2  1  0  0  0  0            999 V2000
@@ -326,7 +325,7 @@ M  END
                 self.failUnless(checker.HasIllegalBondTypeMolChecker.check(m))
 
     def test_overlappingCoords(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 0211191006          
 
   3  2  0  0  0  0            999 V2000
@@ -354,7 +353,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_zeroCoords(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 0211191006          
 
   2  1  0  0  0  0            999 V2000
@@ -378,7 +377,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_crossedRingbond(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 02111912422D          
 
  13 13  0  0  0  0            999 V2000
@@ -469,7 +468,7 @@ M  END
             self.failIf(checker.DisallowedRadicalMolChecker.check(m))
 
     def test_illegalbondstereo(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 0211191006          
 
   2  1  0  0  0  0            999 V2000
@@ -493,7 +492,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_multiplebondstereo(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 02111915582D          
 
   5  4  0  0  0  0            999 V2000
@@ -548,7 +547,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_stereobondInRing(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 02111916052D          
 
   7  7  0  0  0  0            999 V2000
@@ -594,7 +593,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
     def test_stereobondToStereocenter(self):
-        matchBlock = """"
+        matchBlock = """
   Mrv1810 02111916122D          
 
   8  7  0  0  0  0            999 V2000
@@ -641,6 +640,72 @@ M  END
         self.failIf(checker.HasStereoBondToStereocenterMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
 
+    def test_inchiWarning(self):
+        matchBlock = """BDBM163075
+     RDKit          2D
 
-if __name__ == '__main__':  # pragma: nocover
-    unittest.main()
+ 27 30  0  0  0  0  0  0  0  0999 V2000
+    1.6146   -5.5162    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.9260   -4.0489    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.0484    1.6535    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.2594    1.8470    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.4379    3.0237    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.1670    0.4398    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.6489    0.4769    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.3781    3.0608    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9796   -3.6396    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.9460    3.1800    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.6752    0.5961    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.1571    0.3205    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.8863    2.9045    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0946   -2.6362    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.4878   -3.7959    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.5729    2.1226    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.7839    1.3780    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0647    1.9663    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.2758    1.5343    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.0711   -1.5187    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.6916    0.9089    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6816   -0.1486    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.4207   -1.6751    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.1734    0.0078    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1997    1.0652    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    2.3020   -0.4613    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8110   -3.0456    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0
+  2 27  1  0
+  3  5  2  0
+  3  6  1  0
+  4  7  2  0
+  4  8  1  0
+  5 10  1  0
+  6 11  2  0
+  7 12  1  0
+  8 13  2  0
+  9 14  2  0
+  9 15  1  0
+ 10 18  2  0
+ 11 18  1  0
+ 12 19  2  0
+ 13 19  1  0
+ 14 20  1  0
+ 15 27  1  0
+ 16 18  1  0
+ 16 21  1  0
+ 17 19  1  0
+ 17 24  1  0
+ 20 22  2  0
+ 20 23  1  0
+ 21 25  2  0
+ 21 26  1  0
+ 22 24  1  0
+ 22 25  1  0
+ 23 26  2  0
+ 23 27  1  0
+M  CHG  2  15  -1  27   1
+M  END
+"""
+        self.failUnless(checker.InchiChecker.check(matchBlock))
+        r = checker.InchiChecker.get_inchi_score(matchBlock)
+        self.failUnlessEqual(
+            r, ((6, 'Accepted unusual valence(s)'), (2, 'Other InChI warning')))
