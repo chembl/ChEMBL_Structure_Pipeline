@@ -49,12 +49,6 @@ def get_inchi(molb):
 
 
 inchiWarnings = {
-    'Unknown element(s)': 7,
-    'Bond to nonexistent atom': 7,
-    'Multiple bonds between two atoms': 7,
-    'Atom has more than 3 aromatic bonds': 7,
-    'Too many atoms': 7,
-    # 'Atom X has more than Y bonds':7,
     'Accepted unusual valence(s)': 6,
     'Empty structure': 6
 }
