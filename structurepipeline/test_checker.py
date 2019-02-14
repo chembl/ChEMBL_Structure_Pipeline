@@ -708,7 +708,7 @@ M  END
         self.failUnless(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
         self.failUnlessEqual(
-            r, ((6, 'Accepted unusual valence(s)'), (2, 'Other InChI warning')))
+            r, ((6, 'Accepted unusual valence(s)'), (2, 'Charges were rearranged')))
 
     def test_inchiErrors(self):
         mb = """

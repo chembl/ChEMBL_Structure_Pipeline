@@ -88,7 +88,7 @@ class InchiChecker(CheckerBase):
                     res.append((inchiWarnings[k], k))
                     matched = True
             if not matched:
-                res.append((2, 'Other InChI warning'))
+                res.append((2, warning))
         return tuple(sorted(res, reverse=True))
 
 
