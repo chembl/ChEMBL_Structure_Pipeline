@@ -248,7 +248,8 @@ $$$$
         self.failUnless(checker.PolymerFileChecker.check(polyBlock))
         self.failIf(checker.PolymerFileChecker.check(dataBlock))
         self.failUnlessEqual(checker.check_molblock(polyBlock),
-                             (10, ((6, 'polymer information in mol file'),
+                             (15, ((6, 'polymer information in mol file'),
+                                   (5, 'InChi_RDKit/Mol stereo mismatch'),
                                    (2, 'Proton(s) added/removed'),
                                    (2, 'Ignore polymer data'))))
         self.failUnlessEqual(checker.check_molblock(dataBlock),
@@ -540,7 +541,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              (5, ((5, 'molecule has a bond with an illegal stereo flag'),)))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
-                             (0, ()))
+                             (5, ((5, 'InChi_RDKit/Mol stereo mismatch'),)))
 
     def test_multiplebondstereo(self):
         matchBlock = """
@@ -601,7 +602,8 @@ M  END
         self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
-                             (4, ((2, 'molecule has an stereo bond to a stereocenter'),
+                             (9, ((5, 'InChi_RDKit/Mol stereo mismatch'),
+                                  (2, 'molecule has an stereo bond to a stereocenter'),
                                   (2, 'Ambiguous stereo: center(s)'))))
 
     def test_stereobondInRing(self):
@@ -929,3 +931,92 @@ M  END
 """
         self.failUnlessEqual(checker.check_molblock(mb),
                              (7, ((7, 'Illegal input'),)))
+
+    def test_stereochecks(self):
+        mb = """
+  Mrv1810 02151908302D          
+
+ 13 13  0  0  0  0            999 V2000
+   -0.6027    0.3339    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3171   -0.0786    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3171   -0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6027   -1.3161    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+    0.1118   -0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1118   -0.0786    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -2.0316   -1.3161    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6027   -2.1411    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8263    0.3339    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6027    1.1589    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+    0.1118    1.5714    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3171    1.5714    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6920    1.9839    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  1  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  1  0  0  0  0
+  3  7  1  0  0  0  0
+  6  9  1  1  0  0  0
+  4  8  1  1  0  0  0
+  1 10  1  0  0  0  0
+ 10 11  1  0  0  0  0
+ 10 13  1  0  0  0  0
+ 10 12  1  1  0  0  0
+M  ISO  1  12  13
+M  END
+"""
+        self.assertEqual(checker.StereoChecker.get_stereo_counts(mb),
+                         (3, 3, 3))
+        self.assertFalse(checker.StereoChecker.check(mb))
+        self.assertEqual(checker.StereoChecker.get_stereo_score(mb),
+                         (0, ''))
+
+        mb = """
+  Mrv1810 02151908442D          
+
+  8  8  0  0  0  0            999 V2000
+    5.2455    1.0482    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+    4.5311    0.6357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.5311   -0.1893    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.2455   -0.6018    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+    5.9600   -0.1893    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.9600    0.6357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.2887    1.8721    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1593   -1.4223    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  1  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  1  0  0  0  0
+  1  7  1  1  0  0  0
+  4  8  1  1  0  0  0
+M  END
+"""
+        self.assertEqual(checker.StereoChecker.get_stereo_counts(mb),
+                         (2, 2, 2))
+        self.assertFalse(checker.StereoChecker.check(mb))
+        self.assertEqual(checker.StereoChecker.get_stereo_score(mb),
+                         (0, ''))
+
+        mb = """
+  Mrv1810 02151908462D          
+
+  4  3  0  0  0  0            999 V2000
+    2.2321    4.4196    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.0023    4.7153    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.4117    4.5059    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    1.9568    3.6420    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  1  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+M  END
+"""
+        self.assertEqual(checker.StereoChecker.get_stereo_counts(mb),
+                         (0, 1, 0))
+        self.assertTrue(checker.StereoChecker.check(mb))
+        self.assertEqual(checker.StereoChecker.get_stereo_score(mb),
+                         (5, 'InChi_RDKit/Mol stereo mismatch'))
+        self.assertEqual(checker.check_molblock(mb),
+                         (5, ((5, 'InChi_RDKit/Mol stereo mismatch'),)))

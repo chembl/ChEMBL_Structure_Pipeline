@@ -10,6 +10,7 @@ import re
 from rdkit import Chem
 from rdkit import Geometry
 from rdkit.Chem import rdinchi
+from collections import Counter
 import rdkit
 
 rdkversion = rdkit.__version__.split(".")[:2]
@@ -90,6 +91,70 @@ class InchiChecker(CheckerBase):
             if not matched:
                 res.append((2, warning))
         return tuple(sorted(res, reverse=True))
+
+
+class StereoChecker(CheckerBase):
+    name = "checks for stereo disagreements"
+    explanation = "checks for stereo disagreements"
+    penalty = 0
+    stereo_matcher = re.compile('/t([^/]*)')
+
+    @staticmethod
+    def get_stereo_counts(molb):
+        # InChI: count specified stereocenters in the *last* stereolayer
+        nInchi = 0
+        inchi, w1, w2 = get_inchi(molb)
+        layers = StereoChecker.stereo_matcher.findall(inchi)
+        if layers:
+            nSpec = 0
+            nUnspec = 0
+            for center in layers[-1].split(','):
+                if center[-1] == '?':
+                    nUnspec += 1
+                else:
+                    nSpec += 1
+            nInchi = nSpec
+
+        m = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
+
+        # Mol blocks: count atoms where a wedged or hashed bond starts
+        molCounter = Counter()
+        for b in m.GetBonds():
+            if b.HasProp('_MolFileBondStereo'):
+                p = b.GetUnsignedProp('_MolFileBondStereo')
+                if p == 1 or p == 6:
+                    molCounter[b.GetBeginAtomIdx()] += 1
+        nMol = len([k for k, v in molCounter.items() if v > 0])
+
+        # RDKit molecule: count atoms that have tetrahedral stereo
+        m.UpdatePropertyCache(False)
+        Chem.AssignStereochemistry(m, force=True, cleanIt=True)
+        nRDKit = len([1 for x in m.GetAtoms() if x.GetChiralTag() in (
+            Chem.ChiralType.CHI_TETRAHEDRAL_CW, Chem.ChiralType.CHI_TETRAHEDRAL_CCW)])
+
+        return nInchi, nMol, nRDKit
+
+    @staticmethod
+    def check(molb):
+        """ returns true if there is any warning """
+        nInchi, nMol, nRDKit = StereoChecker.get_stereo_counts(molb)
+        if nInchi != nMol or nInchi != nRDKit:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def get_stereo_score(molb):
+        nInchi, nMol, nRDKit = StereoChecker.get_stereo_counts(molb)
+        if nInchi != nMol and nInchi != nRDKit and nRDKit != nMol:
+            return (5, 'Mol/Inchi/RDKit stereo mismatch')
+        elif nRDKit == nMol and nInchi != nRDKit:
+            return (5, 'RDKit_Mol/InChI stereo mismatch')
+        elif nMol == nInchi and nInchi != nRDKit:
+            return (2, 'InChi_Mol/RDKit stereo mismatch')
+        elif nInchi == nRDKit and nInchi != nMol:
+            return (5, 'InChi_RDKit/Mol stereo mismatch')
+        return (0, '')
 
 
 class NumAtomsMolChecker(MolChecker):
@@ -325,7 +390,10 @@ def check_molblock(mb):
             score += checker.penalty
             res.append((checker.penalty, checker.explanation))
     for penalty, msg in InchiChecker.get_inchi_score(mb):
-        print(">>>>>>", penalty, msg)
         score += penalty
         res.append((penalty, msg))
+    tpl = StereoChecker.get_stereo_score(mb)
+    if tpl[0]:
+        score += tpl[0]
+        res.append(tpl)
     return score, tuple(sorted(res, reverse=True))
