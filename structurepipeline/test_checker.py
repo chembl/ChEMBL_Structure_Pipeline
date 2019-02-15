@@ -250,10 +250,10 @@ $$$$
         self.failUnlessEqual(checker.check_molblock(polyBlock),
                              (15, ((6, 'polymer information in mol file'),
                                    (5, 'InChi_RDKit/Mol stereo mismatch'),
-                                   (2, 'Proton(s) added/removed'),
-                                   (2, 'Ignore polymer data'))))
+                                   (2, 'InChI: Proton(s) added/removed'),
+                                   (2, 'InChI: Ignore polymer data'))))
         self.failUnlessEqual(checker.check_molblock(dataBlock),
-                             (2, ((2, 'Ignore polymer data'),)))
+                             (2, ((2, 'InChI: Ignore polymer data'),)))
 
     def test_v3000(self):
         v3000Block = """
@@ -475,7 +475,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              (7,
                               ((5, 'molecule has a crossed bond in a ring'),
-                               (2, 'Omitted undefined stereo'))))
+                               (2, 'InChI: Omitted undefined stereo'))))
         for mb in nomatchBlocks:
             self.failIf(checker.HasCrossedRingBondMolChecker.check(
                 Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)))
@@ -499,7 +499,7 @@ M  END
             Chem.MolFromMolBlock(nomatch2, sanitize=False, removeHs=False)))
 
         self.failUnlessEqual(checker.check_molblock(nomatch2),
-                             (2, ((2, 'Omitted undefined stereo'),)))
+                             (2, ((2, 'InChI: Omitted undefined stereo'),)))
 
     def test_disallowedRadicals(self):
         matches = [Chem.MolFromSmiles(x) for x in ('C[CH2]', 'C[O]', 'C[N]O')]
@@ -581,7 +581,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              (2, ((2, 'molecule has an atom with multiple stereo bonds'),)))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
-                             (2, ((2, 'Ambiguous stereo: center(s)'),)))
+                             (2, ((2, 'InChI: Ambiguous stereo: center(s)'),)))
 
         # another example, stereobonds *to* stereocenters do not count for this one:
         nomatchBlock = """
@@ -604,7 +604,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              (9, ((5, 'InChi_RDKit/Mol stereo mismatch'),
                                   (2, 'molecule has an stereo bond to a stereocenter'),
-                                  (2, 'Ambiguous stereo: center(s)'))))
+                                  (2, 'InChI: Ambiguous stereo: center(s)'))))
 
     def test_stereobondInRing(self):
         matchBlock = """
@@ -653,7 +653,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              (4, ((2, 'molecule has a stereo bond in a ring'),
-                                  (2, 'Ambiguous stereo: center(s)'))))
+                                  (2, 'InChI: Ambiguous stereo: center(s)'))))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              (0, ()))
 
@@ -705,7 +705,7 @@ M  END
         self.failIf(checker.HasStereoBondToStereocenterMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
-                             (4, ((2, 'molecule has an stereo bond to a stereocenter'), (2, 'Ambiguous stereo: center(s)'))))
+                             (4, ((2, 'molecule has an stereo bond to a stereocenter'), (2, 'InChI: Ambiguous stereo: center(s)'))))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              (0, ()))
 
@@ -776,8 +776,9 @@ M  END
 """
         self.failUnless(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
+        print(r)
         self.failUnlessEqual(
-            r, ((6, 'Accepted unusual valence(s)'), (2, 'Charges were rearranged')))
+            r, ((6, 'InChI: Accepted unusual valence(s)'), (2, 'InChI: Charges were rearranged')))
 
     def test_inchiErrors(self):
         mb = """

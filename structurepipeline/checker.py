@@ -86,10 +86,10 @@ class InchiChecker(CheckerBase):
             matched = False
             for k in inchiWarnings:
                 if warning.find(k) == 0:
-                    res.append((inchiWarnings[k], k))
+                    res.append((inchiWarnings[k], 'InChI: '+k))
                     matched = True
             if not matched:
-                res.append((2, warning))
+                res.append((2, 'InChI: '+warning))
         return tuple(sorted(res, reverse=True))
 
 
