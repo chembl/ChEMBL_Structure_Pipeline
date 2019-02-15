@@ -154,7 +154,7 @@ class StereoChecker(CheckerBase):
             return (2, 'InChi_Mol/RDKit stereo mismatch')
         elif nInchi == nRDKit and nInchi != nMol:
             return (5, 'InChi_RDKit/Mol stereo mismatch')
-        return (0, '')
+        return ()
 
 
 class NumAtomsMolChecker(MolChecker):
@@ -376,9 +376,8 @@ _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
 def check_molblock(mb):
     mol = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
     if mol is None:
-        return (7, ((7, "Illegal input"),))
+        return ((7, "Illegal input"),)
     res = []
-    score = 0
     for checker in _checkers:
         if issubclass(checker, MolFileChecker):
             matched = checker.check(mb)
@@ -387,13 +386,9 @@ def check_molblock(mb):
         else:
             raise ValueError(checker)
         if matched:
-            score += checker.penalty
             res.append((checker.penalty, checker.explanation))
-    for penalty, msg in InchiChecker.get_inchi_score(mb):
-        score += penalty
-        res.append((penalty, msg))
+    res.extend(InchiChecker.get_inchi_score(mb))
     tpl = StereoChecker.get_stereo_score(mb)
-    if tpl[0]:
-        score += tpl[0]
+    if tpl:
         res.append(tpl)
-    return score, tuple(sorted(res, reverse=True))
+    return tuple(sorted(res, reverse=True))
