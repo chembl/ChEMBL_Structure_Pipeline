@@ -59,6 +59,7 @@ class InchiChecker(CheckerBase):
     name = "checks for InChI warnings"
     explanation = "checks for InChI warnings"
     penalty = 0
+    element_matcher = re.compile(r'[A-Z][a-z]?\([0-9]')
 
     @staticmethod
     def check(molb):
@@ -89,7 +90,17 @@ class InchiChecker(CheckerBase):
                     res.append((inchiWarnings[k], 'InChI: '+k))
                     matched = True
             if not matched:
-                res.append((2, 'InChI: '+warning))
+                # The "Accepted unusual valence(s)" warning can produce things like this:
+                #  "Accepted unusual valence(s): N(4); Cu(6)"
+                # which break our splitting on ';' rule, producing a "warning" that's just
+                # element: "Cu(6)" in the example above.
+                # Here we detect this situation and avoid adding that element
+                # to the list of warnings
+                if InchiChecker.element_matcher.match(warning) and \
+                        res[-1][1] == 'InChI: Accepted unusual valence(s)':
+                    continue
+                else:
+                    res.append((2, 'InChI: '+warning))
         return tuple(sorted(res, reverse=True))
 
 
