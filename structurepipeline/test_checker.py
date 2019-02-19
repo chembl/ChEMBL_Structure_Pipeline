@@ -579,7 +579,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              ((2, 'molecule has an atom with multiple stereo bonds'),))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
-                             ((2, 'InChI: Ambiguous stereo: center(s)'),))
+                             ((2, 'InChI: Ambiguous stereo'),))
 
         # another example, stereobonds *to* stereocenters do not count for this one:
         nomatchBlock = """
@@ -602,7 +602,7 @@ M  END
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ((5, 'InChi_RDKit/Mol stereo mismatch'),
                               (2, 'molecule has an stereo bond to a stereocenter'),
-                              (2, 'InChI: Ambiguous stereo: center(s)')))
+                              (2, 'InChI: Ambiguous stereo')))
 
     def test_stereobondInRing(self):
         matchBlock = """
@@ -651,7 +651,7 @@ M  END
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
                              ((2, 'molecule has a stereo bond in a ring'),
-                              (2, 'InChI: Ambiguous stereo: center(s)')))
+                              (2, 'InChI: Ambiguous stereo')))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ())
 
@@ -703,7 +703,7 @@ M  END
         self.failIf(checker.HasStereoBondToStereocenterMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
-                             ((2, 'molecule has an stereo bond to a stereocenter'), (2, 'InChI: Ambiguous stereo: center(s)')))
+                             ((2, 'molecule has an stereo bond to a stereocenter'), (2, 'InChI: Ambiguous stereo')))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ())
 
@@ -1191,3 +1191,88 @@ M  END
                           (5, 'molecule has a crossed bond in a ring'),
                           (2, 'InChI: Proton(s) added/removed'),
                           (2, 'InChI: Metal was disconnected')))
+
+        mb = """
+  SciTegic11201309402D
+
+ 36 39  0  0  1  0            999 V2000
+   -5.3728  -11.9974    0.0000 C   0  0
+   -5.3728  -12.8224    0.0000 C   0  0
+   -4.6590  -13.2288    0.0000 C   0  0  2  0  0  0
+   -4.6590  -11.5788    0.0000 C   0  0
+   -3.9495  -11.9645    0.0000 C   0  0
+   -3.9488  -12.8224    0.0000 C   0  0  1  0  0  0
+   -3.2355  -11.5836    0.0000 C   0  0  1  0  0  0
+   -2.5205  -12.0033    0.0000 C   0  0  2  0  0  0
+   -3.9526  -11.1724    0.0000 C   0  0
+   -2.5220  -12.8280    0.0000 C   0  0  2  0  0  0
+   -3.2440  -13.2301    0.0000 C   0  0  2  0  0  0
+   -3.0808  -14.0406    0.0000 O   0  0
+   -2.2603  -14.1399    0.0000 C   0  0
+   -1.9160  -13.3883    0.0000 C   0  0
+   -1.8585  -14.8569    0.0000 O   0  0
+   -1.1066  -13.2252    0.0000 C   0  0
+   -3.4803  -10.6975    0.0000 O   0  0
+   -4.6703  -10.7607    0.0000 O   0  0
+   -4.6737   -9.9357    0.0000 C   0  0
+   -2.9511  -10.8481    0.0000 O   0  0
+   -2.3191  -10.5772    0.0000 C   0  0
+   -2.3236   -9.7522    0.0000 O   0  0
+   -1.6308  -11.0304    0.0000 C   0  0
+   -1.8142  -11.5828    0.0000 O   0  0
+   -1.0179  -11.7963    0.0000 C   0  0
+   -0.8045  -12.5925    0.0000 O   0  0
+   -0.4310  -11.2134    0.0000 C   0  0  2  0  0  0
+    0.3663  -11.4279    0.0000 C   0  0  1  0  0  0
+    0.1478  -10.6265    0.0000 O   0  0
+    0.9503  -12.0096    0.0000 C   0  0
+   -0.8496  -10.4910    0.0000 C   0  0
+   -3.9567  -13.6433    0.0000 O   0  0
+   -5.0813  -13.9429    0.0000 C   0  0
+   -4.0564  -13.8132    0.0000 H   0  0
+   -1.6054  -12.4281    0.0000 H   0  0
+   -3.4533  -13.6910    0.0000 H   0  0
+ 14 16  2  0
+  8 10  1  0
+  9 17  2  0
+  2  3  1  0
+  9 18  1  0
+  3  6  1  0
+ 18 19  1  0
+  5  9  1  0
+  7 20  1  6
+ 10 11  1  0
+ 20 21  1  0
+  5  4  2  0
+ 21 22  2  0
+ 21 23  1  0
+  1  2  1  0
+  8 24  1  1
+  1  4  1  0
+ 24 25  1  0
+  5  7  1  0
+ 25 26  2  0
+ 11 12  1  0
+ 25 27  1  0
+ 12 13  1  0
+ 27 28  1  0
+ 13 14  1  0
+ 28 29  1  0
+ 27 29  1  0
+ 10 14  1  0
+ 28 30  1  1
+  6 11  1  0
+ 27 31  1  6
+  3 32  1  0
+ 13 15  2  0
+  6 32  1  0
+  8  7  1  0
+  3 33  1  1
+ 11 34  1  1
+ 10 35  1  6
+  6 36  1  6
+M  END
+"""
+        self.assertEqual(checker.check_molblock(mb),
+                         ((2, 'InChI: Ambiguous stereo'),
+                          ))

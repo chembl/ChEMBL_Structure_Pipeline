@@ -51,7 +51,8 @@ def get_inchi(molb):
 
 inchiWarnings = {
     'Accepted unusual valence(s)': 6,
-    'Empty structure': 6
+    'Empty structure': 6,
+    'Ambiguous stereo': 2
 }
 
 
@@ -90,14 +91,22 @@ class InchiChecker(CheckerBase):
                     res.append((inchiWarnings[k], 'InChI: '+k))
                     matched = True
             if not matched:
-                # The "Accepted unusual valence(s)" warning can produce things like this:
-                #  "Accepted unusual valence(s): N(4); Cu(6)"
-                # which break our splitting on ';' rule, producing a "warning" that's just
-                # element: "Cu(6)" in the example above.
-                # Here we detect this situation and avoid adding that element
-                # to the list of warnings
                 if InchiChecker.element_matcher.match(warning) and \
                         res[-1][1] == 'InChI: Accepted unusual valence(s)':
+                    # The "Accepted unusual valence(s)" warning can produce things like this:
+                    #  "Accepted unusual valence(s): N(4); Cu(6)"
+                    # which break our splitting on ';' rule, producing a "warning" that's just
+                    # element: "Cu(6)" in the example above.
+                    # Here we detect this situation and avoid adding that element
+                    # to the list of warnings
+                    continue
+                elif warning.find('bond(s)') == 0 and \
+                        res[-1][1] == 'InChI: Ambiguous stereo':
+                    # "Ambiguous stereo" can appear as:
+                    # "Ambiguous stereo: center(s)", "Ambiguous stereo bond(s)" or
+                    # "Ambiguous stereo: center(s); bond(s)"
+                    # Here we detect the last case and avoid adding "bond(s)" to the
+                    #  result
                     continue
                 else:
                     res.append((2, 'InChI: '+warning))
