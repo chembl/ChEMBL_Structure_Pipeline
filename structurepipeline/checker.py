@@ -79,6 +79,8 @@ class InchiChecker(CheckerBase):
                     warnings2.find('Empty structure') > 0:
                 return ((6, warnings2),)
             else:
+                if warnings2.find('Error 190 (no InChI; Unknown element(s)') == 0:
+                    warnings2 = 'InChI: Unknown element(s)'
                 return ((7, warnings2),)
         res = []
         for warning in warnings1.split(';'):

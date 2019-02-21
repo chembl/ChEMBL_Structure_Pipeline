@@ -806,7 +806,7 @@ M  END
         self.failUnless(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
         self.failUnlessEqual(
-            r, ((7, 'Error 190 (no InChI; Unknown element(s): Pz) inp'),))
+            r, ((7, 'InChI: Unknown element(s)'),))
 
         mb = """
   Mrv1810 02141914092D
