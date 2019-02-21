@@ -60,7 +60,7 @@ class InchiChecker(CheckerBase):
     name = "checks for InChI warnings"
     explanation = "checks for InChI warnings"
     penalty = 0
-    element_matcher = re.compile(r'[A-Z][a-z]?\([0-9]')
+    element_matcher = re.compile(r'[A-Z][a-z]?.*?\([0-9]')
 
     @staticmethod
     def check(molb):
