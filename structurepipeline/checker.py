@@ -273,6 +273,8 @@ class ZeroCoordsMolChecker(MolChecker):
     penalty = 6
 
     def check(mol):
+        if not mol.GetNumAtoms():
+            return False
         if mol.GetNumConformers():
             origin = Geometry.Point3D(0, 0, 0)
             conf = mol.GetConformer()
@@ -336,7 +338,7 @@ class HasStereoBondToStereocenterMolChecker(MolChecker):
 
 class DisallowedRadicalMolChecker(MolChecker):
     name = "disallowed_radical"
-    explanation = "molecule has a radical that isn't found in the known list"
+    explanation = "molecule has a radical that is not found in the known list"
     penalty = 6
 
     @staticmethod

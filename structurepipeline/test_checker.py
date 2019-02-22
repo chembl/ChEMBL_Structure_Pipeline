@@ -853,6 +853,9 @@ M  END
         r = checker.InchiChecker.get_inchi_score(mb)
         self.failUnlessEqual(
             r, ((6, 'InChI: Empty structure'),))
+        r = checker.check_molblock(mb)
+        self.failUnlessEqual(
+            r, ((6, 'number of atoms less than 1'), (6, 'InChI: Empty structure'),))
 
         mb = """
   Mrv1810 02141914362D
