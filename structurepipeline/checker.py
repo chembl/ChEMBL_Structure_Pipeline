@@ -77,7 +77,7 @@ class InchiChecker(CheckerBase):
             # no InChI was generated. This indicates either an error (penalty of 7) or an empty structure (penalty of 6)
             if molb.find('\n  0  0  ') > 0 and \
                     warnings2.find('Empty structure') > 0:
-                return ((6, warnings2),)
+                return ((6, "InChI: Empty structure"),)
             else:
                 if warnings2.find('Error 190 (no InChI; Unknown element(s)') == 0:
                     warnings2 = 'InChI: Unknown element(s)'

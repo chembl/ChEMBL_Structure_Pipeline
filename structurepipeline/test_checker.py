@@ -852,7 +852,7 @@ M  END
         self.failUnless(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
         self.failUnlessEqual(
-            r, ((6, 'Error 98 (no InChI; Empty structure) inp'),))
+            r, ((6, 'InChI: Empty structure'),))
 
         mb = """
   Mrv1810 02141914362D
