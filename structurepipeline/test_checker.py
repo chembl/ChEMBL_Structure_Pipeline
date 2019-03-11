@@ -506,7 +506,7 @@ M  END
             self.failUnless(checker.DisallowedRadicalMolChecker.check(m))
             mb = Chem.MolToMolBlock(m)
             self.failUnlessEqual(checker.check_molblock(mb),
-                                 ((6, "molecule has a radical that isn't found in the known list"),))
+                                 ((6, "molecule has a radical that is not found in the known list"),))
         for m in nomatches:
             self.failIf(checker.DisallowedRadicalMolChecker.check(m))
             mb = Chem.MolToMolBlock(m)
