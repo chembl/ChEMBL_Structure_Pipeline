@@ -20,7 +20,41 @@ if rdkversion < ["2019", "03"]:
 
 
 def uncharge_mol(m):
-    uncharger = rdMolStandardize.Uncharger()
+    """
+
+    >>> def uncharge_smiles(smi): return Chem.MolToSmiles(uncharge_mol(Chem.MolFromSmiles(smi)))
+    >>> uncharge_smiles('[NH3+]CCC')
+    'CCCN'
+    >>> uncharge_smiles('[NH3+]CCC[O-]')
+    'NCCCO'
+    >>> uncharge_smiles('C[N+](C)(C)CCC[O-]')
+    'C[N+](C)(C)CCC[O-]'
+    >>> uncharge_smiles('CC[NH+](C)C.[Cl-]')
+    'CCN(C)C.Cl'
+    >>> uncharge_smiles('CC(=O)[O-]')
+    'CC(=O)O'
+    >>> uncharge_smiles('CC(=O)[O-].[Na+]')
+    'CC(=O)[O-].[Na+]'
+    >>> uncharge_smiles('[NH3+]CC(=O)[O-].[Na+]')
+    'NCC(=O)[O-].[Na+]'
+    >>> uncharge_smiles('CC(=O)[O-].C[NH+](C)C')
+    'CC(=O)O.CN(C)C'
+
+    Acids take priority over alcohols:
+
+    >>> uncharge_smiles('[O-]C([N+](C)C)CC(=O)[O-]')
+    'C[N+](C)C([O-])CC(=O)O'
+
+    And the neutralization is done in a canonical order, so atom ordering of the input
+    structure isn't important:
+
+    >>> uncharge_smiles('C[N+](C)(C)CC([O-])CC[O-]')
+    'C[N+](C)(C)CC([O-])CCO'
+    >>> uncharge_smiles('C[N+](C)(C)CC(CC[O-])[O-]')
+    'C[N+](C)(C)CC([O-])CCO'
+
+    """
+    uncharger = rdMolStandardize.Uncharger(canonicalOrder=True)
     return uncharger.uncharge(m)
 
 
