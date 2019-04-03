@@ -19,6 +19,67 @@ if rdkversion < ["2019", "03"]:
     raise ValueError("need an RDKit version >= 2019.03.1")
 
 
+def kekulize_mol(m):
+    Chem.Kekulize(m)
+    return m
+
+
+def update_mol_valences(m):
+    m = Chem.Mol(m)
+    m.UpdatePropertyCache(strict=False)
+    return m
+
+
+# derived from the MolVS set
+_normalization_transforms = """
+//	Name	SMIRKS
+Nitro to N+(O-)=O	[N;X3:1](=[O:2])=[O:3]>>[*+1:1]([*-1:2])=[*:3]
+Sulfoxide to -S+(O-)-	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
+Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
+Bad amide tautomer1	[C:1]([OH1;D1:2])=[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
+Bad amide tautomer2	[C:1]([OH1;D1:2])=[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
+"""
+_normalizer_params = rdMolStandardize.CleanupParameters()
+_normalizer = rdMolStandardize.NormalizerFromData(
+    _normalization_transforms, _normalizer_params)
+
+
+def normalize_mol(m):
+    """
+    """
+    return _normalizer.normalize(m)
+
+
+def remove_hs_from_mol(m):
+    """ removes any "non-chiral" Hs
+
+    Chiral Hs are:
+    - Hs with a wedged/dashed bond to them
+
+    """
+    SENTINEL = 100
+    for atom in m.GetAtoms():
+        if atom.GetAtomicNum() == 1 and atom.GetDegree() == 1 and not atom.GetIsotope():
+            nbr = atom.GetNeighbors()[0]
+            bnd = atom.GetBonds()[0]
+            if bnd.GetBondDir() in (Chem.BondDir.BEGINWEDGE, Chem.BondDir.BEGINDASH) or \
+                    (bnd.HasProp("_MolFileBondStereo") and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)):
+                # we're safe picking an arbitrary high value since you can't do this in a mol block:
+                atom.SetIsotope(SENTINEL)
+    res = Chem.RemoveHs(m, sanitize=False)
+    for atom in res.GetAtoms():
+        if atom.GetAtomicNum() == 1 and atom.GetIsotope() == SENTINEL:
+            atom.SetIsotope(1)
+    return res
+
+
+def remove_sgroups_from_mol(m):
+    """ removes all Sgroups
+    """
+    Chem.ClearMolSubstanceGroups(m)
+    return m
+
+
 def uncharge_mol(m):
     """
 
@@ -40,10 +101,10 @@ def uncharge_mol(m):
     >>> uncharge_smiles('CC(=O)[O-].C[NH+](C)C')
     'CC(=O)O.CN(C)C'
 
-    Acids take priority over alcohols:
+    Alcohols are protonated before acids:
 
     >>> uncharge_smiles('[O-]C([N+](C)C)CC(=O)[O-]')
-    'C[N+](C)C([O-])CC(=O)O'
+    'C[N+](C)C(O)CC(=O)[O-]'
 
     And the neutralization is done in a canonical order, so atom ordering of the input
     structure isn't important:
@@ -58,8 +119,16 @@ def uncharge_mol(m):
     return uncharger.uncharge(m)
 
 
+def standardize_mol(m):
+    m = update_mol_valences(m)
+    m = remove_sgroups_from_mol(m)
+    m = kekulize_mol(m)
+    m = remove_hs_from_mol(m)
+    m = normalize_mol(m)
+    m = uncharge_mol(m)
+    return m
+
+
 def standardize_molblock(ctab):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
-
-    m = uncharge_mol(m)
-    return Chem.MolToMolBlock(m)
+    return Chem.MolToMolBlock(standardize_mol(m))
