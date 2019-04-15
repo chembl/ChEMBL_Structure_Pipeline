@@ -85,24 +85,24 @@ M  END
             self.assertEqual(at.GetFormalCharge(), 0)
 
     def testUncharger2(self):
-        data = ( ('[NH3+]CC[O-]','NCCO'),
-                ('[NH3+]CCC[O-].[Na+]','NCCC[O-].[Na+]'),
-                ('[Na+].[NH3+]CCC[O-]','NCCC[O-].[Na+]'),
-                ('[NH3+]CCO','NCCO'),
-                ('NCC[O-]','NCCO'),
-                ('[Cl-].[NH3+]CCC[O-]','Cl.NCCCO'),
-                ('[N+](C)(C)(C)CCC[O-]','[N+](C)(C)(C)CCC[O-]'),
-                ('[NH3+]CC([O-])C[O-]','NCC(O)CO'),
-                #('[NH3+]CC([O-])C[O-].[Na+]','NCC(O)C[O-].[Na+]'),
-                ('[NH3+]CCC[O-].[NH+](C)(C)C','')
+        data = (('[NH3+]CC[O-]', 'NCCO'),
+                ('[NH3+]CCC[O-].[Na+]', 'NCCC[O-].[Na+]'),
+                ('[Na+].[NH3+]CCC[O-]', 'NCCC[O-].[Na+]'),
+                ('[NH3+]CCO', 'NCCO'),
+                ('NCC[O-]', 'NCCO'),
+                ('[Cl-].[NH3+]CCC[O-]', 'Cl.NCCCO'),
+                ('[N+](C)(C)(C)CCC[O-]', '[N+](C)(C)(C)CCC[O-]'),
+                ('[NH3+]CC([O-])C[O-]', 'NCC(O)CO'),
+                # ('[NH3+]CC([O-])C[O-].[Na+]','NCC(O)C[O-].[Na+]'),
+                ('[NH3+]CCC[O-].[NH+](C)(C)C', 'CN(C)C.NCCCO')
                 )
-        for ismi,esmi in data:
+        for ismi, esmi in data:
             esmi = Chem.CanonSmiles(esmi)
             m = Chem.MolFromSmiles(ismi, sanitize=False)
             m.UpdatePropertyCache(False)
             nm = standardizer.uncharge_mol(m)
-            self.assertEqual(esmi,Chem.MolToSmiles(nm))
-        
+            self.assertEqual(esmi, Chem.MolToSmiles(nm))
+
     def testRemoveSGroups(self):
         mb = '''
   ACCLDraw04231812452D
