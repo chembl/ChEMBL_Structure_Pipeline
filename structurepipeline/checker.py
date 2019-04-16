@@ -199,7 +199,7 @@ class Has3DMolChecker(MolChecker):
         if mol.GetNumConformers():
             conf = mol.GetConformer()
             for i in range(mol.GetNumAtoms()):
-                if abs(conf.GetAtomPosition(i).z) > 0.0001:
+                if abs(conf.GetAtomPosition(i).z) >= 0.0001:
                     return True
         return False
 
