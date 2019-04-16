@@ -42,7 +42,7 @@ M  END
 
     def testBondWiggleBonds(self):
         mb = """
-  Mrv1810 03131911492D          
+  Mrv1810 03131911492D
 
   4  3  0  0  0  0            999 V2000
    -0.0000    1.8527    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -63,7 +63,7 @@ M  END
 
     def testUncharger1(self):
         mb = """
-  Mrv1810 03131914152D          
+  Mrv1810 03131914152D
 
   4  3  0  0  0  0            999 V2000
    -2.3884   -2.3884    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
@@ -141,12 +141,12 @@ M  END
 M  STY  2   1 DAT   2 DAT
 M  SLB  2   1   1   2   2
 M  SAL   1  1  10
-M  SDT   1 pH                                                    
+M  SDT   1 pH
 M  SDD   1     0.0000    0.0000    DR    ALL  1       6
 M  SED   1 4.6
 M  SAL   2  2   5   7
 M  SBL   2  1   4
-M  SDT   2 Stereo                                                
+M  SDT   2 Stereo
 M  SDD   2     0.0000    0.0000    DR    ALL  1       6
 M  SED   2 E/Z unknown
 M  END
@@ -160,7 +160,7 @@ M  END
 
     def testRemoveHs(self):
         mb = '''
-  Mrv1810 04011911282D          
+  Mrv1810 04011911282D
 
   6  5  0  0  0  0            999 V2000
   -10.2573   -6.3835    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
@@ -185,7 +185,7 @@ M  END
 
     def testNormalize_alkoxides(self):
         mb = '''
-  Mrv1810 04011911282D          
+  Mrv1810 04011911282D
 
   2  1  0  0  0  0            999 V2000
    -1.5000    0.0000    0.0000 Na  0  0  0  0  0  0  0  0  0  0  0  0
@@ -212,7 +212,7 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "[Li+].[OH-]")
 
         mb = '''
-  Mrv1810 04011911282D          
+  Mrv1810 04011911282D
 
   3  2  0  0  0  0            999 V2000
    -1.5000    0.0000    0.0000 Na  0  0  0  0  0  0  0  0  0  0  0  0
@@ -230,7 +230,7 @@ M  END
 
     def testNormalize_nitro(self):
         mb = '''
-  Mrv1810 04031914242D          
+  Mrv1810 04031914242D
 
   4  3  0  0  0  0            999 V2000
    -5.5714    2.7744    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -251,7 +251,7 @@ M  END
 
     def testNormalize_sulfoxide(self):
         mb = '''
-  Mrv1810 04031914252D          
+  Mrv1810 04031914252D
 
   4  3  0  0  0  0            999 V2000
   -10.8271    2.9774    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -271,7 +271,7 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "C[S+](C)[O-]")
 
         mb = '''
-  Mrv1810 04031914272D          
+  Mrv1810 04031914272D
 
   5  4  0  0  0  0            999 V2000
   -10.8271    2.9774    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -293,7 +293,7 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "CS(C)(=O)=O")
 
         mb = '''
-  Mrv1810 04031914292D          
+  Mrv1810 04031914292D
 
   6  5  0  0  0  0            999 V2000
   -10.8271    2.9774    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -318,7 +318,7 @@ M  END
 
     def testUncharge_amine_hydrochlorides(self):
         mb = '''
-  Mrv1810 04031914352D          
+  Mrv1810 04031914352D
 
   3  1  0  0  0  0            999 V2000
    -8.9098    1.3759    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -338,7 +338,7 @@ M  END
 
     def testNormalize_amide(self):
         mb = '''
-  Mrv1810 04031915162D          
+  Mrv1810 04031915162D
 
   4  3  0  0  0  0            999 V2000
    -7.3083    2.1203    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -358,7 +358,7 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "CC(N)=O")
 
         mb = '''
-  Mrv1810 04031915192D          
+  Mrv1810 04031915192D
 
   5  4  0  0  0  0            999 V2000
    -7.3083    2.1203    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -417,6 +417,7 @@ M  END
                  ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
                   'c1cccnc1[NH3+]'),
                  ('c1cccnc1.ClCCl', 'c1cccnc1'),
+                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1')
                  ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
@@ -436,6 +437,24 @@ M  END
             rdDepictor.Compute2DCoords(m)
             Chem.WedgeMolBonds(m, m.GetConformer())
             ssmi = Chem.MolToSmiles(standardizer.get_isotope_parent_mol(m))
+            sp = Chem.SmilesParserParams()
+            sp.removeHs = False
+            em = Chem.MolFromSmiles(expected, sp)
+            esmi = Chem.MolToSmiles(em)
+            self.assertEqual(ssmi, esmi)
+
+    def test_get_parent1(self):
+        tests = [('c1cc[13cH]nc1.[Na]', 'c1cccnc1'),
+                 ('c1ccc([2H])nc1.c1ccccc1C(=O)O', 'c1cccnc1'),
+                 ('F[C@]([2H])(Cl)C.Cl', 'F[C@]([H])(Cl)C'),
+                 ]
+        for smi, expected in tests:
+            m = Chem.MolFromSmiles(smi)
+            # simulate having come from a mol file by adding coords and
+            # wedging bonds:
+            rdDepictor.Compute2DCoords(m)
+            Chem.WedgeMolBonds(m, m.GetConformer())
+            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m))
             sp = Chem.SmilesParserParams()
             sp.removeHs = False
             em = Chem.MolFromSmiles(expected, sp)

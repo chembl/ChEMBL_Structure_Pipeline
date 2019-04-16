@@ -218,6 +218,10 @@ def get_isotope_parent_mol(m):
     return remove_hs_from_mol(m)
 
 
+def get_parent_mol(m):
+    return get_isotope_parent_mol(get_fragment_parent_mol(m))
+
+
 def standardize_mol(m):
     m = update_mol_valences(m)
     m = remove_sgroups_from_mol(m)
