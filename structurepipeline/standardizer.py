@@ -172,20 +172,41 @@ def _cleanup_allenes(m):
         raise ValueError("can only operate on 2D conformers")
     p = Chem.MolFromSmarts('*=[C;R0]=*')
     for match in m.GetSubstructMatches(p):
-        rdMolTransforms.SetAngleRad(
-            conf, match[0], match[1], match[2], math.pi)
+        angle = rdMolTransforms.GetAngleRad(conf, match[0], match[1], match[2])
+        # are we off by more than a degree?
+        if(abs(abs(angle)-math.pi) > 0.017):
+            rdMolTransforms.SetAngleRad(
+                conf, match[0], match[1], match[2], math.pi)
 
 
 def cleanup_drawing_mol(m):
-    """
-
-
-    """
     m = Chem.Mol(m)
     Chem.FastFindRings(m)
     _cleanup_triple_bonds(m)
     _cleanup_allenes(m)
     return m
+
+
+def flatten_tartrate_mol(m):
+    tartrate = Chem.MolFromSmarts('OC(=O)C(O)C(O)C(=O)O')
+    matches = m.GetSubstructMatches(tartrate)
+    if matches:
+        m = Chem.Mol(m)
+        m.GetAtomWithIdx(3).SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
+        m.GetAtomWithIdx(5).SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
+    return m
+
+
+def get_fragment_parent_mol(m):
+    with open('../data/solvents.smi') as inf:
+        solvents = inf.read()
+    solvent_remover = rdMolStandardize.FragmentRemoverFromData(
+        solvents, skip_if_all_match=True)
+    with open('../data/salts.smi') as inf:
+        salts = inf.read()
+    salt_remover = rdMolStandardize.FragmentRemoverFromData(
+        salts, skip_if_all_match=True)
+    return salt_remover.remove(solvent_remover.remove(m))
 
 
 def standardize_mol(m):
@@ -195,7 +216,9 @@ def standardize_mol(m):
     m = remove_hs_from_mol(m)
     m = normalize_mol(m)
     m = uncharge_mol(m)
+    m = flatten_tartrate_mol(m)
     m = cleanup_drawing_mol(m)
+
     return m
 
 

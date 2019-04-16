@@ -406,3 +406,19 @@ M  END
             for match in amatches:
                 self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
                     conf, match[1], match[2], match[3]), math.pi, places=2)
+
+    def test_fragment_parent1(self):
+        tests = [('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
+                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
+                 ('[Na].[Cl]', '[Na].[Cl]'), ('[Na+].[Cl-]', '[Na+].[Cl-]'),
+                 ('c1cccnc1[NH3+].O=C([O-])C(O)C(O)C(=O)[O-]',
+                  'c1cccnc1[NH3+]'),
+                 ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
+                  'c1cccnc1[NH3+]'),
+                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
+                 ]
+        for smi, expected in tests:
+            m = Chem.MolFromSmiles(smi)
+            ssmi = Chem.MolToSmiles(standardizer.get_fragment_parent_mol(m))
+            esmi = Chem.CanonSmiles(expected)
+            self.assertEqual(ssmi, esmi)
