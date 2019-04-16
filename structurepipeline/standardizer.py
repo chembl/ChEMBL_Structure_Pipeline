@@ -72,7 +72,7 @@ def remove_hs_from_mol(m):
     res = Chem.RemoveHs(m, sanitize=False)
     for atom in res.GetAtoms():
         if atom.GetAtomicNum() == 1 and atom.GetIsotope() == SENTINEL:
-            atom.SetIsotope(1)
+            atom.SetIsotope(0)
     return res
 
 
@@ -206,13 +206,25 @@ def get_fragment_parent_mol(m):
         salts = inf.read()
     salt_remover = rdMolStandardize.FragmentRemoverFromData(
         salts, skip_if_all_match=True)
-    return salt_remover.remove(solvent_remover.remove(m))
+    res = salt_remover.remove(solvent_remover.remove(m))
+    return res
+
+
+def get_isotope_parent_mol(m):
+    m = Chem.Mol(m)
+    for at in m.GetAtoms():
+        if at.GetIsotope():
+            at.SetIsotope(0)
+    return m
 
 
 def standardize_mol(m):
     m = update_mol_valences(m)
     m = remove_sgroups_from_mol(m)
     m = kekulize_mol(m)
+    # We want to do isotope normalization fairly early so that we
+    # remove the leftover Hs if we need to
+    m = get_isotope_parent_mol(m)
     m = remove_hs_from_mol(m)
     m = normalize_mol(m)
     m = uncharge_mol(m)
