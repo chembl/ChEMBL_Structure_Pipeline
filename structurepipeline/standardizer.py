@@ -12,7 +12,10 @@ from rdkit import Geometry
 from rdkit.Chem import rdinchi
 from collections import Counter
 from rdkit.Chem.MolStandardize import rdMolStandardize
+from rdkit.Chem import rdMolTransforms
 import rdkit
+import math
+import sys
 
 rdkversion = rdkit.__version__.split(".")[:2]
 if rdkversion < ["2019", "03"]:
@@ -119,6 +122,60 @@ def uncharge_mol(m):
     return uncharger.uncharge(m)
 
 
+def _getAtomsToOtherSide(startAt, bond):
+    oAt = bond.GetOtherAtomIdx(startAt.GetIdx())
+    res = []
+    q = [x for x in startAt.GetNeighbors() if x.GetIdx() != oAt]
+    while q:
+        hd = q.pop(0)
+        if hd.GetIdx() in res:
+            continue
+        res.append(hd.GetIdx())
+        for nbr in hd.GetNeighbors():
+            if nbr.GetIdx() == startAt.GetIdx():
+                continue
+            if nbr.GetIdx() == oAt:
+                raise ValueError(f"cycle found {oAt} {res}")
+            if nbr.GetIdx() not in res:
+                q.append(nbr)
+    return res
+
+
+def _check_and_straighten_at_triple_bond(at, bond, conf):
+    if at.GetDegree() != 2:
+        raise ValueError("only works with degree 2")
+    nbrs = [x.GetIdx() for x in at.GetNeighbors()]
+    angle = rdMolTransforms.GetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1])
+    # are we off by more than a degree?
+    if(abs(abs(angle)-math.pi) > 0.017):
+        rdMolTransforms.SetAngleRad(
+            conf, nbrs[0], at.GetIdx(), nbrs[1], math.pi)
+
+
+def _cleanup_triple_bonds(m):
+    conf = m.GetConformer()
+    if conf.Is3D():
+        raise ValueError("can only operate on 2D conformers")
+    for bond in m.GetBonds():
+        if bond.GetBondType() == Chem.BondType.TRIPLE and m.GetRingInfo().NumBondRings(bond.GetIdx()) == 0:
+            at = bond.GetBeginAtom()
+            if at.GetDegree() == 2:
+                _check_and_straighten_at_triple_bond(at, bond, conf)
+            at = bond.GetEndAtom()
+            if at.GetDegree() == 2:
+                _check_and_straighten_at_triple_bond(at, bond, conf)
+
+
+def cleanup_drawing_mol(m):
+    """
+
+
+    """
+    m = Chem.Mol(m)
+    _cleanup_triple_bonds(m)
+    return m
+
+
 def standardize_mol(m):
     m = update_mol_valences(m)
     m = remove_sgroups_from_mol(m)
@@ -126,6 +183,7 @@ def standardize_mol(m):
     m = remove_hs_from_mol(m)
     m = normalize_mol(m)
     m = uncharge_mol(m)
+    m = cleanup_drawing_mol(m)
     return m
 
 

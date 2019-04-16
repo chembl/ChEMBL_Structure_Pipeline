@@ -8,8 +8,11 @@
 #  of the source tree.
 from . import standardizer
 import unittest
+import math
 from rdkit import Chem
+from rdkit.Chem import rdMolTransforms
 from rdkit import RDLogger
+RDLogger.DisableLog("rdApp.info")
 
 
 class TestCase(unittest.TestCase):
@@ -374,3 +377,28 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "CNC(C)=O")
         nm = standardizer.standardize_mol(m)
         self.assertEqual(Chem.MolToSmiles(nm), "CNC(C)=O")
+
+    def test_redraw_internals(self):
+        m = Chem.MolFromSmiles('C1C(C1)C#CC')
+        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
+            m.GetAtomWithIdx(3), m.GetBondBetweenAtoms(3, 4))), [0, 1, 2])
+        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
+            m.GetAtomWithIdx(4), m.GetBondBetweenAtoms(3, 4))), [5])
+
+        m = Chem.MolFromSmiles('CC#N')
+        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
+            m.GetAtomWithIdx(1), m.GetBondBetweenAtoms(1, 2))), [0])
+        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
+            m.GetAtomWithIdx(2), m.GetBondBetweenAtoms(1, 2))), [])
+
+    def test_triple_bonds(self):
+        ms = [x for x in Chem.SDMolSupplier('./test_data/odd_drawings.sdf')]
+        self.assertEqual(len(ms), 3)
+        for m in ms:
+            cm = standardizer.cleanup_drawing_mol(m)
+            conf = cm.GetConformer()
+            matches = m.GetSubstructMatches(Chem.MolFromSmarts('[#6]C#*'))
+            self.assertTrue(len(matches))
+            for match in matches:
+                self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
+                    conf, match[0], match[1], match[2]), math.pi, places=2)
