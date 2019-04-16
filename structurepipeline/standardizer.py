@@ -215,16 +215,13 @@ def get_isotope_parent_mol(m):
     for at in m.GetAtoms():
         if at.GetIsotope():
             at.SetIsotope(0)
-    return m
+    return remove_hs_from_mol(m)
 
 
 def standardize_mol(m):
     m = update_mol_valences(m)
     m = remove_sgroups_from_mol(m)
     m = kekulize_mol(m)
-    # We want to do isotope normalization fairly early so that we
-    # remove the leftover Hs if we need to
-    m = get_isotope_parent_mol(m)
     m = remove_hs_from_mol(m)
     m = normalize_mol(m)
     m = uncharge_mol(m)

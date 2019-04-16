@@ -426,21 +426,6 @@ M  END
 
     def test_isotopes_parent1(self):
         tests = [('c1cc[13cH]nc1', 'c1cccnc1'),
-                 ('c1ccc([2H])nc1', 'c1ccc([H])nc1'),
-                 ('F[C@]([2H])(Cl)C', 'F[C@]([H])(Cl)C'),
-
-                 ]
-        for smi, expected in tests:
-            m = Chem.MolFromSmiles(smi)
-            ssmi = Chem.MolToSmiles(standardizer.get_isotope_parent_mol(m))
-            sp = Chem.SmilesParserParams()
-            sp.removeHs = False
-            em = Chem.MolFromSmiles(expected, sp)
-            esmi = Chem.MolToSmiles(em)
-            self.assertEqual(ssmi, esmi)
-
-    def test_isotopes(self):
-        tests = [('c1cc[13cH]nc1', 'c1cccnc1'),
                  ('c1ccc([2H])nc1', 'c1cccnc1'),
                  ('F[C@]([2H])(Cl)C', 'F[C@]([H])(Cl)C'),
                  ]
@@ -450,7 +435,7 @@ M  END
             # wedging bonds:
             rdDepictor.Compute2DCoords(m)
             Chem.WedgeMolBonds(m, m.GetConformer())
-            ssmi = Chem.MolToSmiles(standardizer.standardize_mol(m))
+            ssmi = Chem.MolToSmiles(standardizer.get_isotope_parent_mol(m))
             sp = Chem.SmilesParserParams()
             sp.removeHs = False
             em = Chem.MolFromSmiles(expected, sp)
