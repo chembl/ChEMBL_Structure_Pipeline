@@ -391,14 +391,18 @@ M  END
         self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
             m.GetAtomWithIdx(2), m.GetBondBetweenAtoms(1, 2))), [])
 
-    def test_triple_bonds(self):
+    def test_triple_bonds_and_allenes(self):
         ms = [x for x in Chem.SDMolSupplier('./test_data/odd_drawings.sdf')]
-        self.assertEqual(len(ms), 3)
+        self.assertEqual(len(ms), 4)
         for m in ms:
             cm = standardizer.cleanup_drawing_mol(m)
             conf = cm.GetConformer()
-            matches = m.GetSubstructMatches(Chem.MolFromSmarts('[#6]C#*'))
-            self.assertTrue(len(matches))
-            for match in matches:
+            tmatches = m.GetSubstructMatches(Chem.MolFromSmarts('[#6]C#*'))
+            amatches = m.GetSubstructMatches(Chem.MolFromSmarts('*C=C=C*'))
+            self.assertTrue(len(tmatches) or len(amatches))
+            for match in tmatches:
                 self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
                     conf, match[0], match[1], match[2]), math.pi, places=2)
+            for match in amatches:
+                self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
+                    conf, match[1], match[2], match[3]), math.pi, places=2)

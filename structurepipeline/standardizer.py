@@ -166,13 +166,25 @@ def _cleanup_triple_bonds(m):
                 _check_and_straighten_at_triple_bond(at, bond, conf)
 
 
+def _cleanup_allenes(m):
+    conf = m.GetConformer()
+    if conf.Is3D():
+        raise ValueError("can only operate on 2D conformers")
+    p = Chem.MolFromSmarts('*=[C;R0]=*')
+    for match in m.GetSubstructMatches(p):
+        rdMolTransforms.SetAngleRad(
+            conf, match[0], match[1], match[2], math.pi)
+
+
 def cleanup_drawing_mol(m):
     """
 
 
     """
     m = Chem.Mol(m)
+    Chem.FastFindRings(m)
     _cleanup_triple_bonds(m)
+    _cleanup_allenes(m)
     return m
 
 
