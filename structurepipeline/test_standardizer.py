@@ -316,6 +316,31 @@ M  END
         nm = standardizer.standardize_mol(m)
         self.assertEqual(Chem.MolToSmiles(nm), "CNS(C)(=O)=O")
 
+    def testNormalize1(self):
+        tests = [('CN(C)(C)C', 'C[N+](C)(C)C'),
+                 ('CN#N', 'C[N+]#N'),
+                 ('c1ccccc1N#N', 'c1ccccc1[N+]#N'),
+                 ('C=O-C', 'C=[O+]-C'),
+                 ('C-O-C', 'C-O-C'),
+                 ('O=S-C', 'O=[S+]-C'),
+                 ('C.Cl', 'C.Cl'),
+                 ('C.[Cl]', 'C.[Cl-]'),
+                 ]
+        for smi, expected in tests:
+            sp = Chem.SmilesParserParams()
+            sp.removeHs = False
+            em = Chem.MolFromSmiles(expected, sp)
+            esmi = Chem.MolToSmiles(em)
+
+            m = Chem.MolFromSmiles(smi, sanitize=False)
+            # simulate having come from a mol file by adding coords and
+            # wedging bonds:
+            rdDepictor.Compute2DCoords(m)
+            Chem.WedgeMolBonds(m, m.GetConformer())
+
+            ssmi = Chem.MolToSmiles(standardizer.normalize_mol(Chem.Mol(m)))
+            self.assertEqual(ssmi, esmi)
+
     def testUncharge_amine_hydrochlorides(self):
         mb = '''
   Mrv1810 04031914352D
@@ -417,7 +442,10 @@ M  END
                  ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
                   'c1cccnc1[NH3+]'),
                  ('c1cccnc1.ClCCl', 'c1cccnc1'),
-                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1')
+                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
                  ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)

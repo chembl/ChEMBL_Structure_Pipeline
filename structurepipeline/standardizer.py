@@ -33,14 +33,19 @@ def update_mol_valences(m):
     return m
 
 
-# derived from the MolVS set
+# derived from the MolVS set, with ChEMBL-specific additions
 _normalization_transforms = """
 //	Name	SMIRKS
 Nitro to N+(O-)=O	[N;X3:1](=[O:2])=[O:3]>>[*+1:1]([*-1:2])=[*:3]
+Diazonium N	[*:1]-[N;X2:2]#[N;X1:3]>>[*:1]-[*+1:2]#[*:3]
+Quaternary N	[N;X4;v4;+0:1]>>[*+1:1]
+Trivalent O	[*:1]=[O;X2;v3;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 Sulfoxide to -S+(O-)-	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
+Trivalent S	[O:1]=[S;D2;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
 Bad amide tautomer1	[C:1]([OH1;D1:2])=[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
 Bad amide tautomer2	[C:1]([OH1;D1:2])=[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
+Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
 """
 _normalizer_params = rdMolStandardize.CleanupParameters()
 _normalizer = rdMolStandardize.NormalizerFromData(
