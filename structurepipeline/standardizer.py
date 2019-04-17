@@ -247,14 +247,16 @@ def get_fragment_parent_mol(m):
     nm = Chem.Mol(m)
     Chem.SetAromaticity(nm)
     tmp = salt_remover.remove(solvent_remover.remove(nm))
-    if tmp.GetNumAtoms() == nm.GetNumAtoms():
-        return Chem.Mol(m)
-    keep = set(nm.GetSubstructMatch(tmp))
-    remove = set(range(m.GetNumAtoms())).difference(keep)
-    res = Chem.RWMol(m)
-    for idx in sorted(remove, reverse=True):
-        res.RemoveAtom(idx)
-    return Chem.Mol(res)
+    if tmp.GetNumAtoms() != nm.GetNumAtoms():
+        keep = set(nm.GetSubstructMatch(tmp))
+        remove = set(range(m.GetNumAtoms())).difference(keep)
+        res = Chem.RWMol(m)
+        for idx in sorted(remove, reverse=True):
+            res.RemoveAtom(idx)
+        res = Chem.Mol(res)
+    else:
+        res = Chem.Mol(m)
+    return res
 
 
 def get_isotope_parent_mol(m):
@@ -265,13 +267,16 @@ def get_isotope_parent_mol(m):
     return remove_hs_from_mol(m)
 
 
-def get_parent_mol(m):
-    return get_isotope_parent_mol(get_fragment_parent_mol(m))
+def get_parent_mol(m, neutralize=True):
+    res = get_isotope_parent_mol(get_fragment_parent_mol(m))
+    if neutralize:
+        res = uncharge_mol(res)
+    return res
 
 
-def get_parent_molblock(ctab):
+def get_parent_molblock(ctab, neutralize=True):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
-    parent = get_parent_mol(m)
+    parent = get_parent_mol(m, neutralize=neutralize)
     return Chem.MolToMolBlock(parent)
 
 

@@ -514,23 +514,44 @@ M  END
 
     def test_fragment_parent1(self):
         tests = [('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
-                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
+                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
                  ('[Na].[Cl]', '[Na].[Cl]'), ('[Na+].[Cl-]', '[Na+].[Cl-]'),
+                 ('c1cccnc1[NH3+].O=C(O)C(O)C(O)C(=O)O',
+                  'c1cccnc1N'),
+                 ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
+                  'c1cccnc1N'),
+                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
+                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+                 ]
+        for smi, expected in tests:
+            m = Chem.MolFromSmiles(smi)
+            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m))
+            esmi = Chem.CanonSmiles(expected)
+            self.assertEqual(ssmi, esmi)
+
+    def test_fragment_parent2(self):
+        tests = [('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
+                 ('[Na+].[Cl-]', '[Na+].[Cl-]'),
                  ('c1cccnc1[NH3+].O=C([O-])C(O)C(O)C(=O)[O-]',
                   'c1cccnc1[NH3+]'),
                  ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
                   'c1cccnc1[NH3+]'),
-                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
-                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
                  ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
                  ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
                   'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
                  ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
-            ssmi = Chem.MolToSmiles(standardizer.get_fragment_parent_mol(m))
+            ssmi = Chem.MolToSmiles(
+                standardizer.get_parent_mol(m, neutralize=False))
             esmi = Chem.CanonSmiles(expected)
             self.assertEqual(ssmi, esmi)
+            # get_fragment_parent_mol doesn't do neutralization:
+            ssmi = Chem.MolToSmiles(
+                standardizer.get_fragment_parent_mol(m))
 
     def test_isotopes_parent1(self):
         tests = [('c1cc[13cH]nc1', 'c1cccnc1'),
@@ -556,10 +577,10 @@ M  END
                  ('F[C@]([2H])(Cl)C.Cl', 'F[C@]([H])(Cl)C'),
                  ('c1cccnc1.ClCCl', 'c1cccnc1'),
                  ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
                  ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
                   'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
-                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
+                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
                  ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
