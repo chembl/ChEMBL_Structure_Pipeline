@@ -6,6 +6,7 @@
 #  The contents are covered by the terms of the MIT license
 #  which is included in the file LICENSE, found at the root
 #  of the source tree.
+import os
 import re
 from rdkit import Chem
 from rdkit import Geometry
@@ -202,12 +203,19 @@ def flatten_tartrate_mol(m):
     return m
 
 
+_data_dir = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "data")
+_solvents_file = os.path.join(_data_dir, "solvents.smi")
+_salts_file = os.path.join(_data_dir, "salts.smi")
+
+
 def get_fragment_parent_mol(m):
-    with open('../data/solvents.smi') as inf:
+    basepath = os.path.dirname(os.path.abspath(__file__))
+    with open(_solvents_file) as inf:
         solvents = inf.read()
     solvent_remover = rdMolStandardize.FragmentRemoverFromData(
         solvents, skip_if_all_match=True)
-    with open('../data/salts.smi') as inf:
+    with open(_salts_file) as inf:
         salts = inf.read()
     salt_remover = rdMolStandardize.FragmentRemoverFromData(
         salts, skip_if_all_match=True)
