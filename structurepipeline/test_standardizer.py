@@ -433,6 +433,35 @@ M  END
                 self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
                     conf, match[1], match[2], match[3]), math.pi, places=2)
 
+    def test_cleanup_confs(self):
+        mb = """
+  Mrv1810 02111910063D
+
+  2  1  0  0  0  0            999 V2000
+   -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3127    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        m = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
+        self.assertTrue(m.GetConformer().Is3D())
+        nm = standardizer.cleanup_drawing_mol(m)
+        self.assertFalse(nm.GetConformer().Is3D())
+
+        mb = """
+  Mrv1810 02111910063D
+
+  2  1  0  0  0  0            999 V2000
+   -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3127    0.4125    0.1000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        m = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
+        self.assertTrue(m.GetConformer().Is3D())
+        with self.assertRaises(ValueError):
+            nm = standardizer.cleanup_drawing_mol(m)
+
     def test_fragment_parent1(self):
         tests = [('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
                  ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),

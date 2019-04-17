@@ -187,6 +187,16 @@ def _cleanup_allenes(m):
 
 def cleanup_drawing_mol(m):
     m = Chem.Mol(m)
+    if not m.GetNumConformers():
+        # if we don't have a conformer, just return
+        return m
+    conf = m.GetConformer()
+    if conf.Is3D():
+        for i in range(m.GetNumAtoms()):
+            if abs(conf.GetAtomPosition(i).z) >= 0.0001:
+                raise ValueError(
+                    "cleanup_drawing_mol() only works for 2D molecules")
+        conf.Set3D(False)
     Chem.FastFindRings(m)
     _cleanup_triple_bonds(m)
     _cleanup_allenes(m)
