@@ -554,6 +554,12 @@ M  END
         tests = [('c1cc[13cH]nc1.[Na]', 'c1cccnc1'),
                  ('c1ccc([2H])nc1.c1ccccc1C(=O)O', 'c1cccnc1'),
                  ('F[C@]([2H])(Cl)C.Cl', 'F[C@]([H])(Cl)C'),
+                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
+                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
+                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
                  ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
@@ -566,4 +572,11 @@ M  END
             sp.removeHs = False
             em = Chem.MolFromSmiles(expected, sp)
             esmi = Chem.MolToSmiles(em)
+            self.assertEqual(ssmi, esmi)
+
+            # make sure we can also work from mol blocks:
+            imb = Chem.MolToMolBlock(m)
+            smb = standardizer.get_parent_molblock(imb)
+            sm = Chem.MolFromMolBlock(smb, removeHs=False)
+            ssmi = Chem.MolToSmiles(sm)
             self.assertEqual(ssmi, esmi)

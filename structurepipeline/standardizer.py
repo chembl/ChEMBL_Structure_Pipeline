@@ -241,8 +241,20 @@ def get_fragment_parent_mol(m):
         salts = inf.read()
     salt_remover = rdMolStandardize.FragmentRemoverFromData(
         salts, skip_if_all_match=True)
-    res = salt_remover.remove(solvent_remover.remove(m))
-    return res
+    # we need an aromatic representation for the salt/solvent removal to work, but
+    # we don't want to lose the kekule form we came in with... so this is a bit messy
+    m.UpdatePropertyCache(strict=False)
+    nm = Chem.Mol(m)
+    Chem.SetAromaticity(nm)
+    tmp = salt_remover.remove(solvent_remover.remove(nm))
+    if tmp.GetNumAtoms() == nm.GetNumAtoms():
+        return Chem.Mol(m)
+    keep = set(nm.GetSubstructMatch(tmp))
+    remove = set(range(m.GetNumAtoms())).difference(keep)
+    res = Chem.RWMol(m)
+    for idx in sorted(remove, reverse=True):
+        res.RemoveAtom(idx)
+    return Chem.Mol(res)
 
 
 def get_isotope_parent_mol(m):
@@ -255,6 +267,12 @@ def get_isotope_parent_mol(m):
 
 def get_parent_mol(m):
     return get_isotope_parent_mol(get_fragment_parent_mol(m))
+
+
+def get_parent_molblock(ctab):
+    m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+    parent = get_parent_mol(m)
+    return Chem.MolToMolBlock(parent)
 
 
 def standardize_mol(m):
