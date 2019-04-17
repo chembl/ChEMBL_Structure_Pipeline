@@ -43,7 +43,11 @@ Quaternary N	[N;X4;v4;+0:1]>>[*+1:1]
 Trivalent O	[*:1]=[O;X2;v3;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 Sulfoxide to -S+(O-)-	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
 Trivalent S	[O:1]=[S;D2;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
-Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
+// Note that the next one doesn't work propertly because repeated appplications
+// don't carry the cations from the previous rounds through. This should be
+// fixed by implementing single-molecule transformations, but that's a longer-term 
+// project
+//Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
 Bad amide tautomer1	[C:1]([OH1;D1:2])=[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
 Bad amide tautomer2	[C:1]([OH1;D1:2])=[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
 Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
@@ -52,10 +56,18 @@ _normalizer_params = rdMolStandardize.CleanupParameters()
 _normalizer = rdMolStandardize.NormalizerFromData(
     _normalization_transforms, _normalizer_params)
 
+_alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[O+0]')
+
 
 def normalize_mol(m):
     """
     """
+    if m.HasSubstructMatch(_alkoxide_pattern):
+        m = Chem.RWMol(m)
+        for match in m.GetSubstructMatches(_alkoxide_pattern):
+            m.RemoveBond(match[0], match[1])
+            m.GetAtomWithIdx(match[0]).SetFormalCharge(1)
+            m.GetAtomWithIdx(match[1]).SetFormalCharge(-1)
     return _normalizer.normalize(m)
 
 
