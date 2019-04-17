@@ -204,6 +204,24 @@ class Has3DMolChecker(MolChecker):
         return False
 
 
+class Has3DFlagSetMolChecker(MolChecker):
+    name = "has_3d_flag_set"
+    explanation = "molecule has the 3D flag set for a 2D conformer"
+    penalty = 2
+
+    @staticmethod
+    def check(mol):
+        if mol.GetNumConformers():
+            conf = mol.GetConformer()
+            if conf.Is3D():
+                for i in range(mol.GetNumAtoms()):
+                    if abs(conf.GetAtomPosition(i).z) >= 0.0001:
+                        return False
+
+                return True
+        return False
+
+
 class HasIllegalBondTypeMolChecker(MolChecker):
     name = "has_illegal_bond_type"
     explanation = "molecule has a bond with an illegal type"
@@ -391,7 +409,7 @@ class V3000FileChecker(MolFileChecker):
 
 
 _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
-             Has3DMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
+             Has3DMolChecker, Has3DFlagSetMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
              HasMultipleStereoBondsMolChecker, HasOverlappingAtomsMolChecker, ZeroCoordsMolChecker,
              HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
              HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, ]

@@ -316,6 +316,18 @@ M  END
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ())
 
+        matchBlock2 = """
+  Mrv1810 02111910063D
+
+  2  1  0  0  0  0            999 V2000
+   -0.4018    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3127    0.4125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        self.failUnlessEqual(checker.check_molblock(matchBlock2),
+                             ((2, 'molecule has the 3D flag set for a 2D conformer'),))
+
     def test_bondtypes(self):
         baseBlock = """
   Mrv1810 02111911082D
