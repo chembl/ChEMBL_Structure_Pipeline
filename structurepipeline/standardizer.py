@@ -14,6 +14,7 @@ from rdkit.Chem import rdinchi
 from collections import Counter
 from rdkit.Chem.MolStandardize import rdMolStandardize
 from rdkit.Chem import rdMolTransforms
+from .exclude_flag import exclude_flag
 import rdkit
 import math
 import sys
@@ -281,14 +282,16 @@ def get_parent_molblock(ctab, neutralize=True):
 
 
 def standardize_mol(m):
-    m = update_mol_valences(m)
-    m = remove_sgroups_from_mol(m)
-    m = kekulize_mol(m)
-    m = remove_hs_from_mol(m)
-    m = normalize_mol(m)
-    m = uncharge_mol(m)
-    m = flatten_tartrate_mol(m)
-    m = cleanup_drawing_mol(m)
+    exclude = exclude_flag(m, includeRDKitSanitization=False)
+    if not exclude:
+        m = update_mol_valences(m)
+        m = remove_sgroups_from_mol(m)
+        m = kekulize_mol(m)
+        m = remove_hs_from_mol(m)
+        m = normalize_mol(m)
+        m = uncharge_mol(m)
+        m = flatten_tartrate_mol(m)
+        m = cleanup_drawing_mol(m)
 
     return m
 
