@@ -1,4 +1,8 @@
 from rdkit import Chem
+import os
+
+_data_dir = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "data")
 
 # list of mols to keep no matter what
 mols_to_keep = ['exclude_mols/ranitidine_to_keep.mol', 'exclude_mols/CO-ADD1.mol',
@@ -15,10 +19,12 @@ METAL_LIST = ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Ga', 'Y', 'Z
               'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Ge', 'Sb']
 
 
-def exclude_flag(molfile):
+def exclude_flag(molfile, dataDir='', includeRDKitSanitization=True):
     """
     Rules to exclude structures. All exceptions are because of the old PP protocol.
     """
+    if not dataDir:
+        dataDir = _data_dir
     rdkit_fails = False
     exclude = False
     metallic = False
@@ -26,25 +32,28 @@ def exclude_flag(molfile):
     c_count = 0
     ok_count = 0
 
-    mol = Chem.MolFromMolBlock(molfile, sanitize=False)
-    try:
-        Chem.SanitizeMol(mol)
-    except:
-        rdkit_fails = True
-
+    if type(molfile) == str:
+        mol = Chem.MolFromMolBlock(molfile, sanitize=False)
+        if includeRDKitSanitization:
+            try:
+                Chem.SanitizeMol(mol)
+            except:
+                rdkit_fails = True
+    else:
+        mol = molfile
     # exclude all molecules that can't be sanitized by RDKit except the ones in the two weird sets
 
     # molecules that won't be excluded, mols_to_keep
     matches = [mol.HasSubstructMatch(Chem.MolFromMolFile(
-        x, sanitize=False)) for x in mols_to_keep]
+        os.path.join(dataDir, x), sanitize=False)) for x in mols_to_keep]
     if True in matches:
         return exclude
 
     # structures with vanadium to keep
     matches = [mol.HasSubstructMatch(Chem.MolFromMolFile(
-        x, sanitize=False)) for x in vanadium_to_keep]
+        os.path.join(dataDir, x), sanitize=False)) for x in vanadium_to_keep]
     # if any saved vanadium containing molecule matches with NotV, will be also excluded
-    if True in matches and not mol.HasSubstructMatch(Chem.MolFromMolFile('exclude_mols/NotV.mol', sanitize=False)):
+    if True in matches and not mol.HasSubstructMatch(Chem.MolFromMolFile(os.path.join(dataDir, 'exclude_mols/NotV.mol'), sanitize=False)):
         return exclude
 
     for atom in mol.GetAtoms():

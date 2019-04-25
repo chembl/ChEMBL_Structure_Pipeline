@@ -601,3 +601,36 @@ M  END
             sm = Chem.MolFromMolBlock(smb, removeHs=False)
             ssmi = Chem.MolToSmiles(sm)
             self.assertEqual(ssmi, esmi)
+
+    def test_exclude(self):
+        molb = '''
+  Mrv1810 04251917202D          
+
+  3  2  0  0  0  0            999 V2000
+   -0.8797    1.4887    0.0000 Mo  0  0  0  0  0  0  0  0  0  0  0  0
+   -0.9229    0.6649    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -1.7002    1.5750    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+M  END
+'''
+        mol = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
+        omol = standardizer.standardize_mol(mol)
+        # should have returned the same object
+        self.assertTrue(mol is omol)
+
+        molb = '''
+  Mrv1810 04251917202D          
+
+  3  2  0  0  0  0            999 V2000
+   -0.8797    1.4887    0.0000 Fe  0  0  0  0  0  0  0  0  0  0  0  0
+   -0.9229    0.6649    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -1.7002    1.5750    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+M  END
+'''
+        mol = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
+        omol = standardizer.standardize_mol(mol)
+        # This one we standardize
+        self.assertFalse(mol is omol)
