@@ -73,21 +73,45 @@ def normalize_mol(m):
 
 
 def remove_hs_from_mol(m):
-    """ removes any "non-chiral" Hs
+    """ removes most Hs
 
-    Chiral Hs are:
+    Hs that are preserved by the RDKit's Chem.RemoveHs() will not
+    be removed.
+
+    Additional exceptions: 
     - Hs with a wedged/dashed bond to them
+    - Hs bonded to atoms that have three (or more) ring bonds
+    - Hs bonded to atoms in non-default valence states
 
     """
+    # we need ring info, so be sure it's there (this won't do anything if the rings
+    # have already been found)
+    Chem.FastFindRings(m)
+    if m.NeedsUpdatePropertyCache():
+        m.UpdatePropertyCache(strict=False)
     SENTINEL = 100
+    exceptions = Chem.MolFromSmarts('[#1;D1;$([#1]-[x{3-}])')
     for atom in m.GetAtoms():
         if atom.GetAtomicNum() == 1 and atom.GetDegree() == 1 and not atom.GetIsotope():
             nbr = atom.GetNeighbors()[0]
             bnd = atom.GetBonds()[0]
+            preserve = False
             if bnd.GetBondDir() in (Chem.BondDir.BEGINWEDGE, Chem.BondDir.BEGINDASH) or \
                     (bnd.HasProp("_MolFileBondStereo") and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)):
+                preserve = True
+            else:
+                if nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()):
+                    preserve = True
+                else:
+                    ringBonds = [b for b in nbr.GetBonds() if
+                                 m.GetRingInfo().NumBondRings(b.GetIdx())]
+                    if len(ringBonds) >= 3:
+                        preserve = True
+
+            if preserve:
                 # we're safe picking an arbitrary high value since you can't do this in a mol block:
                 atom.SetIsotope(SENTINEL)
+
     res = Chem.RemoveHs(m, sanitize=False)
     for atom in res.GetAtoms():
         if atom.GetAtomicNum() == 1 and atom.GetIsotope() == SENTINEL:
