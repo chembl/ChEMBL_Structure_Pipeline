@@ -90,7 +90,6 @@ def remove_hs_from_mol(m):
     if m.NeedsUpdatePropertyCache():
         m.UpdatePropertyCache(strict=False)
     SENTINEL = 100
-    exceptions = Chem.MolFromSmarts('[#1;D1;$([#1]-[x{3-}])')
     for atom in m.GetAtoms():
         if atom.GetAtomicNum() == 1 and atom.GetDegree() == 1 and not atom.GetIsotope():
             nbr = atom.GetNeighbors()[0]
