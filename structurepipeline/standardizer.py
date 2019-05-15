@@ -319,6 +319,19 @@ def standardize_mol(m):
     return m
 
 
+def reapply_molblock_wedging(m):
+    for b in m.GetBonds():
+        if b.HasProp("_MolFileBondStereo"):
+            val = b.GetProp("_MolFileBondStereo")
+            if val == '1':
+                b.SetBondDir(Chem.BondDir.BEGINWEDGE)
+            elif val == '6':
+                b.SetBondDir(Chem.BondDir.BEGINDASH)
+
+
 def standardize_molblock(ctab):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+    # the RDKit has, by default, removed bond wedging information from the molecule
+    # put that back in:
+    reapply_molblock_wedging(m)
     return Chem.MolToMolBlock(standardize_mol(m))
