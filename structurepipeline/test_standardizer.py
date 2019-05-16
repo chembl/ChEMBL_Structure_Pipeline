@@ -1265,13 +1265,13 @@ M  CHG  3   1  -1   4   2   9  -1
 M  END
 '''
         omolb = standardizer.standardize_molblock(molb)
-        omol = Chem.MolFromMolBlock(omolb,sanitize=False)
-        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(),7)
-        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(),1)
-        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(),6)
-        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(),0)
+        omol = Chem.MolFromMolBlock(omolb, sanitize=False)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(), 7)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(), 1)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(), 6)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(), 0)
         Chem.SanitizeMol(omol)
-        self.assertEqual(Chem.MolToSmiles(omol),'O=C(O)c1ccc[n+]([O-])c1')
+        self.assertEqual(Chem.MolToSmiles(omol), 'O=C(O)c1ccc[n+]([O-])c1')
         molb = '''7639098
   -OEChem-01301907482D
 
@@ -1344,11 +1344,49 @@ M  CHG  3   3  -1   5   2  13  -1
 M  END
 '''
         omolb = standardizer.standardize_molblock(molb)
-        omol = Chem.MolFromMolBlock(omolb,sanitize=False)
-        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(),7)
-        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(),1)
-        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(),6)
-        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(),0)
+        omol = Chem.MolFromMolBlock(omolb, sanitize=False)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(), 7)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(), 1)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(), 6)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(), 0)
         Chem.SanitizeMol(omol)
-        self.assertEqual(Chem.MolToSmiles(omol),'[O-][n+]1cc(N=Nc2ccc(Cl)cc2)nn1-c1ccc(Cl)cc1')
+        self.assertEqual(Chem.MolToSmiles(
+            omol), '[O-][n+]1cc(N=Nc2ccc(Cl)cc2)nn1-c1ccc(Cl)cc1')
 
+        molb = '''
+  Mrv1810 05161914502D          
+
+ 10 10  0  0  1  0            999 V2000
+    0.3874   -1.5568    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+   -1.7571   -3.6319    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.0408   -4.8684    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3874   -2.3818    0.0000 N   0  2  0  0  0  0  0  0  0  0  0  0
+   -0.3282   -3.6299    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3282   -2.8006    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3874   -4.0403    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1031   -3.6299    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1031   -2.8006    0.0000 N   0  5  0  0  0  0  0  0  0  0  0  0
+   -1.0421   -4.0434    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  4  1  0  0  0  0
+  2 10  1  0  0  0  0
+  3 10  2  0  0  0  0
+  4  6  1  0  0  0  0
+  5  6  2  0  0  0  0
+  5  7  1  0  0  0  0
+  5 10  1  0  0  0  0
+  7  8  2  0  0  0  0
+  8  9  1  0  0  0  0
+  4  9  1  0  0  0  0
+M  CHG  3   1  -1   4   2   9  -1
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        print(omolb)
+        omol = Chem.MolFromMolBlock(omolb, sanitize=False)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(), 7)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(), 1)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(), 7)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(), 0)
+        Chem.SanitizeMol(omol)
+        self.assertEqual(Chem.MolToSmiles(
+            omol), 'O=C(O)c1ccn[n+]([O-])c1')
