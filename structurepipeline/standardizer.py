@@ -46,7 +46,7 @@ Sulfoxide to -S+(O-)-	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
 Trivalent S	[O:1]=[S;D2;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 // Note that the next one doesn't work propertly because repeated appplications
 // don't carry the cations from the previous rounds through. This should be
-// fixed by implementing single-molecule transformations, but that's a longer-term 
+// fixed by implementing single-molecule transformations, but that's a longer-term
 // project
 //Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
 Bad amide tautomer1	[C:1]([OH1;D1:2])=[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
@@ -78,10 +78,13 @@ def remove_hs_from_mol(m):
     Hs that are preserved by the RDKit's Chem.RemoveHs() will not
     be removed.
 
-    Additional exceptions: 
+    Additional exceptions:
     - Hs with a wedged/dashed bond to them
+    - Hs bonded to atoms with tetrahedral stereochemistry set
     - Hs bonded to atoms that have three (or more) ring bonds
-    - Hs bonded to atoms in non-default valence states
+    - Hs bonded to atoms with a charge != +1 in non-default valence states
+    - Hs bonded to atoms with charge +1 in a valence state that's more than one 
+      above the default
 
     """
     # we need ring info, so be sure it's there (this won't do anything if the rings
@@ -99,7 +102,10 @@ def remove_hs_from_mol(m):
                     (bnd.HasProp("_MolFileBondStereo") and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)):
                 preserve = True
             else:
-                if nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()):
+                if nbr.GetChiralTag() in (Chem.ChiralType.CHI_TETRAHEDRAL_CCW, Chem.ChiralType.CHI_TETRAHEDRAL_CW):
+                    preserve = True
+                elif (nbr.GetFormalCharge() != 1 and nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())) or \
+                        (nbr.GetFormalCharge() == 1 and nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())+1):
                     preserve = True
                 else:
                     ringBonds = [b for b in nbr.GetBonds() if
