@@ -1235,3 +1235,120 @@ M  END'''
         omolb = standardizer.standardize_molblock(molb)
         # should have returned the same object
         self.assertTrue(omolb.find(bonds) > 0)
+
+    def test_oxaniacic_acid(self):
+        molb = '''
+  Mrv1810 05161913202D          
+
+ 10 10  0  0  1  0            999 V2000
+    0.0000    2.4835    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+   -2.1445    0.4084    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.4283   -0.8281    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000    1.6585    0.0000 N   0  2  0  0  0  0  0  0  0  0  0  0
+   -0.7157    0.4104    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.7157    1.2397    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.7157    0.4104    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.7157    1.2397    0.0000 C   0  5  0  0  0  0  0  0  0  0  0  0
+   -1.4295   -0.0031    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  4  1  0  0  0  0
+  2 10  1  0  0  0  0
+  3 10  2  0  0  0  0
+  4  6  1  0  0  0  0
+  5  6  2  0  0  0  0
+  5  7  1  0  0  0  0
+  5 10  1  0  0  0  0
+  7  8  2  0  0  0  0
+  8  9  1  0  0  0  0
+  4  9  1  0  0  0  0
+M  CHG  3   1  -1   4   2   9  -1
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        omol = Chem.MolFromMolBlock(omolb,sanitize=False)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(),7)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(),1)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(),6)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(),0)
+        Chem.SanitizeMol(omol)
+        self.assertEqual(Chem.MolToSmiles(omol),'O=C(O)c1ccc[n+]([O-])c1')
+        molb = '''7639098
+  -OEChem-01301907482D
+
+ 31 33  0     1  0  0  0  0  0999 V2000
+    5.1292    2.1857    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+   -3.9447   -3.9438    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+    0.4993    2.5426    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+    1.3133    0.9518    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5008    1.5426    0.0000 N   0  2  0  0  0  0  0  0  0  0  0  0
+    1.0015    0.0000    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5888   -0.8082    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.5832   -0.7024    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    2.2648    1.2595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.4712    2.2380    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.0051    0.5871    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3065    0.9518    0.0000 C   0  5  3  0  0  0  0  0  0  0  0  0
+    3.4277    2.5473    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.9615    0.8964    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.1777    1.8781    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.1721   -1.5107    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.7639   -2.4236    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.1662   -1.4019    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.3558   -3.2360    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.7581   -2.2144    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.3559   -3.1356    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.9139    2.7398    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.8470   -0.1460    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.0199    1.1833    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5825    3.2811    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.5167    0.3922    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.0180   -2.5019    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.4693   -0.7159    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0496   -3.9207    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.5036   -2.1328    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1 16  1  0  0  0  0
+  2 22  1  0  0  0  0
+  3  5  1  0  0  0  0
+  4  5  1  0  0  0  0
+  4  6  1  0  0  0  0
+  4  9  1  0  0  0  0
+  5 13  1  0  0  0  0
+  6 12  2  0  0  0  0
+  7  8  2  3  0  0  0
+  7 12  1  0  0  0  0
+  8 17  1  0  0  0  0
+  9 10  2  0  0  0  0
+  9 11  1  0  0  0  0
+ 10 14  1  0  0  0  0
+ 10 23  1  0  0  0  0
+ 11 15  2  0  0  0  0
+ 11 24  1  0  0  0  0
+ 12 13  1  0  0  0  0
+ 13 25  1  0  0  0  0
+ 14 16  2  0  0  0  0
+ 14 26  1  0  0  0  0
+ 15 16  1  0  0  0  0
+ 15 27  1  0  0  0  0
+ 17 18  2  0  0  0  0
+ 17 19  1  0  0  0  0
+ 18 20  1  0  0  0  0
+ 18 28  1  0  0  0  0
+ 19 21  2  0  0  0  0
+ 19 29  1  0  0  0  0
+ 20 22  2  0  0  0  0
+ 20 30  1  0  0  0  0
+ 21 22  1  0  0  0  0
+ 21 31  1  0  0  0  0
+M  CHG  3   3  -1   5   2  13  -1
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        omol = Chem.MolFromMolBlock(omolb,sanitize=False)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetAtomicNum(),7)
+        self.assertEqual(omol.GetAtomWithIdx(1).GetFormalCharge(),1)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(),6)
+        self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(),0)
+        Chem.SanitizeMol(omol)
+        self.assertEqual(Chem.MolToSmiles(omol),'[O-][n+]1cc(N=Nc2ccc(Cl)cc2)nn1-c1ccc(Cl)cc1')
+
