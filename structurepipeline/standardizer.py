@@ -81,10 +81,12 @@ def remove_hs_from_mol(m):
     Additional exceptions:
     - Hs with a wedged/dashed bond to them
     - Hs bonded to atoms with tetrahedral stereochemistry set
-    - Hs bonded to atoms that have three (or more) ring bonds
-    - Hs bonded to atoms with a charge != +1 in non-default valence states
-    - Hs bonded to atoms with charge +1 in a valence state that's more than one 
-      above the default
+    - Hs bonded to atoms that have three (or more) ring bonds that are not simply protonated
+    - Hs bonded to atoms in a non-default valence state that are not simply protonated 
+
+
+    For the above, the definition of "simply protonated" is an atom with charge = +1 and
+    a valence that is one higher than the default.
 
     """
     # we need ring info, so be sure it's there (this won't do anything if the rings
@@ -102,17 +104,19 @@ def remove_hs_from_mol(m):
                     (bnd.HasProp("_MolFileBondStereo") and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)):
                 preserve = True
             else:
+                is_protonated = nbr.GetFormalCharge() == 1 and \
+                    nbr.GetExplicitValence() == \
+                    Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())+1
                 if nbr.GetChiralTag() in (Chem.ChiralType.CHI_TETRAHEDRAL_CCW, Chem.ChiralType.CHI_TETRAHEDRAL_CW):
                     preserve = True
-                elif (nbr.GetFormalCharge() != 1 and nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())) or \
-                        (nbr.GetFormalCharge() == 1 and nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())+1):
-                    preserve = True
-                else:
-                    ringBonds = [b for b in nbr.GetBonds() if
-                                 m.GetRingInfo().NumBondRings(b.GetIdx())]
-                    if len(ringBonds) >= 3:
+                elif not is_protonated:
+                    if nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()):
                         preserve = True
-
+                    else:
+                        ringBonds = [b for b in nbr.GetBonds() if
+                                     m.GetRingInfo().NumBondRings(b.GetIdx())]
+                        if len(ringBonds) >= 3:
+                            preserve = True
             if preserve:
                 # we're safe picking an arbitrary high value since you can't do this in a mol block:
                 atom.SetIsotope(SENTINEL)

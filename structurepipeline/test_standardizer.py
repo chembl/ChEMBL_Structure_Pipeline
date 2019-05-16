@@ -1081,16 +1081,57 @@ $$$$
   2  5  1  0  0  0  0
 M  CHG  1   2   1
 M  END
-$$$
+$$$$
+
+  Mrv1810 05161911452D          
+
+ 15 17  0  0  0  0            999 V2000
+    3.1497    3.8099    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5951    1.6260    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+    3.0372    1.1315    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+    2.2137    1.0800    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5317    2.5737    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0895    3.0682    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0903    2.1620    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5832    1.7502    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5436    2.4495    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.8923    1.9499    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.9130    3.1197    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.4291    0.8251    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.6987    0.4126    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1035    1.3855    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    3.2778    0.6399    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1 11  2  0  0  0  0
+  2  4  1  0  0  0  0
+  2  7  1  0  0  0  0
+  2  9  1  0  0  0  0
+  2 14  1  0  0  0  0
+  3  4  1  0  0  0  0
+  3  8  1  0  0  0  0
+  3 10  1  0  0  0  0
+  3 15  1  0  0  0  0
+  4 12  1  0  0  0  0
+  4 13  1  0  0  0  0
+  5  7  1  0  0  0  0
+  5  8  1  0  0  0  0
+  5 11  1  0  0  0  0
+  6  9  1  0  0  0  0
+  6 10  1  0  0  0  0
+  6 11  1  0  0  0  0
+M  CHG  2   2   1   3   1
+M  END
+$$$$
 '''
         suppl = Chem.SDMolSupplier()
         suppl.SetData(sdf, removeHs=False, sanitize=False)
         ms = [x for x in suppl]
-        self.assertEqual(len(ms), 2)
+        self.assertEqual(len(ms), 3)
         q = rdqueries.AtomNumEqualsQueryAtom(1)
         for m in ms:
             self.assertTrue(len(m.GetAtomsMatchingQuery(q)) >= 1)
+            print('--------------------------')
             nm = standardizer.standardize_mol(m)
+            print('--------------------------')
             self.assertTrue(m.GetNumAtoms() > nm.GetNumAtoms())
             self.assertEqual(len(nm.GetAtomsMatchingQuery(q)), 0)
             self.assertEqual(Chem.GetFormalCharge(nm), 0)
