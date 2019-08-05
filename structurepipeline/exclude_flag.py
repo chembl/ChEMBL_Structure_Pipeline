@@ -2,7 +2,7 @@ from rdkit import Chem
 import os
 
 _data_dir = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), "..", "data")
+    os.path.abspath(__file__)), "data")
 
 # list of mols to keep no matter what
 mols_to_keep = ['exclude_mols/ranitidine_to_keep.mol', 'exclude_mols/CO-ADD1.mol',
