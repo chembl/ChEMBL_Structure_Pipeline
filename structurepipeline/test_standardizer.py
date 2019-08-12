@@ -1390,3 +1390,32 @@ M  END
         Chem.SanitizeMol(omol)
         self.assertEqual(Chem.MolToSmiles(
             omol), 'O=C(O)c1ccn[n+]([O-])c1')
+
+    def testAmidePatternProblem(self):
+        molb = '''
+  Mrv0541 07061712112D          
+
+  8  8  0  0  0  0            999 V2000
+   12.1729   -9.6736    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   11.7643   -8.9645    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.9471   -8.9645    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.5385   -9.6736    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.9471  -10.3827    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   11.7643  -10.3827    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+   12.1729  -11.0876    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+   12.9901   -9.6736    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  2  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  2  0  0  0  0
+  6  7  1  0  0  0  0
+  1  8  1  0  0  0  0
+M  CHG  2   6   1   7  -1
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        nm = Chem.MolFromMolBlock(omolb)
+        smi = Chem.MolToSmiles(nm)
+        self.assertEqual(smi,"[O-][n+]1ccccc1O")

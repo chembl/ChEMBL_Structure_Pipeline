@@ -49,8 +49,8 @@ Trivalent S	[O:1]=[S;D2;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 // fixed by implementing single-molecule transformations, but that's a longer-term
 // project
 //Alkaline oxide to ions	[Li,Na,K;+0:1]-[O+0:2]>>([*+1:1].[O-:2])
-Bad amide tautomer1	[C:1]([OH1;D1:2])=[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
-Bad amide tautomer2	[C:1]([OH1;D1:2])=[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
+Bad amide tautomer1	[C:1]([OH1;D1:2])=;!@[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
+Bad amide tautomer2	[C:1]([OH1;D1:2])=;!@[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
 Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
 Odd pyridine/pyridazine oxide structure	[C,N;-;D2,D3:1]-[N+2;D3:2]-[O-;D1:3]>>[*-0:1]=[*+1:2]-[*-:3]
 """
@@ -64,6 +64,7 @@ _alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[O+0]')
 def normalize_mol(m):
     """
     """
+    Chem.FastFindRings(m)
     if m.HasSubstructMatch(_alkoxide_pattern):
         m = Chem.RWMol(m)
         for match in m.GetSubstructMatches(_alkoxide_pattern):
