@@ -42,7 +42,9 @@ Nitro to N+(O-)=O	[N;X3:1](=[O:2])=[O:3]>>[*+1:1]([*-1:2])=[*:3]
 Diazonium N	[*:1]-[N;X2:2]#[N;X1:3]>>[*:1]-[*+1:2]#[*:3]
 Quaternary N	[N;X4;v4;+0:1]>>[*+1:1]
 Trivalent O	[*:1]=[O;X2;v3;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
-Sulfoxide to -S+(O-)-	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
+Sulfoxide to -S+(O-)	[!O:1][S+0;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
+// this form addresses a pathological case that came up a few times in testing:
+Sulfoxide to -S+(O-) 2	[!O:1][SH1+1;D3:2](=[O:3])[!O:4]>>[*:1][S+1:2]([O-:3])[*:4]
 Trivalent S	[O:1]=[S;D2;+0:2]-[#6:3]>>[*:1]=[*+1:2]-[*:3]
 // Note that the next one doesn't work propertly because repeated appplications
 // don't carry the cations from the previous rounds through. This should be
@@ -55,8 +57,8 @@ Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
 Odd pyridine/pyridazine oxide structure	[C,N;-;D2,D3:1]-[N+2;D3:2]-[O-;D1:3]>>[*-0:1]=[*+1:2]-[*-:3]
 """
 _normalizer_params = rdMolStandardize.CleanupParameters()
-_normalizer = rdMolStandardize.NormalizerFromData(
-    _normalization_transforms, _normalizer_params)
+_normalizer = rdMolStandardize.NormalizerFromData(_normalization_transforms,
+                                                  _normalizer_params)
 
 _alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[O+0]')
 
@@ -98,7 +100,8 @@ def remove_hs_from_mol(m):
         m.UpdatePropertyCache(strict=False)
     SENTINEL = 100
     for atom in m.GetAtoms():
-        if atom.GetAtomicNum() == 1 and atom.GetDegree() == 1 and not atom.GetIsotope():
+        if atom.GetAtomicNum() == 1 and atom.GetDegree(
+        ) == 1 and not atom.GetIsotope():
             nbr = atom.GetNeighbors()[0]
             bnd = atom.GetBonds()[0]
             preserve = False
@@ -109,14 +112,18 @@ def remove_hs_from_mol(m):
                 is_protonated = nbr.GetFormalCharge() == 1 and \
                     nbr.GetExplicitValence() == \
                     Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())+1
-                if nbr.GetChiralTag() in (Chem.ChiralType.CHI_TETRAHEDRAL_CCW, Chem.ChiralType.CHI_TETRAHEDRAL_CW):
+                if nbr.GetChiralTag() in (Chem.ChiralType.CHI_TETRAHEDRAL_CCW,
+                                          Chem.ChiralType.CHI_TETRAHEDRAL_CW):
                     preserve = True
                 elif not is_protonated:
-                    if nbr.GetExplicitValence() > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()):
+                    if nbr.GetExplicitValence() > Chem.GetPeriodicTable(
+                    ).GetDefaultValence(nbr.GetAtomicNum()):
                         preserve = True
                     else:
-                        ringBonds = [b for b in nbr.GetBonds() if
-                                     m.GetRingInfo().NumBondRings(b.GetIdx())]
+                        ringBonds = [
+                            b for b in nbr.GetBonds()
+                            if m.GetRingInfo().NumBondRings(b.GetIdx())
+                        ]
                         if len(ringBonds) >= 3:
                             preserve = True
             if preserve:
@@ -201,9 +208,9 @@ def _check_and_straighten_at_triple_bond(at, bond, conf):
     nbrs = [x.GetIdx() for x in at.GetNeighbors()]
     angle = rdMolTransforms.GetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1])
     # are we off by more than a degree?
-    if(abs(abs(angle)-math.pi) > 0.017):
-        rdMolTransforms.SetAngleRad(
-            conf, nbrs[0], at.GetIdx(), nbrs[1], math.pi)
+    if (abs(abs(angle) - math.pi) > 0.017):
+        rdMolTransforms.SetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1],
+                                    math.pi)
 
 
 def _cleanup_triple_bonds(m):
@@ -211,7 +218,8 @@ def _cleanup_triple_bonds(m):
     if conf.Is3D():
         raise ValueError("can only operate on 2D conformers")
     for bond in m.GetBonds():
-        if bond.GetBondType() == Chem.BondType.TRIPLE and m.GetRingInfo().NumBondRings(bond.GetIdx()) == 0:
+        if bond.GetBondType() == Chem.BondType.TRIPLE and m.GetRingInfo(
+        ).NumBondRings(bond.GetIdx()) == 0:
             at = bond.GetBeginAtom()
             if at.GetDegree() == 2:
                 _check_and_straighten_at_triple_bond(at, bond, conf)
@@ -228,9 +236,9 @@ def _cleanup_allenes(m):
     for match in m.GetSubstructMatches(p):
         angle = rdMolTransforms.GetAngleRad(conf, match[0], match[1], match[2])
         # are we off by more than a degree?
-        if(abs(abs(angle)-math.pi) > 0.017):
-            rdMolTransforms.SetAngleRad(
-                conf, match[0], match[1], match[2], math.pi)
+        if (abs(abs(angle) - math.pi) > 0.017):
+            rdMolTransforms.SetAngleRad(conf, match[0], match[1], match[2],
+                                        math.pi)
 
 
 def cleanup_drawing_mol(m):
@@ -261,8 +269,8 @@ def flatten_tartrate_mol(m):
     return m
 
 
-_data_dir = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), "..", "data")
+_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                         "data")
 _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 

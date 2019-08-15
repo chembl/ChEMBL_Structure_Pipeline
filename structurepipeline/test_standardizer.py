@@ -90,17 +90,17 @@ M  END
             self.assertEqual(at.GetFormalCharge(), 0)
 
     def testUncharger2(self):
-        data = (('[NH3+]CC[O-]', 'NCCO'),
-                ('[NH3+]CCC[O-].[Na+]', 'NCCC[O-].[Na+]'),
-                ('[Na+].[NH3+]CCC[O-]', 'NCCC[O-].[Na+]'),
-                ('[NH3+]CCO', 'NCCO'),
-                ('NCC[O-]', 'NCCO'),
-                ('[Cl-].[NH3+]CCC[O-]', 'Cl.NCCCO'),
-                ('[N+](C)(C)(C)CCC[O-]', '[N+](C)(C)(C)CCC[O-]'),
-                ('[NH3+]CC([O-])C[O-]', 'NCC(O)CO'),
-                # ('[NH3+]CC([O-])C[O-].[Na+]','NCC(O)C[O-].[Na+]'),
-                ('[NH3+]CCC[O-].[NH+](C)(C)C', 'CN(C)C.NCCCO')
-                )
+        data = (
+            ('[NH3+]CC[O-]', 'NCCO'),
+            ('[NH3+]CCC[O-].[Na+]', 'NCCC[O-].[Na+]'),
+            ('[Na+].[NH3+]CCC[O-]', 'NCCC[O-].[Na+]'),
+            ('[NH3+]CCO', 'NCCO'),
+            ('NCC[O-]', 'NCCO'),
+            ('[Cl-].[NH3+]CCC[O-]', 'Cl.NCCCO'),
+            ('[N+](C)(C)(C)CCC[O-]', '[N+](C)(C)(C)CCC[O-]'),
+            ('[NH3+]CC([O-])C[O-]', 'NCC(O)CO'),
+            # ('[NH3+]CC([O-])C[O-].[Na+]','NCC(O)C[O-].[Na+]'),
+            ('[NH3+]CCC[O-].[NH+](C)(C)C', 'CN(C)C.NCCCO'))
         for ismi, esmi in data:
             esmi = Chem.CanonSmiles(esmi)
             m = Chem.MolFromSmiles(ismi, sanitize=False)
@@ -273,11 +273,15 @@ M  END
 '''
         m = Chem.MolFromMolBlock(mb, sanitize=False)
         nm = standardizer.normalize_mol(m)
-        self.assertEqual(Chem.MolToSmiles(
-            nm), "[K+].[K+].[K+].[K+].[K+].[K+].[O-]C1C([O-])C([O-])C([O-])C([O-])C1[O-]")
+        self.assertEqual(
+            Chem.MolToSmiles(nm),
+            "[K+].[K+].[K+].[K+].[K+].[K+].[O-]C1C([O-])C([O-])C([O-])C([O-])C1[O-]"
+        )
         nm = standardizer.standardize_mol(m)
-        self.assertEqual(Chem.MolToSmiles(
-            nm), "[K+].[K+].[K+].[K+].[K+].[K+].[O-]C1C([O-])C([O-])C([O-])C([O-])C1[O-]")
+        self.assertEqual(
+            Chem.MolToSmiles(nm),
+            "[K+].[K+].[K+].[K+].[K+].[K+].[O-]C1C([O-])C([O-])C([O-])C([O-])C1[O-]"
+        )
 
     def testNormalize_nitro(self):
         mb = '''
@@ -368,15 +372,16 @@ M  END
         self.assertEqual(Chem.MolToSmiles(nm), "CNS(C)(=O)=O")
 
     def testNormalize1(self):
-        tests = [('CN(C)(C)C', 'C[N+](C)(C)C'),
-                 ('CN#N', 'C[N+]#N'),
-                 ('c1ccccc1N#N', 'c1ccccc1[N+]#N'),
-                 ('C=O-C', 'C=[O+]-C'),
-                 ('C-O-C', 'C-O-C'),
-                 ('O=S-C', 'O=[S+]-C'),
-                 ('C.Cl', 'C.Cl'),
-                 ('C.[Cl]', 'C.[Cl-]'),
-                 ]
+        tests = [
+            ('CN(C)(C)C', 'C[N+](C)(C)C'),
+            ('CN#N', 'C[N+]#N'),
+            ('c1ccccc1N#N', 'c1ccccc1[N+]#N'),
+            ('C=O-C', 'C=[O+]-C'),
+            ('C-O-C', 'C-O-C'),
+            ('O=S-C', 'O=[S+]-C'),
+            ('C.Cl', 'C.Cl'),
+            ('C.[Cl]', 'C.[Cl-]'),
+        ]
         for smi, expected in tests:
             sp = Chem.SmilesParserParams()
             sp.removeHs = False
@@ -457,16 +462,32 @@ M  END
 
     def test_redraw_internals(self):
         m = Chem.MolFromSmiles('C1C(C1)C#CC')
-        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
-            m.GetAtomWithIdx(3), m.GetBondBetweenAtoms(3, 4))), [0, 1, 2])
-        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
-            m.GetAtomWithIdx(4), m.GetBondBetweenAtoms(3, 4))), [5])
+        self.assertEqual(
+            sorted(
+                standardizer._getAtomsToOtherSide(m.GetAtomWithIdx(3),
+                                                  m.GetBondBetweenAtoms(3,
+                                                                        4))),
+            [0, 1, 2])
+        self.assertEqual(
+            sorted(
+                standardizer._getAtomsToOtherSide(m.GetAtomWithIdx(4),
+                                                  m.GetBondBetweenAtoms(3,
+                                                                        4))),
+            [5])
 
         m = Chem.MolFromSmiles('CC#N')
-        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
-            m.GetAtomWithIdx(1), m.GetBondBetweenAtoms(1, 2))), [0])
-        self.assertEqual(sorted(standardizer._getAtomsToOtherSide(
-            m.GetAtomWithIdx(2), m.GetBondBetweenAtoms(1, 2))), [])
+        self.assertEqual(
+            sorted(
+                standardizer._getAtomsToOtherSide(m.GetAtomWithIdx(1),
+                                                  m.GetBondBetweenAtoms(1,
+                                                                        2))),
+            [0])
+        self.assertEqual(
+            sorted(
+                standardizer._getAtomsToOtherSide(m.GetAtomWithIdx(2),
+                                                  m.GetBondBetweenAtoms(1,
+                                                                        2))),
+            [])
 
     def test_triple_bonds_and_allenes(self):
         ms = [x for x in Chem.SDMolSupplier('./test_data/odd_drawings.sdf')]
@@ -479,10 +500,14 @@ M  END
             self.assertTrue(len(tmatches) or len(amatches))
             for match in tmatches:
                 self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
-                    conf, match[0], match[1], match[2]), math.pi, places=2)
+                    conf, match[0], match[1], match[2]),
+                                       math.pi,
+                                       places=2)
             for match in amatches:
                 self.assertAlmostEqual(rdMolTransforms.GetAngleRad(
-                    conf, match[1], match[2], match[3]), math.pi, places=2)
+                    conf, match[1], match[2], match[3]),
+                                       math.pi,
+                                       places=2)
 
     def test_cleanup_confs(self):
         mb = """
@@ -514,19 +539,19 @@ M  END
             nm = standardizer.cleanup_drawing_mol(m)
 
     def test_fragment_parent1(self):
-        tests = [('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
-                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
-                 ('[Na].[Cl]', '[Na].[Cl]'), ('[Na+].[Cl-]', '[Na+].[Cl-]'),
-                 ('c1cccnc1[NH3+].O=C(O)C(O)C(O)C(=O)O',
-                  'c1cccnc1N'),
-                 ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
-                  'c1cccnc1N'),
-                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
-                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
-                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
-                 ]
+        tests = [
+            ('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
+            ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
+            ('[Na].[Cl]', '[Na].[Cl]'),
+            ('[Na+].[Cl-]', '[Na+].[Cl-]'),
+            ('c1cccnc1[NH3+].O=C(O)C(O)C(O)C(=O)O', 'c1cccnc1N'),
+            ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]', 'c1cccnc1N'),
+            ('c1cccnc1.ClCCl', 'c1cccnc1'),
+            ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+             'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+        ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
             ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m))
@@ -534,16 +559,16 @@ M  END
             self.assertEqual(ssmi, esmi)
 
     def test_fragment_parent2(self):
-        tests = [('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
-                 ('[Na+].[Cl-]', '[Na+].[Cl-]'),
-                 ('c1cccnc1[NH3+].O=C([O-])C(O)C(O)C(=O)[O-]',
-                  'c1cccnc1[NH3+]'),
-                 ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
-                  'c1cccnc1[NH3+]'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
-                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
-                 ]
+        tests = [
+            ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)[O-]'),
+            ('[Na+].[Cl-]', '[Na+].[Cl-]'),
+            ('c1cccnc1[NH3+].O=C([O-])C(O)C(O)C(=O)[O-]', 'c1cccnc1[NH3+]'),
+            ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]',
+             'c1cccnc1[NH3+]'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C([O-])C(O)C(O)C(=O)[O-]'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+             'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+        ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
             ssmi = Chem.MolToSmiles(
@@ -551,14 +576,14 @@ M  END
             esmi = Chem.CanonSmiles(expected)
             self.assertEqual(ssmi, esmi)
             # get_fragment_parent_mol doesn't do neutralization:
-            ssmi = Chem.MolToSmiles(
-                standardizer.get_fragment_parent_mol(m))
+            ssmi = Chem.MolToSmiles(standardizer.get_fragment_parent_mol(m))
 
     def test_isotopes_parent1(self):
-        tests = [('c1cc[13cH]nc1', 'c1cccnc1'),
-                 ('c1ccc([2H])nc1', 'c1cccnc1'),
-                 ('F[C@]([2H])(Cl)C', 'F[C@]([H])(Cl)C'),
-                 ]
+        tests = [
+            ('c1cc[13cH]nc1', 'c1cccnc1'),
+            ('c1ccc([2H])nc1', 'c1cccnc1'),
+            ('F[C@]([2H])(Cl)C', 'F[C@]([H])(Cl)C'),
+        ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
             # simulate having come from a mol file by adding coords and
@@ -573,16 +598,17 @@ M  END
             self.assertEqual(ssmi, esmi)
 
     def test_get_parent1(self):
-        tests = [('c1cc[13cH]nc1.[Na]', 'c1cccnc1'),
-                 ('c1ccc([2H])nc1.c1ccccc1C(=O)O', 'c1cccnc1'),
-                 ('F[C@]([2H])(Cl)C.Cl', 'F[C@]([H])(Cl)C'),
-                 ('c1cccnc1.ClCCl', 'c1cccnc1'),
-                 ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
-                 ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
-                  'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
-                 ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
-                 ]
+        tests = [
+            ('c1cc[13cH]nc1.[Na]', 'c1cccnc1'),
+            ('c1ccc([2H])nc1.c1ccccc1C(=O)O', 'c1cccnc1'),
+            ('F[C@]([2H])(Cl)C.Cl', 'F[C@]([H])(Cl)C'),
+            ('c1cccnc1.ClCCl', 'c1cccnc1'),
+            ('c1cccnc1.ClCCl.[Na+].[Cl-].O', 'c1cccnc1'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
+            ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
+             'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+            ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
+        ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
             # simulate having come from a mol file by adding coords and
@@ -1350,8 +1376,8 @@ M  END
         self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(), 6)
         self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(), 0)
         Chem.SanitizeMol(omol)
-        self.assertEqual(Chem.MolToSmiles(
-            omol), '[O-][n+]1cc(N=Nc2ccc(Cl)cc2)nn1-c1ccc(Cl)cc1')
+        self.assertEqual(Chem.MolToSmiles(omol),
+                         '[O-][n+]1cc(N=Nc2ccc(Cl)cc2)nn1-c1ccc(Cl)cc1')
 
         molb = '''
   Mrv1810 05161914502D          
@@ -1388,8 +1414,7 @@ M  END
         self.assertEqual(omol.GetAtomWithIdx(0).GetAtomicNum(), 7)
         self.assertEqual(omol.GetAtomWithIdx(0).GetFormalCharge(), 0)
         Chem.SanitizeMol(omol)
-        self.assertEqual(Chem.MolToSmiles(
-            omol), 'O=C(O)c1ccn[n+]([O-])c1')
+        self.assertEqual(Chem.MolToSmiles(omol), 'O=C(O)c1ccn[n+]([O-])c1')
 
     def testAmidePatternProblem(self):
         molb = '''
@@ -1418,4 +1443,63 @@ M  END
         omolb = standardizer.standardize_molblock(molb)
         nm = Chem.MolFromMolBlock(omolb)
         smi = Chem.MolToSmiles(nm)
-        self.assertEqual(smi,"[O-][n+]1ccccc1O")
+        self.assertEqual(smi, "[O-][n+]1ccccc1O")
+
+    def testSulfoxideProblem(self):
+        molb = '''
+  Mrv1810 08151906432D          
+
+  9  9  0  0  0  0            999 V2000
+   -8.3910    0.1483    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.1054   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.1054   -1.0892    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.3910   -1.5017    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6765   -1.0892    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6765   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.9620    0.1483    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.9620    0.9733    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.2476   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  2  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  2  0  0  0  0
+  6  7  1  0  0  0  0
+  7  8  2  0  0  0  0
+  7  9  1  0  0  0  0
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        nm = Chem.MolFromMolBlock(omolb)
+        smi = Chem.MolToSmiles(nm)
+        self.assertEqual(smi, "C[S+]([O-])c1ccccc1")
+        molb = '''
+  Mrv1810 08151906432D          
+
+  9  9  0  0  0  0            999 V2000
+   -8.3910    0.1483    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.1054   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.1054   -1.0892    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.3910   -1.5017    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6765   -1.0892    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6765   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.9620    0.1483    0.0000 S   0  3  0  0  0  0  0  0  0  0  0  0
+   -6.9620    0.9733    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.2476   -0.2642    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  2  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  2  0  0  0  0
+  6  7  1  0  0  0  0
+  7  8  2  0  0  0  0
+  7  9  1  0  0  0  0
+M  CHG  1   7   1
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        nm = Chem.MolFromMolBlock(omolb)
+        smi = Chem.MolToSmiles(nm)
+        self.assertEqual(smi, "C[S+]([O-])c1ccccc1")
