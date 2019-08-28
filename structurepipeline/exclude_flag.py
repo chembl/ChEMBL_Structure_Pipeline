@@ -25,15 +25,11 @@ def exclude_flag(molfile, includeRDKitSanitization=True):
     Rules to exclude structures.
 
     - Metallic or non metallic with more than 7 boron atoms will be excluded
-      due problems when depicting borane compounds.
-    - Metallic molecules with no C atoms but with any Cu, Fe, Mn, or Ni
-      atoms won't be excluded.
+      due to problems when depicting borane compounds.
     """
     rdkit_fails = False
     exclude = False
     metallic = False
-    has_carbon = False
-    has_ok_metals = False
     boron_count = 0
 
     if type(molfile) == str:
@@ -52,15 +48,7 @@ def exclude_flag(molfile, includeRDKitSanitization=True):
             metallic = True
         if a_type == "B":
             boron_count += 1
-        if a_type in ["Cu", "Fe", "Mn", "Ni"]:
-            has_ok_metals = True
-        if a_type == "C":
-            has_carbon = True
 
-    if (
-        (metallic and not (not has_carbon and has_ok_metals))
-        or (not metallic and boron_count > 7)
-        or rdkit_fails
-    ):
+    if metallic or (not metallic and boron_count > 7) or rdkit_fails:
         exclude = True
     return exclude
