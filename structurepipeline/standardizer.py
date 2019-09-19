@@ -271,8 +271,7 @@ def flatten_tartrate_mol(m):
     return m
 
 
-_data_dir = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), "data")
+_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
@@ -326,8 +325,11 @@ def get_parent_molblock(ctab, neutralize=True):
     return Chem.MolToMolBlock(parent)
 
 
-def standardize_mol(m):
-    exclude = exclude_flag(m, includeRDKitSanitization=False)
+def standardize_mol(m, check_exclusion=True):
+    if check_exclusion:
+        exclude = exclude_flag(m, includeRDKitSanitization=False)
+    else:
+        exclude = False
     if not exclude:
         m = update_mol_valences(m)
         m = remove_sgroups_from_mol(m)
@@ -353,9 +355,12 @@ def reapply_molblock_wedging(m):
                 b.SetBondDir(Chem.BondDir.BEGINDASH)
 
 
-def standardize_molblock(ctab):
+def standardize_molblock(ctab, check_exclusion=True):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+    if check_exclusion:
+        if exclude_flag(m, includeRDKitSanitization=False):
+            return ctab
     # the RDKit has, by default, removed bond wedging information from the molecule
     # put that back in:
     reapply_molblock_wedging(m)
-    return Chem.MolToMolBlock(standardize_mol(m))
+    return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False))
