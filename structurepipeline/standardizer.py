@@ -180,7 +180,9 @@ def uncharge_mol(m):
 
     """
     uncharger = rdMolStandardize.Uncharger(canonicalOrder=True)
-    return uncharger.uncharge(m)
+    res = uncharger.uncharge(m)
+    res.UpdatePropertyCache(strict=False)
+    return res
 
 
 def _getAtomsToOtherSide(startAt, bond):
@@ -341,7 +343,9 @@ def standardize_mol(m):
 
 def reapply_molblock_wedging(m):
     for b in m.GetBonds():
-        if b.HasProp("_MolFileBondStereo"):
+        # only do the wedgeing if the bond doesn't already have something there:
+        if b.GetBondDir() == Chem.BondDir.NONE and b.HasProp(
+                "_MolFileBondStereo"):
             val = b.GetProp("_MolFileBondStereo")
             if val == '1':
                 b.SetBondDir(Chem.BondDir.BEGINWEDGE)

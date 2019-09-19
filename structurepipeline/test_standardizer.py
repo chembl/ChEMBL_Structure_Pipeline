@@ -1503,3 +1503,190 @@ M  END
         nm = Chem.MolFromMolBlock(omolb)
         smi = Chem.MolToSmiles(nm)
         self.assertEqual(smi, "C[S+]([O-])c1ccccc1")
+
+    def testValencePropagation(self):
+        ''' another example found in testing '''
+        # first case:
+        molb = '''atomic C
+
+
+  1  0  0  0  0  0            999 V2000
+   -0.3958   -0.0542    0.0000 C   0  0  0  0  0 15
+M  END'''
+        omolb = standardizer.standardize_molblock(molb)
+        # print(omolb)
+        self.assertNotEqual(omolb.find('0  0 15'), -1)
+        self.assertEqual(Chem.MolBlockToInchi(omolb), 'InChI=1S/C')
+
+        # second case:
+        molb = '''H3PO2
+
+
+  3  2  0  0  0  0            999 V2000
+    0.2667   -0.4167    0.0000 P   0  0  0  0  0  5
+    0.2667    1.1083    0.0000 O   0  0
+   -1.0958   -1.0042    0.0000 O   0  0
+  2  1  2  0
+  3  1  1  0
+M  END'''
+        omolb = standardizer.standardize_molblock(molb)
+        # print(omolb)
+        self.assertNotEqual(omolb.find('0  0  5'), -1)
+        self.assertEqual(Chem.MolBlockToInchi(omolb),
+                         'InChI=1S/H3O2P/c1-3-2/h3H2,(H,1,2)')
+
+    def testDoubleBondStereoProblem1(self):
+        ''' a problem found in testing '''
+        # simplified version
+        molb = '''
+  Mrv1810 09181912182D          
+
+ 10  9  0  0  0  0            999 V2000
+   -3.8346    1.6241    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.1201    2.0366    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.4056    1.6241    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.5491    2.0366    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.2635    1.6241    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.5491    2.8616    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.2635    2.4491    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.6912    2.0366    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.4056    0.7991    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.6912    1.2116    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  4  1  1  1  0  0  0
+  4  5  1  0  0  0  0
+  4  6  1  0  0  0  0
+  4  7  1  0  0  0  0
+  3  8  1  0  0  0  0
+  3  9  1  0  0  0  0
+  3 10  1  0  0  0  0
+  3  2  1  1  0  0  0
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        # print(omolb)
+        self.assertEqual(omolb.find('1  2  2  3'), -1)
+        self.assertNotEqual(omolb.find('4  5  1  6'), -1)
+        self.assertNotEqual(omolb.find('3  9  1  6'), -1)
+        self.assertEqual(
+            Chem.MolBlockToInchi(omolb),
+            'InChI=1S/C6H10F2O2/c1-5(7,9)3-4-6(2,8)10/h3-4,9-10H,1-2H3/b4-3+/t5-,6+'
+        )
+
+        # the actual thing found in testing:
+        molb = '''
+          11280715002D 1   1.00000     0.00000     0
+
+ 29 32  0     1  0            999 V2000
+    5.0000   -1.5375    0.0000 C   0  0  2  0  0  0           0  0  0
+    4.2167   -1.2792    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.7167   -2.7750    0.0000 C   0  0  1  0  0  0           0  0  0
+    5.0000   -2.3625    0.0000 C   0  0  1  0  0  0           0  0  0
+    3.7292   -1.9542    0.0000 O   0  0  0  0  0  0           0  0  0
+    4.2167   -2.6167    0.0000 C   0  0  1  0  0  0           0  0  0
+    5.7167   -3.6000    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.7125   -5.2417    0.0000 N   0  0  3  0  0  0           0  0  0
+    5.7167   -1.1250    0.0000 C   0  0  0  0  0  0           0  0  0
+    6.4292   -2.3625    0.0000 C   0  0  1  0  0  0           0  0  0
+    6.4292   -1.5375    0.0000 C   0  0  2  0  0  0           0  0  0
+    5.0000   -4.0042    0.0000 C   0  0  0  0  0  0           0  0  0
+    4.9917   -4.8292    0.0000 C   0  0  1  0  0  0           0  0  0
+    3.9625   -0.4917    0.0000 O   0  0  0  0  0  0           0  0  0
+    5.7042   -6.0792    0.0000 C   0  0  2  0  0  0           0  0  0
+    6.4292   -4.8250    0.0000 C   0  0  0  0  0  0           0  0  0
+    3.9625   -3.4042    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.1417   -2.7750    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.1417   -1.1250    0.0000 C   0  0  0  0  0  0           0  0  0
+    4.2792   -6.0792    0.0000 C   0  0  0  0  0  0           0  0  0
+    4.2792   -5.2500    0.0000 C   0  0  0  0  0  0           0  0  0
+    4.9917   -6.4875    0.0000 C   0  0  0  0  0  0           0  0  0
+    6.4292   -6.4917    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.8542   -2.3625    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.8542   -1.5375    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.0000   -0.7125    0.0000 H   0  0  0  0  0  0           0  0  0
+    6.4292   -3.1875    0.0000 H   0  0  0  0  0  0           0  0  0
+    6.4292   -0.7042    0.0000 H   0  0  0  0  0  0           0  0  0
+    5.0000   -3.1792    0.0000 H   0  0  0  0  0  0           0  0  0
+  2  1  1  0     0  0
+  3  4  1  0     0  0
+  4  1  1  0     0  0
+  5  2  1  0     0  0
+  6  4  1  0     0  0
+  3  7  1  6     0  0
+  8 13  1  0     0  0
+  9  1  1  0     0  0
+ 10 11  1  0     0  0
+ 11  9  1  0     0  0
+ 12  7  2  0     0  0
+ 13 12  1  6     0  0
+ 14  2  2  0     0  0
+ 15  8  1  0     0  0
+ 16  8  1  0     0  0
+  6 17  1  6     0  0
+ 18 10  1  0     0  0
+ 19 11  1  0     0  0
+ 20 21  1  0     0  0
+ 21 13  1  0     0  0
+ 22 20  1  0     0  0
+ 15 23  1  1     0  0
+ 24 25  1  0     0  0
+ 25 19  1  0     0  0
+  1 26  1  6     0  0
+ 10 27  1  6     0  0
+ 11 28  1  6     0  0
+  4 29  1  6     0  0
+  5  6  1  0     0  0
+  3 10  1  0     0  0
+ 18 24  1  0     0  0
+ 22 15  1  0     0  0
+M  END'''
+        omolb = standardizer.standardize_molblock(molb)
+        # print(omolb)
+        self.assertEqual(omolb.find('12  7  2  3'), -1)
+        self.assertNotEqual(omolb.find('3  7  1  6'), -1)
+        self.assertNotEqual(omolb.find('13 12  1  6'), -1)
+        self.assertEqual(
+            Chem.MolBlockToInchi(omolb),
+            'InChI=1S/C22H35NO2/c1-14-7-6-9-17(23(14)3)11-12-19-18-10-5-4-8-16(18)13-20-21(19)15(2)25-22(20)24/h11-12,14-21H,4-10,13H2,1-3H3/b12-11+/t14-,15-,16+,17+,18+,19-,20-,21+/m0/s1'
+        )
+        molb = '''
+  Mrv1810 09191906362D          
+
+  5  4  0  0  0  0            999 V2000
+  -13.1335    2.8866    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+  -12.3085    2.8866    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -13.9584    2.8866    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.8961    2.1762    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -14.3708    2.1762    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  2  1  2  0  0  0  0
+  3  1  2  0  0  0  0
+  4  2  1  0  0  0  0
+  3  5  1  1  0  0  0
+M  END
+'''
+        omolb = standardizer.standardize_molblock(molb)
+        print(omolb)
+        # self.assertEqual(omolb.find('12  7  2  3'), -1)
+        # self.assertNotEqual(omolb.find('3  7  1  6'), -1)
+        # self.assertNotEqual(omolb.find('13 12  1  6'), -1)
+        self.assertEqual(Chem.MolBlockToInchi(omolb), '')
+
+    def testValencePropagation2(self):
+        ''' another example found in testing '''
+        # first case:
+        molb = '''
+  SciTegic12231509382D
+
+  3  2  0  0  0  0            999 V2000
+    6.2708   -7.0500    0.0000 C   0  0
+    7.0958   -7.0500    0.0000 N   0  0
+    5.4458   -7.0500    0.0000 Se  0  5
+  2  1  3  0
+  3  1  1  0
+M  CHG  1   3  -1
+M  END'''
+        omolb = standardizer.standardize_molblock(molb)
+        # print(omolb)
+        self.assertNotEqual(omolb.find('Se  0  0  0  0  0  2'), -1)
+        self.assertEqual(Chem.MolBlockToInchi(omolb),
+                         'InChI=1S/CHNSe/c2-1-3/h3H')
