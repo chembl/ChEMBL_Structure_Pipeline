@@ -271,8 +271,8 @@ def flatten_tartrate_mol(m):
     return m
 
 
-_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                         "data")
+_data_dir = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "data")
 _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
