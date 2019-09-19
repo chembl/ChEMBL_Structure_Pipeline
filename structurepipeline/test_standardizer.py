@@ -1665,11 +1665,12 @@ M  END'''
 M  END
 '''
         omolb = standardizer.standardize_molblock(molb)
-        print(omolb)
-        # self.assertEqual(omolb.find('12  7  2  3'), -1)
-        # self.assertNotEqual(omolb.find('3  7  1  6'), -1)
-        # self.assertNotEqual(omolb.find('13 12  1  6'), -1)
-        self.assertEqual(Chem.MolBlockToInchi(omolb), '')
+        # print(omolb)
+        self.assertNotEqual(omolb.find('2  1  2  0'), -1)
+        self.assertNotEqual(omolb.find('3  1  2  0'), -1)
+        self.assertNotEqual(omolb.find('3  5  1  1'), -1)
+        self.assertEqual(Chem.MolBlockToInchi(omolb),
+                         'InChI=1S/C5H8/c1-3-5-4-2/h3-4H,1-2H3/t5-/m1/s1')
 
     def testValencePropagation2(self):
         ''' another example found in testing '''
