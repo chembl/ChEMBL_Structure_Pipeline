@@ -8,4 +8,5 @@ setup(name='structurepipeline',
       author_email='greg.landrum@t5informatics.com',
       license='MIT',
       packages=['structurepipeline'],
+      package_data={'structurepipeline': ['data/*']},
       zip_safe=False)
