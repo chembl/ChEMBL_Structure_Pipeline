@@ -383,7 +383,7 @@ M  END
         self.failIf(checker.HasOverlappingAtomsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
-                             ((6, 'molecule has two (or more) atoms with exactly the same coordinates'),))
+                             ((5, 'molecule has two (or more) atoms with exactly the same coordinates'),))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ())
 
@@ -411,8 +411,8 @@ M  END
         self.failIf(checker.ZeroCoordsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
         self.failUnlessEqual(checker.check_molblock(matchBlock),
-                             ((6, 'molecule has two (or more) atoms with exactly the same coordinates'),
-                              (6, 'all atoms have zero coordinates')))
+                             ((6, 'all atoms have zero coordinates'),
+                             (5, 'molecule has two (or more) atoms with exactly the same coordinates')))
         self.failUnlessEqual(checker.check_molblock(nomatchBlock),
                              ())
 
@@ -1591,5 +1591,37 @@ A    6
 NH2.
 M  END"""
         self.assertEqual(checker.check_molblock(mb),
-                         ((6, 'molecule has two (or more) atoms with exactly the same coordinates'),
-                          (6, 'InChI: Accepted unusual valence(s)')))
+                         ((6, 'InChI: Accepted unusual valence(s)'),
+                         (5, 'molecule has two (or more) atoms with exactly the same coordinates')))
+
+    def test_MultipleOVerlapping(self):
+        mb = """
+  Mrv1824 10091914432D          
+
+ 14  7  0  0  0  0            999 V2000
+   -1.9420    1.3161    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6564    0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6564    0.0786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9420   -0.3339    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2275    0.0786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2275    0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9420    2.1411    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9420    1.3161    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6564    0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6564    0.0786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9420   -0.3339    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2275    0.0786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2275    0.9036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9420    2.1411    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  2  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  2  0  0  0  0
+  1  7  1  0  0  0  0
+M  END"""
+        self.assertEqual(checker.check_molblock(mb),
+  ((6, 'molecule has six (or more) atoms with exactly the same coordinates'),
+   (5, 'molecule has two (or more) atoms with exactly the same coordinates')))
+

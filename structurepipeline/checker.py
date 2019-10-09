@@ -271,7 +271,7 @@ class HasMultipleStereoBondsMolChecker(MolChecker):
 class HasOverlappingAtomsMolChecker(MolChecker):
     name = "has_overlapping_atoms"
     explanation = "molecule has two (or more) atoms with exactly the same coordinates"
-    penalty = 6
+    penalty = 5
 
     def check(mol):
         if mol.GetNumConformers():
@@ -283,6 +283,26 @@ class HasOverlappingAtomsMolChecker(MolChecker):
                     if d.Length() < 0.0001:
                         return True
         return False
+
+class HasManyOverlappingAtomsMolChecker(MolChecker):
+    name = "has_many_overlapping_atoms"
+    explanation = "molecule has six (or more) atoms with exactly the same coordinates"
+    penalty = 6
+
+    def check(mol):
+        nOverlapping=0
+        if mol.GetNumConformers():
+            conf = mol.GetConformer()
+            ps = [conf.GetAtomPosition(i) for i in range(mol.GetNumAtoms())]
+            for i in range(len(ps)):
+                for j in range(i):
+                    d = ps[i]-ps[j]
+                    if d.Length() < 0.0001:
+                        nOverlapping += 1
+                        if nOverlapping >= 6:
+                            return True
+        return False
+
 
 
 class ZeroCoordsMolChecker(MolChecker):
@@ -412,7 +432,7 @@ _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
              Has3DMolChecker, Has3DFlagSetMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
              HasMultipleStereoBondsMolChecker, HasOverlappingAtomsMolChecker, ZeroCoordsMolChecker,
              HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
-             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, ]
+             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, HasManyOverlappingAtomsMolChecker ]
 
 
 def check_molblock(mb):
