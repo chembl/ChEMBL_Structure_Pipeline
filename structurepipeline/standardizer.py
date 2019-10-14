@@ -73,7 +73,8 @@ def normalize_mol(m):
             m.RemoveBond(match[0], match[1])
             m.GetAtomWithIdx(match[0]).SetFormalCharge(1)
             m.GetAtomWithIdx(match[1]).SetFormalCharge(-1)
-    return _normalizer.normalize(m)
+    res = _normalizer.normalize(m)
+    return res
 
 
 def remove_hs_from_mol(m):
@@ -363,4 +364,6 @@ def standardize_molblock(ctab, check_exclusion=True):
     # the RDKit has, by default, removed bond wedging information from the molecule
     # put that back in:
     reapply_molblock_wedging(m)
+    # Set the stereochemistry of double bonds:
+    Chem.SetBondStereoFromDirections(m)
     return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False))

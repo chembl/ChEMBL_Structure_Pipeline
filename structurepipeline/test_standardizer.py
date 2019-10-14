@@ -2081,3 +2081,26 @@ M  END'''
         omolb = standardizer.standardize_molblock(molb)
         inchi = Chem.MolBlockToInchi(molb)
         self.assertEqual(Chem.MolBlockToInchi(omolb), inchi)
+
+    def testDoubleBondStereoAndTransforms(self):
+        molb = '''
+  Mrv1810 10111911132D          
+
+  7  6  0  0  0  0            999 V2000
+    0.2030   -1.7143    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.9175   -1.3018    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5115   -1.3018    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2030   -2.5393    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2259   -1.7143    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9404   -1.3018    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6549   -1.7143    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  2  0  0  0  0
+  3  5  1  0  0  0  0
+  5  6  2  0  0  0  0
+  6  7  1  0  0  0  0
+M  END
+'''
+        smb = standardizer.standardize_molblock(molb)
+        self.assertEqual(smb.find('5  6  2  3'), -1)
