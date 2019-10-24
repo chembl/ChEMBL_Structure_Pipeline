@@ -316,8 +316,8 @@ def get_isotope_parent_mol(m):
 def get_parent_mol(m, neutralize=True):
     res = get_isotope_parent_mol(get_fragment_parent_mol(m))
     # if we have multiple fragments, check to see if all of them are the same
-    frags = Chem.GetMolFrags(res,asMols=True)
-    if len(frags)>1 and len(set(Chem.MolToSmiles(x) for x in frags)) == 1:
+    frags = Chem.GetMolFrags(res, asMols=True, sanitizeFrags=False)
+    if len(frags) > 1 and len(set(Chem.MolToSmiles(x) for x in frags)) == 1:
         res = frags[0]
     if neutralize:
         res = uncharge_mol(res)
