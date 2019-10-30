@@ -2130,7 +2130,7 @@ M  END
 '''
         smb = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
-        self.assertEqual(len(Chem.GetMolFrags(m)),1)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 1)
 
         molb = '''duplicates, chirality
   Mrv1824 10241910462D          
@@ -2156,7 +2156,7 @@ M  END
 '''
         smb = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
-        self.assertEqual(len(Chem.GetMolFrags(m)),1)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 1)
         molb = '''duplicates except for chirality
   Mrv1824 10241910462D          
 
@@ -2181,6 +2181,31 @@ M  END
 '''
         smb = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
-        self.assertEqual(len(Chem.GetMolFrags(m)),2)        
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
 
+    def testCovalentAlkalineNBonds(self):
+        mb = '''
+  Mrv1810 10301916122D          
 
+  6  6  0  0  0  0            999 V2000
+   -0.3835    0.3550    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.0979    0.7675    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.0979    1.5925    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3310    1.5925    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3310    0.7675    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3835   -0.4700    0.0000 Na  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  4  5  2  0  0  0  0
+  1  5  1  0  0  0  0
+  3  4  1  0  0  0  0
+  1  6  1  0  0  0  0
+M  END
+'''
+        smb = standardizer.standardize_molblock(mb)
+        m = Chem.MolFromMolBlock(smb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        self.assertEqual(m.GetAtomWithIdx(0).GetAtomicNum(), 11)
+        self.assertEqual(m.GetAtomWithIdx(0).GetFormalCharge(), 1)
+        self.assertEqual(m.GetAtomWithIdx(1).GetAtomicNum(), 7)
+        self.assertEqual(m.GetAtomWithIdx(1).GetFormalCharge(), -1)

@@ -60,7 +60,7 @@ _normalizer_params = rdMolStandardize.CleanupParameters()
 _normalizer = rdMolStandardize.NormalizerFromData(_normalization_transforms,
                                                   _normalizer_params)
 
-_alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[O+0]')
+_alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[#7,#8;+0]')
 
 
 def normalize_mol(m):
