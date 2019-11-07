@@ -1,182 +1,156 @@
-Trifluoromethanesulfonic acid	OS(=O)(=O)C(F)(F)F
 Tetrafluoroboranuide	F[B-](F)(F)F
-L-Arginine	N[C@@H](CCCNC(N)=N)C(O)=O
+Arginine	NC(CCCNC(=N)N)C(=O)O
 Deanol	CN(C)CCO
 2-(Diethylamino)ethanol	CCN(CC)CCO
 Ethanolamine	NCCO
-Ethylenediamine	NCCN
 DiMeglumine	CNCC(O)C(O)C(O)C(O)CO
-Acetate Uncharged	CC(=O)O
-Acetone	CC(=O)C
-Aceturate Uncharged	CC(=O)NCC(=O)O
-Acistrate Or Stearate	CCCCCCCCCCCCCCCCCC(=O)O
+Acetate	CC(=O)O
+Aceturate	CC(=O)NCC(=O)O
+Stearate	CCCCCCCCCCCCCCCCCC(=O)O
 Adipate	OC(=O)CCCCC(=O)O
 Aluminium	[Al]
-Ammonia Or Ammonium	N
+Ammonium	N
 Ascorbate	OCC(O)C1OC(=O)C(=C1O)O
 Aspartate	NC(CC(=O)O)C(=O)O
 Barium	[Ba]
 Benethamine	C(Cc1ccccc1)NCc2ccccc2
 Benzathine	C(CNCc1ccccc1)NCc2ccccc2
 Benzoate	OC(=O)c1ccccc1
-Besilate Or Besylate	OS(=O)(=O)c1ccccc1
+Besylate	OS(=O)(=O)c1ccccc1
 Bismuth	[Bi]
 Bromide	Br
 Butyraldehyde	CCCC=O
-Butyrate	CCCC(=O)OCC
+Ethyl Butanoate	CCCC(=O)OCC
 Calcium	[Ca]
-Camsilate Or Camsylate Uncharged	CC1(C)C2CCC1(CS(=O)(=O)O)C(=O)C2
+Camsylate	CC1(C)C2CCC1(CS(=O)(=O)O)C(=O)C2
 Carbonate	OC(=O)O
 Chloride	Cl
-Choline	OCC[N+](C)(C)C
+Choline	C[N+](C)(C)CCO
 Citrate	OC(=O)CC(O)(CC(=O)O)C(=O)O
 Closylate	OS(=O)(=O)c1ccc(Cl)cc1
 Cyclamate	OS(=O)(=O)NC1CCCCC1
 Dichloroacetate	OC(=O)C(Cl)Cl
 Diethylamine	CCNCC
 Dimethylethanolamine	CC(C)(N)CO
-Dimethylsulphoxide	CS(=O)C
 Diolamine	OCCNCCO
 Edamine	NCCN
 Edisylate	OS(=O)(=O)CCS(=O)(=O)O
 Epolamine	OCCN1CCCC1
 Erbumine	CC(C)(C)N
-Estolate Or Laurylsulfate	CCCCCCCCCCCCOS(=O)(=O)O
-Esylate Uncharged	CCS(=O)(=O)O
-Ethanol	CCO
-Ethanol	CCO
-Ethylsulfate No Charge	CCOS(=O)(=O)O
+Estolate	CCCCCCCCCCCCOS(=O)(=O)O
+Esylate	CCS(=O)(=O)O
+Ethylsulfate	CCOS(=O)(=O)O
 Fluoride	F
-Formic Acid	C(=O)O
-Fumarate	OC(=O)C=CC(=O)O
+Formate	OC=O
 Gluceptate	OCC(O)C(O)C(O)C(O)C(O)C(=O)O
 Gluconate	OCC(O)C(O)C(O)C(O)C(=O)O
 Glucuronate	OC1OC(C(O)C(O)C1O)C(=O)O
 Glutamate	NC(CCC(=O)O)C(=O)O
 Glycerate	OCC(O)CO
 Glycerophosphate	OCC(O)COP(=O)(O)O
-Hexafluorophosphate	P(F)(F)(F)(F)(F)(F)
-Hippurate Charged	OC(=O)CNC(=O)c1ccccc1
-Hypophosphite Uncharged	OP=O
-Incorrect Glucuronate	OC(C=O)C(O)C(O)C(O)C(=O)O
-Incorrect Pamoate 	OC(=O)c5c(O)cc6ccccc6c5Cc7c(C(=O)O)c(O)cc8ccccc78
-Incorrect Ring Gluconate	OC1OC(C(O)C(O)C1O)C(O)=O
-Incorrect Tartrate Uncharged No Stereo	OC(C(O)C(=O)O)C(=O)O
+Hexafluorophosphate	F[P](F)(F)(F)(F)F
+Hypophosphite	OP=O
 Iodide	I
 Isethionate	OCCS(=O)(=O)O
 Potassium	[K]
-Lactate Uncharged	CC(O)C(=O)O
+Lactate	CC(O)C(=O)O
 Lactobionate	OCC(O)C(OC1OC(CO)C(O)C(O)C1O)C(O)C(O)C(=O)O
 Lithium	[Li]
 Lysine	NCCCCC(N)C(=O)O
 Malate	OC(CC(=O)O)C(=O)O
-Maleate	OC(=O)\C=C/C(O)=O
+Maleate and Fumarate	OC(=O)C=CC(=O)O
 Mesylate	CS(=O)(=O)O
-Metaphosphate Uncharged	OP(=O)=O
+Metaphosphate	OP(=O)=O
 Methosulfate	COS(=O)(=O)O
-Mg Monohydroxide (Looks Odd But Ok In Drug)	O[Mg+]
 Magnesium	[Mg]
-Monofluorophosphate	OP(F)(O)=O
+Monofluorophosphate	OP(=O)(O)F
 Sodium	[Na]
 Napadisilate	OS(=O)(=O)c1cccc2c(cccc12)S(=O)(=O)O
 Napsylate	OS(=O)(=O)c1ccc2ccccc2c1
-Nitrate Uncharged	ON(=O)O
-Olamine Or Ethanolamide	NCCO
+Nitrate	O[N](=O)O
 Oxalate	OC(=O)C(=O)O
 Palmitate	CCCCCCCCCCCCCCCC(=O)O
 Pamoate	OC(=O)c1cc2ccccc2c(Cc3c(O)c(cc4ccccc34)C(=O)O)c1O
-Perchlorate Uncharged	OCl(=O)(=O)=O
+Perchlorate	OCl(=O)(=O)=O
 Phosphanilate	Nc1ccc(cc1)P(=O)(O)O
 Phosphate	OP(=O)(O)O
 Picrate	Oc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]
 Piperazine	C1CNCCN1
 Propylene Glycol	CC(O)CO
-Saccharate	OC(C(O)C(O)C(=O)O)C(O)C(=O)O
 Saccharin	O=C1NS(=O)(=O)c2ccccc12
-Salicylate Uncharged	OC(=O)c1ccccc1O
+Salicylate	OC(=O)c1ccccc1O
 Silver	[Ag]
 Strontium	[Sr]
 Succinate	OC(=O)CCC(=O)O
 Sulfate	OS(=O)(=O)O
-Sulfosalicylate	c1ccc(C(=O)O)c(O)c1S(=O)(=O)O
+Sulfosalicylate	OC(=O)c1cccc(c1O)S(=O)(=O)O
 Sulphide	[S-2]
 Terephthalate	OC(=O)c1ccc(cc1)C(=O)O
-Tosilate Or Tosylate Uncharged	Cc1ccc(cc1)S(=O)(=O)O
+Tosylate	Cc1ccc(cc1)S(=O)(=O)O
 Triclofenate	Oc1cc(Cl)c(Cl)cc1Cl
 Triethylamine	CCN(CC)CC
 Trifenatate	OC(=O)C(c1ccccc1)(c2ccccc2)c3ccccc3
 Triflutate	OC(=O)C(F)(F)F
 Tromethamine	NC(CO)(CO)CO
-U_Buciclate	CCCCC1CCC(CC1)C(=O)O
-U_Butyrate	CCCC(=O)O
-U_Caproate	CCCCCC(=O)O
-U_Cyclotate	CC12C=CC(C(=O)O)(CC2)CC1
-U_Cypionate	C1CCCC1CCC(=O)O
-U_Daproate	CN(C)CCC(=O)O
-U_Edta	OC(=O)CN(CC(=O)O)CCN(CC(=O)O)CC(=O)O
-U_Elaidate	OC(=O)CCCCCCCC=CCCCCCCCC
-U_Enanthate	CCCCCCC(=O)O
-U_Etabonate	CCOC(=O)O
-U_Ethanediol	COCCO
-U_Etiprate	c1ccccc1C(=O)NCC(=O)O
-U_Etzadroxil	OCOC(=O)C(CC)CC
-U_Fostedate	CCCCCCCCCCCCCCOP(=O)(O)O
-U_Furoate	OC(=O)c1ccco1
-U_Hybenzate	c1cc(O)ccc1C(=O)c2ccccc2C(=O)O
-U_Laurate	CCCCCCCCCCCC(=O)O
-U_Mebutate	CC=C(C)C(=O)O
-U_Mepesuccinate	CC(O)(C)CCCC(O)(C(=O)O)CC(=O)OC
-U_Metazoate	OC(=O)c1cccc(c1)S(=O)(=O)O
-U_Methionil	CSCCC(N)C(=O)C
-U_Nicotinate	c1ccncc1C(=O)O
-U_Oleate	CCCCCCCCC=CCCCCCCCC(=O)O
-U_Peroxide	OO
-U_Phenpropionate	c1ccccc1CCC(=O)O
-U_Phenylacetate	c1ccccc1CC(=O)O
-U_Pivalate	CC(C)(C)C(=O)O
-U_Propionate	CCC(=O)O
-U_Tebutate	CC(C)(C)CC(=O)O
-U_Trolamine	OCCN(CCO)CCO
-U_Undecylate	CCCCCCCCCCC(=O)O
+Buciclate	CCCCC1CCC(CC1)C(=O)O
+Butyrate	CCCC(=O)O
+Caproate	CCCCCC(=O)O
+Cyclotate	CC12CCC(CC1)(C=C2)C(=O)O
+Cypionate	OC(=O)CCC1CCCC1
+Daproate	CN(C)CCC(=O)O
+EDTA	OC(=O)CN(CCN(CC(=O)O)CC(=O)O)CC(=O)O
+Elaidate and oleate	CCCCCCCCC=CCCCCCCCC(=O)O
+Enanthate	CCCCCCC(=O)O
+Etabonate	CCOC(=O)O
+Ethanediol	COCCO
+Etiprate	OC(=O)CNC(=O)c1ccccc1
+Etzadroxil	CCC(CC)C(=O)OCO
+Fostedate	CCCCCCCCCCCCCCOP(=O)(O)O
+Furoate	OC(=O)c1occc1
+Hybenzate	OC(=O)c1ccccc1C(=O)c2ccc(O)cc2
+Laurate	CCCCCCCCCCCC(=O)O
+Mebutate	CC=C(C)C(=O)O
+Mepesuccinate	COC(=O)CC(O)(CCCC(C)(C)O)C(=O)O
+Metazoate	OC(=O)c1cccc(c1)S(=O)(=O)O
+Methionil	CSCCC(N)C(=O)C
+Nicotinate	OC(=O)c1cccnc1
+Peroxide	OO
+Phenpropionate	OC(=O)CCc1ccccc1
+Phenylacetate	OC(=O)Cc1ccccc1
+Pivalate	CC(C)(C)C(=O)O
+Propionate	CCC(=O)O
+Tebutate	CC(C)(C)CC(=O)O
+Trolamine	OCCN(CCO)CCO
+Undecylate	CCCCCCCCCCC(=O)O
 Undecylenate	OC(=O)CCCCCCCCC=C
-Valerate Uncharged	CCCCC(=O)O
-Water Or Hydroxide	O
+Valerate	CCCCC(=O)O
+Water	O
 Xinafoate	OC(=O)c1ccc2ccccc2c1O
 Zinc	[Zn]
-1H-Imidazole	N1C=CN=C1
+Imidazole	c1c[nH]cn1
 4-(2-Hydroxyethyl)morpholine	OCCN1CCOCC1
-1-(2-Hydroxyethyl)pyrrolidine	OCCN1CCCC1
-Triethanolamine	OCCN(CCO)CCO
-4-Acetamidobenzoic acid	CC(=O)NC1=CC=C(C=C1)C(O)=O
-(+)-Camphoric acid	CC1(C)[C@H](CC[C@@]1(C)C(O)=O)C(O)=O
-Capric acid	CCCCCCCCCC(O)=O
-Caproic acid	CCCCCC(O)=O
-Caprylic acid	CCCCCCCC(O)=O
-Carbonic acid	OC(O)=O
-Cinnamic acid	OC(=O)\C=C\C1=CC=CC=C1
-Ethanedisulfonic acid	OS(=O)(=O)CCS(O)(=O)=O
-Ethanesulfonic acid	CCS(O)(=O)=O
-Mucic acid	O[C@@H]([C@@H](O)[C@H](O)C(O)=O)[C@@H](O)C(O)=O
-Gentisic acid	OC(=O)C1=C(O)C=CC(O)=C1
-D-Glucoheptonic acid	OC[C@@H](O)[C@@H](O)[C@H](O)[C@@H](O)[C@@H](O)C(O)=O
-Glutaric acid	OC(=O)CCCC(O)=O
-2-Oxoglutaric acid	OC(=O)CCC(=O)C(O)=O
-Glycolic acid	OCC(O)=O
-Isobutyric acid	CC(C)C(O)=O
-DL-Mandelic acid	OC(C(O)=O)C1=CC=CC=C1
-1-Hydroxy-2-naphthoic acid	OC(=O)C1=C(O)C2=CC=CC=C2C=C1
+4-Acetamidobenzoic acid	CC(=O)Nc1ccc(cc1)C(=O)O
+Camphoric acid	CC1(C)C(CCC1(C)C(=O)O)C(=O)O
+Capric acid	CCCCCCCCCC(=O)O
+Caprylic acid	CCCCCCCC(=O)O
+Cinnamic acid	OC(=O)C=Cc1ccccc1
+Mucic acid	OC(C(O)C(O)C(=O)O)C(O)C(=O)O
+Gentisic acid	OC(=O)c1cc(O)ccc1O
+Glutaric acid	OC(=O)CCCC(=O)O
+2-Oxoglutaric acid	OC(=O)CCC(=O)C(=O)O
+Glycolic acid	OCC(=O)O
+Isobutyric acid	CC(C)C(=O)O
+Mandelic acid	OC(C(=O)O)c1ccccc1
 Orotic acid	OC(=O)C1=CC(=O)NC(=O)N1
-Propionic acid	CCC(O)=O
-L-pyroglutamic acid	OC(=O)[C@@H]1CCC(=O)N1
-L-Tartaric acid	O[C@H]([C@@H](O)C(O)=O)C(O)=O
+Pyroglutamic acid	OC(=O)C1CCC(=O)N1
+Tartrate	OC(C(O)C(=O)O)C(=O)O
 Thiocyanic acid	SC#N
-METHYL IODIDE	CI
-Sulfurous Acid	OS(O)=O
-DICYCLOHEXYLAMINE	C1CCC(CC1)NC1CCCCC1
-Mesylate	CS(O)(=O)=O
+Methyl Iodide	CI
+Sulfurous Acid	OS(=O)O
+Dicyclohexylamine	C1CCC(CC1)NC2CCCCC2
 Triflate	OS(=O)(=O)C(F)(F)F
-Mesitylene Sulfonate	CC1=CC(C)=C(C(C)=C1)S(O)(=O)=O
-Malonic Acid	OC(=O)CC(O)=O
-Potassium Hydroxide	O[K]
-Lithium Hydroxide	[Li]O
-Sodium Hydroxide	O[Na]
+Mesitylene sulfonate	Cc1cc(C)c(c(C)c1)S(=O)(=O)O
+Malonic acid	OC(=O)CC(=O)O
+Fluorosulfuric acid	OS(=O)(=O)F
+Acetylsulfate	CC(=O)OS(=O)(=O)O
+Proton	[H]
