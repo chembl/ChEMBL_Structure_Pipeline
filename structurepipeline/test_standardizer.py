@@ -2209,3 +2209,36 @@ M  END
         self.assertEqual(m.GetAtomWithIdx(0).GetFormalCharge(), 1)
         self.assertEqual(m.GetAtomWithIdx(1).GetAtomicNum(), 7)
         self.assertEqual(m.GetAtomWithIdx(1).GetFormalCharge(), -1)
+
+    def testGetParentOrder(self):
+        ' make sure we remove isotopes before stripping salts '
+        mb = '''
+  Mrv1810 11071914272D          
+
+ 10  9  0  0  0  0            999 V2000
+   -5.3684    3.1483    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.0829    2.7358    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.0829    1.9108    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.3684    1.4983    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.6540    1.9108    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.6540    2.7358    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.3684    3.9733    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.5188    3.8797    0.0000 D   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.8043    4.2922    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0899    3.8797    0.0000 D   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+  4  5  2  0  0  0  0
+  5  6  1  0  0  0  0
+  1  6  2  0  0  0  0
+  1  7  1  0  0  0  0
+  8  9  1  0  0  0  0
+  9 10  1  0  0  0  0
+M  END
+'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb = standardizer.get_parent_molblock(mb)
+        m = Chem.MolFromMolBlock(smb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 1)

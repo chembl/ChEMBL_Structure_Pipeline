@@ -314,18 +314,22 @@ def get_isotope_parent_mol(m):
 
 
 def get_parent_mol(m, neutralize=True):
-    res = get_isotope_parent_mol(get_fragment_parent_mol(m))
+    res = get_fragment_parent_mol(get_isotope_parent_mol(m))
     # if we have multiple fragments, check to see if all of them are the same
     frags = Chem.GetMolFrags(res, asMols=True, sanitizeFrags=False)
     if len(frags) > 1:
         seenSmiles = set()
-        for frag in frags: 
+        for frag in frags:
             cfrag = Chem.Mol(frag)
             # need aromaticity perception to get a reasonable SMILES, but don't
             # want to risk a full sanitization:
             cfrag.ClearComputedProps()
             cfrag.UpdatePropertyCache(False)
-            Chem.SanitizeMol(cfrag,sanitizeOps=Chem.SANITIZE_SYMMRINGS|Chem.SANITIZE_FINDRADICALS|Chem.SANITIZE_SETAROMATICITY|Chem.SANITIZE_ADJUSTHS)
+            Chem.SanitizeMol(cfrag,
+                             sanitizeOps=Chem.SANITIZE_SYMMRINGS
+                             | Chem.SANITIZE_FINDRADICALS
+                             | Chem.SANITIZE_SETAROMATICITY
+                             | Chem.SANITIZE_ADJUSTHS)
             seenSmiles.add(Chem.MolToSmiles(cfrag))
         if len(seenSmiles) == 1:
             res = frags[0]
