@@ -320,7 +320,10 @@ def get_parent_mol(m, neutralize=True):
     if len(frags) > 1:
         seenSmiles = set()
         for frag in frags:
-            cfrag = Chem.Mol(frag)
+            if neutralize:
+                cfrag = uncharge_mol(frag)
+            else:
+                cfrag = Chem.Mol(frag)
             # need aromaticity perception to get a reasonable SMILES, but don't
             # want to risk a full sanitization:
             cfrag.ClearComputedProps()
