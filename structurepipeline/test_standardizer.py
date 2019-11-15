@@ -2444,3 +2444,32 @@ M  END'''
         smb = standardizer.get_parent_molblock(mb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 1)
+
+    def testExcludeFlagAndSalts(self):
+        ' exclude flag and salts '
+        mb = '''674781
+  SciTegic01161211252D
+
+  6  4  0  0  0  0            999 V2000
+    5.6417   -7.4167    0.0000 S   0  0
+    5.6417   -8.1292    0.0000 O   0  5
+    4.9375   -7.4167    0.0000 O   0  5
+    6.3542   -7.4167    0.0000 O   0  0
+    5.6417   -6.7125    0.0000 O   0  0
+    4.2125   -8.3750    0.0000 Fe  0  2
+  2  1  1  0
+  3  1  1  0
+  4  1  2  0
+  5  1  2  0
+M  CHG  3   2  -1   3  -1   6   2
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
+        self.assertEqual(sm.GetNumAtoms(), m.GetNumAtoms())
+        smb = standardizer.get_parent_molblock(mb, check_exclusion=False)
+        sm = Chem.MolFromMolBlock(smb)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
+        self.assertEqual(sm.GetNumAtoms(), 1)
