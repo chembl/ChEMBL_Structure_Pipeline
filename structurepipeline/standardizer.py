@@ -277,31 +277,104 @@ _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
 
-def get_fragment_parent_mol(m):
+def get_fragment_parent_mol(m, neutralize=False):
     basepath = os.path.dirname(os.path.abspath(__file__))
     with open(_solvents_file) as inf:
-        solvents = inf.read()
-    solvent_remover = rdMolStandardize.FragmentRemoverFromData(
-        solvents, skip_if_all_match=True)
+        solvents = []
+        for l in inf:
+            if not l or l[0] == '#':
+                continue
+            l = l.strip().split('\t')
+            if len(l) != 2:
+                continue
+            solvents.append(Chem.MolFromSmarts(l[1]))
+
     with open(_salts_file) as inf:
-        salts = inf.read()
-    salt_remover = rdMolStandardize.FragmentRemoverFromData(
-        salts, skip_if_all_match=True)
-    # we need an aromatic representation for the salt/solvent removal to work, but
-    # we don't want to lose the kekule form we came in with... so this is a bit messy
-    m.UpdatePropertyCache(strict=False)
+        salts = []
+        for l in inf:
+            if not l or l[0] == '#':
+                continue
+            l = l.strip().split('\t')
+            if len(l) != 2:
+                continue
+            salts.append(Chem.MolFromSmarts(l[1]))
+
+    # there are a number of special cases for the ChEMBL salt stripping, so we
+    # can't use the salt remover that's built into the RDKit standardizer.
     nm = Chem.Mol(m)
+    nm.UpdatePropertyCache(strict=False)
     Chem.SetAromaticity(nm)
-    tmp = salt_remover.remove(solvent_remover.remove(nm))
-    if tmp.GetNumAtoms() != nm.GetNumAtoms():
-        keep = set(nm.GetSubstructMatch(tmp))
-        remove = set(range(m.GetNumAtoms())).difference(keep)
-        res = Chem.RWMol(m)
-        for idx in sorted(remove, reverse=True):
-            res.RemoveAtom(idx)
-        res = Chem.Mol(res)
+    frags = []
+    inputFrags = Chem.GetMolFrags(nm, asMols=True, sanitizeFrags=False)
+    for frag in inputFrags:
+        frags.append(Chem.RemoveHs(frag, sanitize=False))
+    keep = [1] * len(frags)
+    for solv in solvents:
+        for i, frag in enumerate(frags):
+            if keep[i] and frag.GetNumAtoms() == solv.GetNumAtoms() \
+                and frag.HasSubstructMatch(solv):
+                keep[i] = 0
+        if not max(keep):
+            break
+    if not max(keep):
+        # everything removed, we can just return the input molecule:
+        if neutralize:
+            res = uncharge_mol(m)
+        else:
+            res = Chem.Mol(m)
+        return res
+    for salt in salts:
+        for i, frag in enumerate(frags):
+            if keep[i] and frag.GetNumAtoms() == salt.GetNumAtoms() \
+                and frag.HasSubstructMatch(salt):
+                keep[i] = 0
+        if not max(keep):
+            break
+    if not max(keep):
+        # everything removed, we can just return the input molecule:
+        if neutralize:
+            res = uncharge_mol(m)
+        else:
+            res = Chem.Mol(m)
+        return res
+
+    keepFrags = []
+    seenSmis = set()
+    for i, v in enumerate(keep):
+        if not v:
+            continue
+        frag = inputFrags[i]
+        if neutralize:
+            cfrag = uncharge_mol(frag)
+        else:
+            cfrag = Chem.Mol(frag)
+        keepFrags.append(i)
+        # need aromaticity perception to get a reasonable SMILES, but don't
+        # want to risk a full sanitization:
+        cfrag.ClearComputedProps()
+        cfrag.UpdatePropertyCache(False)
+        Chem.SanitizeMol(cfrag,
+                         sanitizeOps=Chem.SANITIZE_SYMMRINGS
+                         | Chem.SANITIZE_FINDRADICALS
+                         | Chem.SANITIZE_SETAROMATICITY
+                         | Chem.SANITIZE_ADJUSTHS)
+        seenSmis.add(Chem.MolToSmiles(cfrag))
+    if len(seenSmis) == 1:
+        # if we just have one fragment left, this is easy:
+        # just copy the fragment
+        res = inputFrags[keepFrags[0]]
+        if neutralize:
+            res = uncharge_mol(res)
     else:
-        res = Chem.Mol(m)
+        # otherwise we need to create a molecule from the remaining fragments
+        res = inputFrags[keepFrags[0]]
+        if neutralize:
+            res = uncharge_mol(res)
+        for idx in keepFrags[1:]:
+            frag = inputFrags[idx]
+            if neutralize:
+                frag = uncharge_mol(frag)
+            res = Chem.CombineMols(res, frag)
     return res
 
 
@@ -320,30 +393,8 @@ def get_parent_mol(m, neutralize=True, check_exclusion=True):
     else:
         exclude = False
     if not exclude:
-        res = get_fragment_parent_mol(get_isotope_parent_mol(m))
-        # if we have multiple fragments, check to see if all of them are the same
-        frags = Chem.GetMolFrags(res, asMols=True, sanitizeFrags=False)
-        if len(frags) > 1:
-            seenSmiles = set()
-            for frag in frags:
-                if neutralize:
-                    cfrag = uncharge_mol(frag)
-                else:
-                    cfrag = Chem.Mol(frag)
-                # need aromaticity perception to get a reasonable SMILES, but don't
-                # want to risk a full sanitization:
-                cfrag.ClearComputedProps()
-                cfrag.UpdatePropertyCache(False)
-                Chem.SanitizeMol(cfrag,
-                                 sanitizeOps=Chem.SANITIZE_SYMMRINGS
-                                 | Chem.SANITIZE_FINDRADICALS
-                                 | Chem.SANITIZE_SETAROMATICITY
-                                 | Chem.SANITIZE_ADJUSTHS)
-                seenSmiles.add(Chem.MolToSmiles(cfrag))
-            if len(seenSmiles) == 1:
-                res = frags[0]
-        if neutralize:
-            res = uncharge_mol(res)
+        res = get_fragment_parent_mol(get_isotope_parent_mol(m),
+                                      neutralize=neutralize)
     else:
         res = m
     return res
