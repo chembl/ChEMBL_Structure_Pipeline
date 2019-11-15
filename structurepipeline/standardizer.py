@@ -301,13 +301,13 @@ def get_fragment_parent_mol(m, neutralize=False):
 
     # there are a number of special cases for the ChEMBL salt stripping, so we
     # can't use the salt remover that's built into the RDKit standardizer.
-    nm = Chem.Mol(m)
-    nm.UpdatePropertyCache(strict=False)
-    Chem.SetAromaticity(nm)
     frags = []
-    inputFrags = Chem.GetMolFrags(nm, asMols=True, sanitizeFrags=False)
+    inputFrags = Chem.GetMolFrags(m, asMols=True, sanitizeFrags=False)
     for frag in inputFrags:
-        frags.append(Chem.RemoveHs(frag, sanitize=False))
+        frag = Chem.RemoveHs(frag, sanitize=False)
+        frag.UpdatePropertyCache(strict=False)
+        Chem.SetAromaticity(frag)
+        frags.append(frag)
     keep = [1] * len(frags)
     for solv in solvents:
         for i, frag in enumerate(frags):
@@ -405,7 +405,7 @@ def get_parent_molblock(ctab, neutralize=True, check_exclusion=True):
     parent = get_parent_mol(m,
                             neutralize=neutralize,
                             check_exclusion=check_exclusion)
-    return Chem.MolToMolBlock(parent)
+    return Chem.MolToMolBlock(parent, kekulize=False)
 
 
 def standardize_mol(m, check_exclusion=True):
