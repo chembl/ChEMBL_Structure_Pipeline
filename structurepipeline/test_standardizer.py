@@ -2648,3 +2648,69 @@ M  END'''
         smb = standardizer.get_parent_molblock(mb)
         sm = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
+
+    def testSaltStrippingAromaticity(self):
+        ' check that get_parent_molblock does not set aromaticity '
+        mb = '''
+  SciTegic03291108532D
+
+ 25 26  0  0  0  0            999 V2000
+   -0.3248    1.8375    0.0000 O   0  0
+   -1.7537   -0.6375    0.0000 O   0  0
+    1.8187   -0.2250    0.0000 O   0  0
+    1.1042   -1.4625    0.0000 O   0  0
+    6.2014    0.7366    0.0000 N   0  0
+    4.7724    0.7366    0.0000 N   0  0
+    0.3897    0.6000    0.0000 N   0  0
+   -1.0392    0.6000    0.0000 N   0  0
+    6.2014   -1.7384    0.0000 N   0  0
+    6.9158   -0.5009    0.0000 C   0  0
+    6.9158    0.3241    0.0000 C   0  0
+    6.2014   -0.9134    0.0000 C   0  0
+    5.4869    0.3241    0.0000 C   0  0
+    5.4869   -0.5009    0.0000 C   0  0
+    0.3897   -0.2250    0.0000 C   0  0
+    7.6303   -0.9134    0.0000 C   0  0
+    7.6303    0.7366    0.0000 C   0  0
+   -0.3248    1.0125    0.0000 C   0  0
+   -1.0392   -0.2250    0.0000 C   0  0
+   -0.3248   -0.6375    0.0000 C   0  0
+    1.1042   -0.6375    0.0000 C   0  0
+    8.3448   -0.5009    0.0000 C   0  0
+    8.3448    0.3241    0.0000 C   0  0
+    4.0579    0.3241    0.0000 C   0  0
+    4.7724    1.5616    0.0000 C   0  0
+  1 18  2  0
+  2 19  2  0
+  3 21  2  0
+  4 21  1  0
+  5 11  2  0
+  5 13  1  0
+  6 13  1  0
+  6 24  1  0
+  6 25  1  0
+  7 15  1  0
+  7 18  1  0
+  8 18  1  0
+  8 19  1  0
+  9 12  1  0
+ 10 11  1  0
+ 10 12  2  0
+ 10 16  1  0
+ 11 17  1  0
+ 12 14  1  0
+ 13 14  2  0
+ 15 20  2  0
+ 15 21  1  0
+ 16 22  2  0
+ 17 23  2  0
+ 19 20  1  0
+ 22 23  1  0
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
+        for bond in sm.GetBonds():
+            self.assertFalse(bond.GetIsAromatic())
