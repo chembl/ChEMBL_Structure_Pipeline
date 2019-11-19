@@ -2714,3 +2714,34 @@ M  END'''
         self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
         for bond in sm.GetBonds():
             self.assertFalse(bond.GetIsAromatic())
+
+    def testSaltStrippingNumBonds(self):
+        ' make sure the salt stripper actually matches the entire fragment, not just the atoms '
+        mb = '''
+          11280715242D 1   1.00000     0.00000     0
+
+  9  8  0     0  0            999 V2000
+    5.7250   -7.3292    0.0000 N   0  3  3  0  0  0           0  0  0
+    6.1417   -8.0417    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.3125   -8.0417    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.8042   -7.0875    0.0000 Cl  0  5  0  0  0  0           0  0  0
+    6.5042   -6.9792    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.0042   -6.9167    0.0000 C   0  0  0  0  0  0           0  0  0
+    7.2125   -5.7417    0.0000 O   0  0  0  0  0  0           0  0  0
+    6.5042   -6.1542    0.0000 C   0  0  0  0  0  0           0  0  0
+    5.0042   -6.0917    0.0000 C   0  0  0  0  0  0           0  0  0
+  2  1  1  0     0  0
+  3  1  1  0     0  0
+  5  1  1  0     0  0
+  6  1  1  0     0  0
+  7  8  1  0     0  0
+  8  5  1  0     0  0
+  9  6  1  0     0  0
+  3  2  1  0     0  0
+M  CHG  2   1   1   4  -1
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 1)

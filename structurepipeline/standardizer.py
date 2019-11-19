@@ -277,7 +277,7 @@ _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
 
-def get_fragment_parent_mol(m, neutralize=False):
+def get_fragment_parent_mol(m, neutralize=False, verbose=False):
     basepath = os.path.dirname(os.path.abspath(__file__))
     with open(_solvents_file) as inf:
         solvents = []
@@ -287,7 +287,7 @@ def get_fragment_parent_mol(m, neutralize=False):
             l = l.strip().split('\t')
             if len(l) != 2:
                 continue
-            solvents.append(Chem.MolFromSmarts(l[1]))
+            solvents.append((l[0], Chem.MolFromSmarts(l[1])))
 
     with open(_salts_file) as inf:
         salts = []
@@ -297,7 +297,7 @@ def get_fragment_parent_mol(m, neutralize=False):
             l = l.strip().split('\t')
             if len(l) != 2:
                 continue
-            salts.append(Chem.MolFromSmarts(l[1]))
+            salts.append((l[0], Chem.MolFromSmarts(l[1])))
 
     # there are a number of special cases for the ChEMBL salt stripping, so we
     # can't use the salt remover that's built into the RDKit standardizer.
@@ -309,11 +309,13 @@ def get_fragment_parent_mol(m, neutralize=False):
         Chem.SetAromaticity(frag)
         frags.append(frag)
     keep = [1] * len(frags)
-    for solv in solvents:
+    for nm, solv in solvents:
         for i, frag in enumerate(frags):
             if keep[i] and frag.GetNumAtoms() == solv.GetNumAtoms() \
+                and frag.GetNumBonds() == solv.GetNumBonds() \
                 and frag.HasSubstructMatch(solv):
                 keep[i] = 0
+                if (verbose): print(f'matched solvent {nm}')
         if not max(keep):
             break
     if not max(keep):
@@ -323,10 +325,12 @@ def get_fragment_parent_mol(m, neutralize=False):
         else:
             res = Chem.Mol(m)
         return res
-    for salt in salts:
+    for nm, salt in salts:
         for i, frag in enumerate(frags):
             if keep[i] and frag.GetNumAtoms() == salt.GetNumAtoms() \
+                and frag.GetNumBonds() == salt.GetNumBonds() \
                 and frag.HasSubstructMatch(salt):
+                if (verbose): print(f'matched salt {nm}')
                 keep[i] = 0
         if not max(keep):
             break
@@ -386,7 +390,7 @@ def get_isotope_parent_mol(m):
     return remove_hs_from_mol(m)
 
 
-def get_parent_mol(m, neutralize=True, check_exclusion=True):
+def get_parent_mol(m, neutralize=True, check_exclusion=True, verbose=False):
     if check_exclusion:
         exclude = exclude_flag(m, includeRDKitSanitization=False)
         #print("EXCLUDE: ", Chem.MolToSmiles(m), exclude)
@@ -394,17 +398,22 @@ def get_parent_mol(m, neutralize=True, check_exclusion=True):
         exclude = False
     if not exclude:
         res = get_fragment_parent_mol(get_isotope_parent_mol(m),
-                                      neutralize=neutralize)
+                                      neutralize=neutralize,
+                                      verbose=verbose)
     else:
         res = m
     return res
 
 
-def get_parent_molblock(ctab, neutralize=True, check_exclusion=True):
+def get_parent_molblock(ctab,
+                        neutralize=True,
+                        check_exclusion=True,
+                        verbose=False):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
     parent = get_parent_mol(m,
                             neutralize=neutralize,
-                            check_exclusion=check_exclusion)
+                            check_exclusion=check_exclusion,
+                            verbose=verbose)
     return Chem.MolToMolBlock(parent, kekulize=False)
 
 
