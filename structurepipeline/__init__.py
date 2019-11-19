@@ -73,7 +73,7 @@ was found:
    >>>
 
 # Standardization + salt stripping :
-    >>> mb = get_parent_molblock('''
+    >>> mb,exclude = get_parent_molblock('''
     ...   Mrv1810 07121910262D          
     ... 
     ...   3  1  0  0  0  0            999 V2000

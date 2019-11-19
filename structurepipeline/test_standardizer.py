@@ -554,7 +554,7 @@ M  END
         ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
-            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m))
+            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m)[0])
             esmi = Chem.CanonSmiles(expected)
             self.assertEqual(ssmi, esmi)
 
@@ -572,11 +572,11 @@ M  END
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
             ssmi = Chem.MolToSmiles(
-                standardizer.get_parent_mol(m, neutralize=False))
+                standardizer.get_parent_mol(m, neutralize=False)[0])
             esmi = Chem.CanonSmiles(expected)
             self.assertEqual(ssmi, esmi)
             # get_fragment_parent_mol doesn't do neutralization:
-            ssmi = Chem.MolToSmiles(standardizer.get_fragment_parent_mol(m))
+            ssmi = Chem.MolToSmiles(standardizer.get_fragment_parent_mol(m)[0])
 
     def test_isotopes_parent1(self):
         tests = [
@@ -615,16 +615,17 @@ M  END
             # wedging bonds:
             rdDepictor.Compute2DCoords(m)
             Chem.WedgeMolBonds(m, m.GetConformer())
-            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m))
+            ssmi = Chem.MolToSmiles(standardizer.get_parent_mol(m)[0])
             sp = Chem.SmilesParserParams()
             sp.removeHs = False
             em = Chem.MolFromSmiles(expected, sp)
             esmi = Chem.MolToSmiles(em)
+            print(smi)
             self.assertEqual(ssmi, esmi)
 
             # make sure we can also work from mol blocks:
             imb = Chem.MolToMolBlock(m)
-            smb = standardizer.get_parent_molblock(imb)
+            smb, exclude = standardizer.get_parent_molblock(imb)
             sm = Chem.MolFromMolBlock(smb, removeHs=False)
             ssmi = Chem.MolToSmiles(sm)
             self.assertEqual(ssmi, esmi)
@@ -2001,7 +2002,7 @@ M  END"""
     def testGithub6(self):
         ''' standardiser changes the structure even with excluded structures '''
         # first case:
-        molb = '''
+        molb = '''ranitidine bismuth citrate
   SciTegic03151315062D
 
  35 33  0  0  0  0            999 V2000
@@ -2082,6 +2083,14 @@ M  END'''
         inchi = Chem.MolBlockToInchi(molb)
         self.assertEqual(Chem.MolBlockToInchi(omolb), inchi)
 
+        # check salt stripping for this
+        m = Chem.MolFromMolBlock(molb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 3)
+        smb, exclude = standardizer.get_parent_molblock(molb)
+        sm = Chem.MolFromMolBlock(smb)
+        print(Chem.MolToSmiles(sm))
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
+
     def testDoubleBondStereoAndTransforms(self):
         molb = '''
   Mrv1810 10111911132D          
@@ -2128,7 +2137,7 @@ M  END
 M  CHG  3   3  -1   7  -1   9   2
 M  END
 '''
-        smb = standardizer.get_parent_molblock(molb)
+        smb, exclude = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 1)
 
@@ -2154,7 +2163,7 @@ M  END
 M  CHG  3   3  -1   7  -1   9   2
 M  END
 '''
-        smb = standardizer.get_parent_molblock(molb)
+        smb, exclude = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 1)
         molb = '''duplicates except for chirality
@@ -2179,7 +2188,7 @@ M  END
 M  CHG  3   3  -1   7  -1   9   2
 M  END
 '''
-        smb = standardizer.get_parent_molblock(molb)
+        smb, exclude = standardizer.get_parent_molblock(molb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
 
@@ -2239,7 +2248,7 @@ M  END
 '''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 1)
 
@@ -2441,7 +2450,7 @@ M  CHG  2  28  -1  81   1
 M  END'''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 4)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         m = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 1)
 
@@ -2465,14 +2474,58 @@ M  CHG  3   2  -1   3  -1   6   2
 M  END'''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         sm = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
         self.assertEqual(sm.GetNumAtoms(), m.GetNumAtoms())
-        smb = standardizer.get_parent_molblock(mb, check_exclusion=False)
+        self.assertTrue(exclude)
+        smb, exclude = standardizer.get_parent_molblock(mb,
+                                                        check_exclusion=False)
         sm = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
         self.assertEqual(sm.GetNumAtoms(), 1)
+        self.assertFalse(exclude)
+
+        mb = '''449259
+  SciTegic12011715492D
+
+  5  0  0  0  0  0            999 V2000
+    0.0295    1.3413    0.0000 O   0  0
+   -0.6707    0.0147    0.0000 O   0  0
+    1.3561    0.6412    0.0000 Cl  0  5
+    0.6559   -0.6854    0.0000 Cl  0  5
+   -1.3708   -1.3118    0.0000 Cu  0  2
+M  CHG  3   3  -1   4  -1   5   2
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 5)
+        smb, exclude = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 3)
+        self.assertTrue(exclude)
+
+        mb = '''453882
+  SciTegic12011715492D
+
+ 10  0  0  0  0  0            999 V2000
+    2.2357   -0.2536    0.0000 Fe  0  1
+    1.1448    0.7759    0.0000 Cl  0  5
+    0.0538    1.8054    0.0000 Cl  0  5
+    1.2061   -1.3445    0.0000 Cl  0  5
+    0.1152   -0.3150    0.0000 O   0  0
+   -0.9757    0.7145    0.0000 O   0  0
+    0.1766   -2.4354    0.0000 O   0  0
+   -0.9143   -1.4059    0.0000 O   0  0
+   -2.0052   -0.3764    0.0000 O   0  0
+   -1.0371    2.8350    0.0000 O   0  0
+M  CHG  4   1   3   2  -1   3  -1   4  -1
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 10)
+        smb, exclude = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 4)
+        self.assertTrue(exclude)
 
     def testChiralHsAndSalts(self):
         ' check that salts with chiral Hs are removed '
@@ -2645,13 +2698,13 @@ M  END'''
 M  END'''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         sm = Chem.MolFromMolBlock(smb)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
 
     def testSaltStrippingAromaticity(self):
         ' check that get_parent_molblock does not set aromaticity '
-        mb = '''
+        mb = '''886596
   SciTegic03291108532D
 
  25 26  0  0  0  0            999 V2000
@@ -2709,15 +2762,15 @@ M  END'''
 M  END'''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         sm = Chem.MolFromMolBlock(smb, sanitize=False)
-        self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
         for bond in sm.GetBonds():
             self.assertFalse(bond.GetIsAromatic())
 
     def testSaltStrippingNumBonds(self):
         ' make sure the salt stripper actually matches the entire fragment, not just the atoms '
-        mb = '''
+        mb = '''205714
           11280715242D 1   1.00000     0.00000     0
 
   9  8  0     0  0            999 V2000
@@ -2742,6 +2795,90 @@ M  CHG  2   1   1   4  -1
 M  END'''
         m = Chem.MolFromMolBlock(mb)
         self.assertEqual(len(Chem.GetMolFrags(m)), 2)
-        smb = standardizer.get_parent_molblock(mb)
+        smb, exclude = standardizer.get_parent_molblock(mb)
         sm = Chem.MolFromMolBlock(smb, sanitize=False)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
+
+    def testSolventSaltRemovalProblem(self):
+        ' make sure the solvents are removed from mols where all frags are either solvents or salts '
+        mb = '''1673174
+ 
+ 
+ 12 11  0     0  0  0  0  0  0999 V2000
+    3.3001   -0.8250    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0
+    3.3001   -1.6501    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    4.1251   -0.8250    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    3.3001    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    1.8934   -2.5410    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    2.4751   -0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0667   -1.5386    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0667   -0.1114    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8250   -0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2417   -1.5386    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2417   -0.1114    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000   -0.8250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  1  3  2  0  0  0  0
+  1  4  1  0  0  0  0
+  1  6  1  0  0  0  0
+  6  7  2  0  0  0  0
+  6  8  1  0  0  0  0
+  7 10  1  0  0  0  0
+  8 11  2  0  0  0  0
+  9 10  2  0  0  0  0
+  9 11  1  0  0  0  0
+  9 12  1  0  0  0  0
+M  END '''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb, exclude = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 1)
+
+    def testSaltRemovalAndCharges(self):
+        ' make sure the whole remaining molecule is neutralized, not the fragments '
+        mb = '''1674265
+  SciTegic12231509382D
+
+ 17 16  0  0  0  0            999 V2000
+    4.4613   -2.5540    0.0000 P   0  0
+    4.4613   -1.7375    0.0000 O   0  0
+    5.2844   -2.5540    0.0000 O   0  0
+    4.4613   -3.3836    0.0000 O   0  5
+    3.6383   -2.5540    0.0000 O   0  0
+    1.4305   -1.0778    0.0000 N   0  0
+    2.6977   -0.6598    0.0000 N   0  3
+    2.2078   -1.3260    0.0000 C   0  0
+    1.4305   -0.2482    0.0000 C   0  0
+    2.2143    0.0000    0.0000 C   0  0
+    5.7024   -3.2725    0.0000 C   0  0
+    5.1734   -1.3260    0.0000 C   0  0
+    0.7577   -1.5676    0.0000 C   0  0
+    3.5273   -0.6598    0.0000 C   0  0
+    6.5320   -3.2725    0.0000 C   0  0
+    5.1734   -0.5095    0.0000 C   0  0
+    0.0000   -1.2346    0.0000 C   0  0
+  1  2  1  0
+  1  3  1  0
+  1  4  1  0
+  1  5  2  0
+  2 12  1  0
+  3 11  1  0
+  6  8  1  0
+  6  9  1  0
+  6 13  1  0
+  7  8  2  0
+  7 10  1  0
+  7 14  1  0
+  9 10  2  0
+ 11 15  1  0
+ 12 16  1  0
+ 13 17  1  0
+M  CHG  2   4  -1   7   1
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(len(Chem.GetMolFrags(m)), 2)
+        smb, exclude = standardizer.get_parent_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
+        self.assertEqual(Chem.GetFormalCharge(sm), 0)

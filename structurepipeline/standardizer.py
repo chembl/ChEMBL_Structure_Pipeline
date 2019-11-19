@@ -277,7 +277,10 @@ _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
 
-def get_fragment_parent_mol(m, neutralize=False, verbose=False):
+def get_fragment_parent_mol(m,
+                            check_exclusion=False,
+                            neutralize=False,
+                            verbose=False):
     basepath = os.path.dirname(os.path.abspath(__file__))
     with open(_solvents_file) as inf:
         solvents = []
@@ -288,16 +291,6 @@ def get_fragment_parent_mol(m, neutralize=False, verbose=False):
             if len(l) != 2:
                 continue
             solvents.append((l[0], Chem.MolFromSmarts(l[1])))
-
-    with open(_salts_file) as inf:
-        salts = []
-        for l in inf:
-            if not l or l[0] == '#':
-                continue
-            l = l.strip().split('\t')
-            if len(l) != 2:
-                continue
-            salts.append((l[0], Chem.MolFromSmarts(l[1])))
 
     # there are a number of special cases for the ChEMBL salt stripping, so we
     # can't use the salt remover that's built into the RDKit standardizer.
@@ -320,11 +313,36 @@ def get_fragment_parent_mol(m, neutralize=False, verbose=False):
             break
     if not max(keep):
         # everything removed, we can just return the input molecule:
+        if check_exclusion:
+            exclude = exclude_flag(m, includeRDKitSanitization=False)
+        else:
+            exclude = False
         if neutralize:
             res = uncharge_mol(m)
         else:
             res = Chem.Mol(m)
-        return res
+        return res, exclude
+
+    with open(_salts_file) as inf:
+        salts = []
+        for l in inf:
+            if not l or l[0] == '#':
+                continue
+            l = l.strip().split('\t')
+            if len(l) != 2:
+                continue
+            salts.append((l[0], Chem.MolFromSmarts(l[1])))
+
+    keepFrags1 = []
+    keepFrags2 = []
+    for i, v in enumerate(keep):
+        if v:
+            keepFrags1.append(frags[i])
+            keepFrags2.append(inputFrags[i])
+    frags = keepFrags1
+    inputFrags = keepFrags2
+    keep = [1] * len(frags)
+
     for nm, salt in salts:
         for i, frag in enumerate(frags):
             if keep[i] and frag.GetNumAtoms() == salt.GetNumAtoms() \
@@ -334,13 +352,10 @@ def get_fragment_parent_mol(m, neutralize=False, verbose=False):
                 keep[i] = 0
         if not max(keep):
             break
+
     if not max(keep):
-        # everything removed, we can just return the input molecule:
-        if neutralize:
-            res = uncharge_mol(m)
-        else:
-            res = Chem.Mol(m)
-        return res
+        # everything removed, keep everything:
+        keep = [1] * len(frags)
 
     keepFrags = []
     seenSmis = set()
@@ -362,24 +377,35 @@ def get_fragment_parent_mol(m, neutralize=False, verbose=False):
                          | Chem.SANITIZE_FINDRADICALS
                          | Chem.SANITIZE_SETAROMATICITY
                          | Chem.SANITIZE_ADJUSTHS)
+
         seenSmis.add(Chem.MolToSmiles(cfrag))
     if len(seenSmis) == 1:
         # if we just have one fragment left, this is easy:
         # just copy the fragment
         res = inputFrags[keepFrags[0]]
-        if neutralize:
-            res = uncharge_mol(res)
     else:
         # otherwise we need to create a molecule from the remaining fragments
         res = inputFrags[keepFrags[0]]
-        if neutralize:
-            res = uncharge_mol(res)
         for idx in keepFrags[1:]:
             frag = inputFrags[idx]
-            if neutralize:
-                frag = uncharge_mol(frag)
             res = Chem.CombineMols(res, frag)
-    return res
+
+    if check_exclusion:
+        exclude = exclude_flag(res, includeRDKitSanitization=False)
+    else:
+        exclude = False
+
+    # if we still match the exclude flag after stripping salts, go
+    # back to the parent species after solvent stripping. These are now
+    # in the inputFrags list
+    if exclude:
+        res = inputFrags[0]
+        for frag in inputFrags[1:]:
+            res = Chem.CombineMols(res, frag)
+
+    if neutralize:
+        res = uncharge_mol(res)
+    return res, exclude
 
 
 def get_isotope_parent_mol(m):
@@ -391,18 +417,12 @@ def get_isotope_parent_mol(m):
 
 
 def get_parent_mol(m, neutralize=True, check_exclusion=True, verbose=False):
-    if check_exclusion:
-        exclude = exclude_flag(m, includeRDKitSanitization=False)
-        #print("EXCLUDE: ", Chem.MolToSmiles(m), exclude)
-    else:
-        exclude = False
-    if not exclude:
-        res = get_fragment_parent_mol(get_isotope_parent_mol(m),
-                                      neutralize=neutralize,
-                                      verbose=verbose)
-    else:
-        res = m
-    return res
+    ipar = get_isotope_parent_mol(m)
+    res, exclude = get_fragment_parent_mol(ipar,
+                                           neutralize=neutralize,
+                                           check_exclusion=check_exclusion,
+                                           verbose=verbose)
+    return res, exclude
 
 
 def get_parent_molblock(ctab,
@@ -410,11 +430,11 @@ def get_parent_molblock(ctab,
                         check_exclusion=True,
                         verbose=False):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
-    parent = get_parent_mol(m,
-                            neutralize=neutralize,
-                            check_exclusion=check_exclusion,
-                            verbose=verbose)
-    return Chem.MolToMolBlock(parent, kekulize=False)
+    parent, exclude = get_parent_mol(m,
+                                     neutralize=neutralize,
+                                     check_exclusion=check_exclusion,
+                                     verbose=verbose)
+    return Chem.MolToMolBlock(parent, kekulize=False), exclude
 
 
 def standardize_mol(m, check_exclusion=True):
