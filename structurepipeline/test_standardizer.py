@@ -2882,3 +2882,72 @@ M  END'''
         sm = Chem.MolFromMolBlock(smb, sanitize=False)
         self.assertEqual(len(Chem.GetMolFrags(sm)), 2)
         self.assertEqual(Chem.GetFormalCharge(sm), 0)
+
+    def testLosingCrossedDoubleBond(self):
+        ' cases where we lost a crossed double bond on standardization '
+        mb = '''1239046
+  SciTegic02161214032D
+
+ 24 28  0  0  0  0            999 V2000
+    0.9032    3.5258    0.0000 Br  0  0
+    2.7902    1.4518    0.0000 O   0  0
+    3.6834    0.4598    0.0000 O   0  0
+   -2.0248    2.0333    0.0000 O   0  0
+   -2.0248    3.3682    0.0000 O   0  0
+   -0.5488    0.8208    0.0000 O   0  0
+    0.4907   -0.2188    0.0000 N   0  0
+    1.5707    0.5658    0.0000 C   0  0
+    0.9032    1.0508    0.0000 C   0  0
+    2.3777    0.7374    0.0000 C   0  0
+    1.3157   -0.2188    0.0000 C   0  0
+    0.2358    0.5658    0.0000 C   0  0
+    2.9297    0.1243    0.0000 C   0  0
+    0.9032    1.8758    0.0000 C   0  0
+    0.1888    2.2883    0.0000 C   0  0
+    1.8678   -0.8319    0.0000 C   0  0
+   -1.2402    2.2883    0.0000 C   0  0
+    2.6747   -0.6604    0.0000 C   0  0
+    0.1888    3.1133    0.0000 C   0  0
+   -1.2402    3.1133    0.0000 C   0  0
+   -0.5257    1.8758    0.0000 C   0  0
+   -0.5257    3.5258    0.0000 C   0  0
+    3.5971    1.2803    0.0000 C   0  0
+   -2.5097    2.7008    0.0000 C   0  0
+  1 19  1  0
+  2 10  1  0
+  2 23  1  0
+  3 13  1  0
+  3 23  1  0
+  4 17  1  0
+  4 24  1  0
+  5 20  1  0
+  5 24  1  0
+  6 12  2  0
+  7 11  1  0
+  7 12  1  0
+  8  9  1  0
+  8 10  2  0
+  8 11  1  0
+  9 12  1  0
+  9 14  2  3
+ 10 13  1  0
+ 11 16  2  0
+ 13 18  2  0
+ 14 15  1  0
+ 15 19  1  0
+ 15 21  2  0
+ 16 18  1  0
+ 17 20  2  0
+ 17 21  1  0
+ 19 22  2  0
+ 20 22  1  0
+M  END'''
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(
+            m.GetBondBetweenAtoms(8, 13).GetStereo(),
+            Chem.BondStereo.STEREOANY)
+        smb = standardizer.standardize_molblock(mb)
+        sm = Chem.MolFromMolBlock(smb, sanitize=False)
+        self.assertEqual(
+            sm.GetBondBetweenAtoms(8, 13).GetStereo(),
+            Chem.BondStereo.STEREOANY)
