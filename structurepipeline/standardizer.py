@@ -20,8 +20,8 @@ import math
 import sys
 
 rdkversion = rdkit.__version__.split(".")[:2]
-if rdkversion < ["2019", "03"]:
-    raise ValueError("need an RDKit version >= 2019.03.1")
+if rdkversion < ["2019", "09"]:
+    raise ValueError("need an RDKit version >= 2019.09.1")
 
 
 def kekulize_mol(m):
@@ -368,6 +368,8 @@ def get_fragment_parent_mol(m,
         else:
             cfrag = Chem.Mol(frag)
         keepFrags.append(i)
+        # make sure there are no extraneous H atoms in the fragment:
+        cfrag = Chem.RemoveHs(cfrag,sanitize=False)
         # need aromaticity perception to get a reasonable SMILES, but don't
         # want to risk a full sanitization:
         cfrag.ClearComputedProps()
