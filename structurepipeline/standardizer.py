@@ -369,7 +369,7 @@ def get_fragment_parent_mol(m,
             cfrag = Chem.Mol(frag)
         keepFrags.append(i)
         # make sure there are no extraneous H atoms in the fragment:
-        cfrag = Chem.RemoveHs(cfrag,sanitize=False)
+        cfrag = Chem.RemoveHs(cfrag, sanitize=False)
         # need aromaticity perception to get a reasonable SMILES, but don't
         # want to risk a full sanitization:
         cfrag.ClearComputedProps()
@@ -432,6 +432,7 @@ def get_parent_molblock(ctab,
                         check_exclusion=True,
                         verbose=False):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+    reapply_molblock_wedging(m)
     parent, exclude = get_parent_mol(m,
                                      neutralize=neutralize,
                                      check_exclusion=check_exclusion,
