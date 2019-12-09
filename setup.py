@@ -1,7 +1,9 @@
 from setuptools import setup
 
+__version__ = '0.0.1'
+
 setup(name='structurepipeline',
-      version='0.0.1',
+      version=__version__,
       description='ChEMBL Structure Pipeline',
       url='https://www.ebi.ac.uk/chembl/',
       author='Greg Landrum',
