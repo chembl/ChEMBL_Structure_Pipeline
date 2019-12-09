@@ -19,7 +19,7 @@ import rdkit
 import math
 import sys
 
-rdkversion = rdkit.__version__.split(".")[:2]
+rdkversion = rdkit.__version__.split(".")
 if rdkversion < ["2019", "09", "2"]:
     raise ValueError("need an RDKit version >= 2019.09.2")
 
