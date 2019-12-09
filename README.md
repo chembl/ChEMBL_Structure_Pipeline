@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/chembl/ChEMBL_Structure_Pipeline.svg?branch=master)](https://travis-ci.org/chembl/ChEMBL_Structure_Pipeline)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # ChEMBL Structure Pipeline
 
 ChEMBL protocols used to standardise and salt strip molecules. First used in ChEMBL 26.
