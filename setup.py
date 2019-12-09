@@ -9,4 +9,5 @@ setup(name='structurepipeline',
       license='MIT',
       packages=['structurepipeline'],
       package_data={'structurepipeline': ['data/*']},
+      install_requires=['rdkit>=2019.09.2'],
       zip_safe=False)
