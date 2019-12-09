@@ -6,10 +6,14 @@ matrix:
     env: CONDA=3.6 RDKIT=2019.09.2
   - os: linux
     env: CONDA=3.7 RDKIT=2019.09.2
+  - os: linux
+    env: CONDA=3.8 RDKIT=2019.09.2
   - os: osx
     env: CONDA=3.6 RDKIT=2019.09.2
   - os: osx
     env: CONDA=3.7 RDKIT=2019.09.2
+  - os: osx
+    env: CONDA=3.8 RDKIT=2019.09.2
 
 before_install:
 - |
