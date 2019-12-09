@@ -6,16 +6,17 @@
 #  The contents are covered by the terms of the MIT license
 #  which is included in the file LICENSE, found at the root
 #  of the source tree.
-from . import standardizer
+from .. import standardizer
 import unittest
 import math
+import os
 from rdkit import Chem
 from rdkit.Chem import rdMolTransforms
 from rdkit.Chem import rdDepictor
 from rdkit.Chem import rdqueries
 from rdkit import RDLogger
 RDLogger.DisableLog("rdApp.info")
-
+_test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
 
 class TestCase(unittest.TestCase):
     def testAtomWiggleBonds(self):
@@ -490,7 +491,7 @@ M  END
             [])
 
     def test_triple_bonds_and_allenes(self):
-        ms = [x for x in Chem.SDMolSupplier('./test_data/odd_drawings.sdf')]
+        ms = [x for x in Chem.SDMolSupplier(os.path.join(_test_data_dir, "odd_drawings.sdf"))]
         self.assertEqual(len(ms), 4)
         for m in ms:
             cm = standardizer.cleanup_drawing_mol(m)
