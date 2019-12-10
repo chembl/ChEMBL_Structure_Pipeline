@@ -17,7 +17,7 @@ From source:
 From conda:
 
 ```bash
-conda install -c chembl structurepipeline
+conda install -c chembl chembl_structure_pipeline
 ```
 
 ## Usage
