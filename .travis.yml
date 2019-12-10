@@ -1,5 +1,5 @@
 # Don't use language: python; this gives us an unnecessary virtualenv
-language: none
+language: c
 dist: trusty
 matrix:
   include:
