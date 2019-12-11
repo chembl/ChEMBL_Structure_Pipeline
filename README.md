@@ -26,7 +26,7 @@ conda install -c chembl chembl_structure_pipeline
 
 
 ```python
-from structurepipeline import standardizer
+from chembl_structure_pipeline import standardizer
 
 o_molblock = """
   SciTegic07111214002D
@@ -81,7 +81,7 @@ std_molblock = standardizer.standardize_molblock(o_molblock)
 
 
 ```python
-from structurepipeline import standardizer
+from chembl_structure_pipeline import standardizer
 
 
 o_molblock = """
