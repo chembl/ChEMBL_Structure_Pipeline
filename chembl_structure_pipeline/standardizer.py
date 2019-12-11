@@ -19,9 +19,9 @@ import rdkit
 import math
 import sys
 
-rdkversion = rdkit.__version__.split(".")[:2]
-if rdkversion < ["2019", "09"]:
-    raise ValueError("need an RDKit version >= 2019.09.1")
+rdkversion = rdkit.__version__.split(".")
+if rdkversion < ["2019", "09", "2"]:
+    raise ValueError("need an RDKit version >= 2019.09.2")
 
 
 def kekulize_mol(m):
