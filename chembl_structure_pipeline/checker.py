@@ -311,7 +311,7 @@ class ZeroCoordsMolChecker(MolChecker):
     penalty = 6
 
     def check(mol):
-        if not mol.GetNumAtoms():
+        if not mol.GetNumAtoms() or mol.GetNumAtoms() == 1:
             return False
         if mol.GetNumConformers():
             origin = Geometry.Point3D(0, 0, 0)
