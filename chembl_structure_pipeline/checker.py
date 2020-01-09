@@ -430,9 +430,9 @@ class V3000FileChecker(MolFileChecker):
 
 _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
              Has3DMolChecker, Has3DFlagSetMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
-             HasMultipleStereoBondsMolChecker, HasOverlappingAtomsMolChecker, ZeroCoordsMolChecker,
-             HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
-             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, HasManyOverlappingAtomsMolChecker ]
+             HasMultipleStereoBondsMolChecker, HasManyOverlappingAtomsMolChecker, HasOverlappingAtomsMolChecker,
+             ZeroCoordsMolChecker, HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
+             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker ]
 
 
 def check_molblock(mb):
@@ -440,11 +440,16 @@ def check_molblock(mb):
     if mol is None:
         return ((7, "Illegal input"),)
     res = []
+    many_overlap = False
     for checker in _checkers:
         if issubclass(checker, MolFileChecker):
             matched = checker.check(mb)
         elif issubclass(checker, MolChecker):
+            if checker.__name__ == 'HasOverlappingAtomsMolChecker' and many_overlap:
+                continue
             matched = checker.check(mol)
+            if checker.__name__ == 'HasManyOverlappingAtomsMolChecker' and matched:
+                many_overlap = True
         else:
             raise ValueError(checker)
         if matched:
