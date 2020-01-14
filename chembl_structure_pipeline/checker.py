@@ -130,12 +130,21 @@ class StereoChecker(CheckerBase):
         if layers:
             nSpec = 0
             nUnspec = 0
-            for center in layers[-1].split(','):
-                if center[-1] == '?':
-                    nUnspec += 1
-                else:
-                    nSpec += 1
-            nInchi = nSpec
+            for layer in layers[-1].split(';'):
+                if layer:
+                    nSpecLayer = 0
+                    nUnspecLayer = 0
+                    n = 1
+                    for center in layer.split(','):
+                        center = center.replace(";", "")
+                        if '*' in center:
+                            n = int(re.sub('(\d+)\*.*','\\1',center))
+                        if center[-1] == '?':
+                            nUnspecLayer += 1
+                        else:
+                            nSpecLayer += 1
+                    nSpec += nSpecLayer * n
+            nInchi = int(nSpec * n)
 
         m = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
 
@@ -311,7 +320,7 @@ class ZeroCoordsMolChecker(MolChecker):
     penalty = 6
 
     def check(mol):
-        if not mol.GetNumAtoms():
+        if not mol.GetNumAtoms() or mol.GetNumAtoms() == 1:
             return False
         if mol.GetNumConformers():
             origin = Geometry.Point3D(0, 0, 0)
@@ -430,9 +439,9 @@ class V3000FileChecker(MolFileChecker):
 
 _checkers = [PolymerFileChecker, V3000FileChecker, NumAtomsMolChecker,
              Has3DMolChecker, Has3DFlagSetMolChecker, HasIllegalBondTypeMolChecker, HasIllegalBondStereoMolChecker,
-             HasMultipleStereoBondsMolChecker, HasOverlappingAtomsMolChecker, ZeroCoordsMolChecker,
-             HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
-             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker, HasManyOverlappingAtomsMolChecker ]
+             HasMultipleStereoBondsMolChecker, HasManyOverlappingAtomsMolChecker, HasOverlappingAtomsMolChecker,
+             ZeroCoordsMolChecker, HasCrossedRingBondMolChecker, HasStereoBondInRingMolChecker,
+             HasStereoBondToStereocenterMolChecker, DisallowedRadicalMolChecker ]
 
 
 def check_molblock(mb):
@@ -440,11 +449,16 @@ def check_molblock(mb):
     if mol is None:
         return ((7, "Illegal input"),)
     res = []
+    many_overlap = False
     for checker in _checkers:
         if issubclass(checker, MolFileChecker):
             matched = checker.check(mb)
         elif issubclass(checker, MolChecker):
+            if checker.__name__ == 'HasOverlappingAtomsMolChecker' and many_overlap:
+                continue
             matched = checker.check(mol)
+            if checker.__name__ == 'HasManyOverlappingAtomsMolChecker' and matched:
+                many_overlap = True
         else:
             raise ValueError(checker)
         if matched:
