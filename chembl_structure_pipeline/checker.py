@@ -132,19 +132,18 @@ class StereoChecker(CheckerBase):
             nUnspec = 0
             for layer in layers[-1].split(';'):
                 if layer:
-                    nSpec_layer = 0
-                    nUnspec_layer = 0
+                    nSpecLayer = 0
+                    nUnspecLayer = 0
                     n = 1
                     for center in layer.split(','):
-                        center = center.replace(";","")
-                        if re.search('\*',center):
+                        center = center.replace(";", "")
+                        if '*' in center:
                             n = int(re.sub('(\d+)\*.*','\\1',center))
-                        if center.replace(";","")[-1] == '?':
-                            nUnspec_layer += 1
+                        if center[-1] == '?':
+                            nUnspecLayer += 1
                         else:
-                            nSpec_layer += 1
-                    nSpec += nSpec_layer * n
-                    
+                            nSpecLayer += 1
+                    nSpec += nSpecLayer * n
             nInchi = int(nSpec * n)
 
         m = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
