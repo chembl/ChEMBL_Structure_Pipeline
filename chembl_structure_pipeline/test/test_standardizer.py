@@ -552,6 +552,8 @@ M  END
             ('O=C([O-])C(O)C(O)C(=O)[O-]', 'O=C(O)C(O)C(O)C(=O)O'),
             ('O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]',
              'O=C([O-])C(O)C(O)C(=O)[O-].[Na+].[Na+]'),
+            ('COc1cc(NCc2ccc3nc(N)nc(N)c3c2C)cc(OC)c1OC.O=CC(O)C(O)C(O)C(O)C(=O)O',
+             'COc1cc(NCc2ccc3nc(N)nc(N)c3c2C)cc(OC)c1OC')
         ]
         for smi, expected in tests:
             m = Chem.MolFromSmiles(smi)
