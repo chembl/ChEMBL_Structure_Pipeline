@@ -144,7 +144,7 @@ class StereoChecker(CheckerBase):
                         else:
                             nSpecLayer += 1
                     nSpec += nSpecLayer * n
-            nInchi = int(nSpec * n)
+            nInchi = int(nSpec)
 
         m = Chem.MolFromMolBlock(molb, sanitize=False, removeHs=False)
 
