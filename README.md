@@ -22,7 +22,7 @@ conda install -c chembl chembl_structure_pipeline
 
 ## Usage
 
-### Standardise molblock
+### Standardise a compound [(info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#standardize_molblock)
 
 
 ```python
@@ -46,7 +46,7 @@ M  END
 std_molblock = standardizer.standardize_molblock(o_molblock)
 ```
 
-### Get the parent molecule
+### Get the parent compound [(info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#get_parent_molblock)
 
 
 ```python
@@ -67,7 +67,7 @@ M  END
 parent_molblock, _ = standardizer.get_parent_molblock(o_molblock)
 ```
 
-### Check the molecule
+### Check a compound [(+info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#checkmolecule)
 
 The checker assesses the quality of a structure. It highlights specific features or issues in the structure that may need to be revised. Together with the description of the issue, the checker process returns a penalty score (between 0-9) which reflects the seriousness of the issue (the higher the score, the more critical is the issue)
 
