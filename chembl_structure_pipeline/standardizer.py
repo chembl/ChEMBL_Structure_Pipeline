@@ -470,12 +470,12 @@ def reapply_molblock_wedging(m):
                 b.SetBondDir(Chem.BondDir.BEGINDASH)
 
 
-def parse_molblock(molblock, useRDKitChemistry=False):
+def parse_molblock(ctab, useRDKitChemistry=False):
     if useRDKitChemistry:
-        m = Chem.MolFromMolBlock(molblock, sanitize=False, removeHs=True)
+        m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=True)
         Chem.SanitizeMol(m)
     else:
-        m = Chem.MolFromMolBlock(molblock, sanitize=False, removeHs=False)
+        m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
         # the RDKit has, by default, removed bond wedging information from the molecule
         # put that back in:
         reapply_molblock_wedging(m)
@@ -488,6 +488,7 @@ def parse_molblock(molblock, useRDKitChemistry=False):
         Chem.SetBondStereoFromDirections(m)
         for bidx in anybonds:
             m.GetBondWithIdx(bidx).SetStereo(Chem.BondStereo.STEREOANY)
+    return m
 
 
 def standardize_molblock(ctab, check_exclusion=True):
