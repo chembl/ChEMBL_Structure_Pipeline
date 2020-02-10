@@ -475,7 +475,7 @@ def parse_molblock(molblock, useRDKitChemistry=False):
         m = Chem.MolFromMolBlock(molblock, sanitize=False, removeHs=True)
         Chem.SanitizeMol(m)
     else:
-        m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+        m = Chem.MolFromMolBlock(molblock, sanitize=False, removeHs=False)
         # the RDKit has, by default, removed bond wedging information from the molecule
         # put that back in:
         reapply_molblock_wedging(m)
