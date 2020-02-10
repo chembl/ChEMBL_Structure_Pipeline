@@ -39,8 +39,6 @@ def exclude_flag(mol, includeRDKitSanitization=True):
                 Chem.SanitizeMol(mol)
             except:
                 rdkit_fails = True
-    else:
-        mol = mol
 
     for atom in mol.GetAtoms():
         a_type = atom.GetSymbol()
