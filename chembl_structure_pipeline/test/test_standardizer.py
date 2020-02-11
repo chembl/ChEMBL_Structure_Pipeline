@@ -3204,9 +3204,9 @@ M  END'''
 M  CHG  2   2  -1   3   1
 M  END'''
         mtt = standardizer.parse_molblock(mb, useRDKitChemistry=True)
-        assert type(mtt) is Chem.Mol
+        self.assertIs(type(mtt), Chem.Mol)
         mtf = standardizer.parse_molblock(mb, useRDKitChemistry=False)
-        assert type(mtf) is Chem.Mol
+        self.assertIs(type(mtf), Chem.Mol)
 
 
         mb = ''' wrong valence
@@ -3224,9 +3224,9 @@ M  CHG  9   2  -1   3   1
 M  END'''
 
         mft = standardizer.parse_molblock(mb, useRDKitChemistry=True)
-        assert type(mft) is type(None)
+        self.assertIsNone(mft)
         mff = standardizer.parse_molblock(mb, useRDKitChemistry=False)
-        assert type(mff) is type(None)
+        self.assertIsNone(mff)
 
 
         mb = '''
@@ -3274,4 +3274,4 @@ M  END
 
         ms = standardizer.parse_molblock(mb, useRDKitChemistry=True)
         mns = standardizer.parse_molblock(mb, useRDKitChemistry=False)
-        assert ms.GetNumAtoms() != mns.GetNumAtoms()
+        self.assertNotEqual(ms.GetNumAtoms(), mns.GetNumAtoms())
