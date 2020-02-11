@@ -67,7 +67,7 @@ M  END
 parent_molblock, _ = standardizer.get_parent_molblock(o_molblock)
 ```
 
-### Check a compound [(+info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#checkmolecule)
+### Check a compound [(info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#checkmolecule)
 
 The checker assesses the quality of a structure. It highlights specific features or issues in the structure that may need to be revised. Together with the description of the issue, the checker process returns a penalty score (between 0-9) which reflects the seriousness of the issue (the higher the score, the more critical is the issue)
 

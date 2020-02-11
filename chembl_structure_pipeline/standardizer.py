@@ -470,21 +470,31 @@ def reapply_molblock_wedging(m):
                 b.SetBondDir(Chem.BondDir.BEGINDASH)
 
 
+def parse_molblock(ctab, useRDKitChemistry=False):
+    if useRDKitChemistry:
+        m = Chem.MolFromMolBlock(ctab, sanitize=True, removeHs=True)
+    else:
+        m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+        if not m:
+            return None
+        # the RDKit has, by default, removed bond wedging information from the molecule
+        # put that back in:
+        reapply_molblock_wedging(m)
+        # Set the stereochemistry of double bonds
+        # This block can be removed if github #X ends up being accepted and fixed
+        anybonds = []
+        for bond in m.GetBonds():
+            if bond.GetStereo() == Chem.BondStereo.STEREOANY:
+                anybonds.append(bond.GetIdx())
+        Chem.SetBondStereoFromDirections(m)
+        for bidx in anybonds:
+            m.GetBondWithIdx(bidx).SetStereo(Chem.BondStereo.STEREOANY)
+    return m
+
+
 def standardize_molblock(ctab, check_exclusion=True):
-    m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
+    m = parse_molblock(ctab, useRDKitChemistry=False)
     if check_exclusion:
         if exclude_flag(m, includeRDKitSanitization=False):
             return ctab
-    # the RDKit has, by default, removed bond wedging information from the molecule
-    # put that back in:
-    reapply_molblock_wedging(m)
-    # Set the stereochemistry of double bonds
-    # This block can be removed if github #X ends up being accepted and fixed
-    anybonds = []
-    for bond in m.GetBonds():
-        if bond.GetStereo() == Chem.BondStereo.STEREOANY:
-            anybonds.append(bond.GetIdx())
-    Chem.SetBondStereoFromDirections(m)
-    for bidx in anybonds:
-        m.GetBondWithIdx(bidx).SetStereo(Chem.BondStereo.STEREOANY)
     return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False))

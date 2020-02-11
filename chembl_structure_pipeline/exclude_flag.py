@@ -20,7 +20,7 @@ METAL_LIST = [
 ]
 
 
-def exclude_flag(molfile, includeRDKitSanitization=True):
+def exclude_flag(mol, includeRDKitSanitization=True):
     """
     Rules to exclude structures.
 
@@ -32,15 +32,13 @@ def exclude_flag(molfile, includeRDKitSanitization=True):
     metallic = False
     boron_count = 0
 
-    if type(molfile) == str:
-        mol = Chem.MolFromMolBlock(molfile, sanitize=False)
+    if type(mol) == str:
+        mol = Chem.MolFromMolBlock(mol, sanitize=False)
         if includeRDKitSanitization:
             try:
                 Chem.SanitizeMol(mol)
             except:
                 rdkit_fails = True
-    else:
-        mol = molfile
 
     for atom in mol.GetAtoms():
         a_type = atom.GetSymbol()

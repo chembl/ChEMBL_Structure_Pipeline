@@ -3186,3 +3186,92 @@ M  END'''
         inchi1 = Chem.MolBlockToInchi(mb)
         inchi2 = Chem.MolBlockToInchi(smb)
         self.assertEqual(inchi1,inchi2)
+
+
+    def testParseMolblock(self):
+        ' Check parse_molbock function '
+        mb = '''
+  Mrv1810 07121910172D          
+
+  4  3  0  0  0  0            999 V2000
+   -2.5038    0.4060    0.0000 C   0  0  3  0  0  0  0  0  0  0  0  0
+   -2.5038    1.2310    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+   -3.2182   -0.0065    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+   -1.7893   -0.0065    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  4  0  0  0
+M  CHG  2   2  -1   3   1
+M  END'''
+        mtt = standardizer.parse_molblock(mb, useRDKitChemistry=True)
+        self.assertIs(type(mtt), Chem.Mol)
+        mtf = standardizer.parse_molblock(mb, useRDKitChemistry=False)
+        self.assertIs(type(mtf), Chem.Mol)
+
+
+        mb = ''' wrong valence
+  Mrv1810 07121910172D          
+
+  4  3  0  0  0  0            999 V2000
+   -2.5038    0.4060    0.0000 C   0  0  3  0  0  0  0  0  0  0  0  0
+   -2.5038    1.2310    0.0000 O   0  5  0  0  0  0  0  0  0  0  0  0
+   -3.2182   -0.0065    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+   -1.7893   -0.0065    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  4  0  0  0
+M  CHG  9   2  -1   3   1
+M  END'''
+
+        mft = standardizer.parse_molblock(mb, useRDKitChemistry=True)
+        self.assertIsNone(mft)
+        mff = standardizer.parse_molblock(mb, useRDKitChemistry=False)
+        self.assertIsNone(mff)
+
+
+        mb = '''
+  MJ200400                      
+
+ 18 18  0  0  0  0  0  0  0  0999 V2000
+   -0.8221    0.5653   -0.1449 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.8063   -0.5926   -0.1512 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2643    0.9661   -0.1530 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.2643   -0.9661   -1.1041 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8221   -0.5652   -1.1122 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8063    0.5926   -1.1059 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2211    0.8386   -0.8132 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2083    0.8314    0.5338 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.4073   -0.8659    0.5171 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.5804   -0.8782   -0.1453 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2531    1.7911   -0.1485 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.6634    0.6928    0.5152 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.2531   -1.7911   -1.1086 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6634   -0.6928   -1.7724 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2211   -0.8386   -0.4439 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2083   -0.8313   -1.7910 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.4074    0.8660   -1.7743 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5804    0.8782   -1.1118 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  7  1  0  0  0  0
+  1  8  1  0  0  0  0
+  2  4  1  0  0  0  0
+  2  9  1  0  0  0  0
+  2 10  1  0  0  0  0
+  3  6  1  0  0  0  0
+  3 11  1  0  0  0  0
+  3 12  1  0  0  0  0
+  4  5  1  0  0  0  0
+  4 13  1  0  0  0  0
+  4 14  1  0  0  0  0
+  5  6  1  0  0  0  0
+  5 15  1  0  0  0  0
+  5 16  1  0  0  0  0
+  6 17  1  0  0  0  0
+  6 18  1  0  0  0  0
+M  END
+'''
+
+        ms = standardizer.parse_molblock(mb, useRDKitChemistry=True)
+        mns = standardizer.parse_molblock(mb, useRDKitChemistry=False)
+        self.assertNotEqual(ms.GetNumAtoms(), mns.GetNumAtoms())
