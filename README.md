@@ -5,7 +5,7 @@
 
 ChEMBL protocols used to standardise and salt strip molecules. First used in ChEMBL 26.
 
-Check the [wiki](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki) for some implementation details.
+Check the [wiki](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki) and paper[[1]](#1) for a detailed description of the different processes.
 
 ## Installation (it requires RDKit to work)
 
@@ -90,3 +90,8 @@ M  END
 
 issues = checker.check_molblock(o_molblock)
 ```
+
+## References
+<a id="1">[1]</a> 
+Bento, A.P., Hersey, A., Félix, E. et al. An open source chemical structure curation pipeline using RDKit. J Cheminform 12, 51 (2020). https://doi.org/10.1186/s13321-020-00456-1
+
