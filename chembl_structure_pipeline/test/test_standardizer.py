@@ -16,7 +16,9 @@ from rdkit.Chem import rdDepictor
 from rdkit.Chem import rdqueries
 from rdkit import RDLogger
 RDLogger.DisableLog("rdApp.info")
-_test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_data")
+_test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "test_data")
+
 
 class TestCase(unittest.TestCase):
     def testAtomWiggleBonds(self):
@@ -491,7 +493,10 @@ M  END
             [])
 
     def test_triple_bonds_and_allenes(self):
-        ms = [x for x in Chem.SDMolSupplier(os.path.join(_test_data_dir, "odd_drawings.sdf"))]
+        ms = [
+            x for x in Chem.SDMolSupplier(
+                os.path.join(_test_data_dir, "odd_drawings.sdf"))
+        ]
         self.assertEqual(len(ms), 4)
         for m in ms:
             cm = standardizer.cleanup_drawing_mol(m)
@@ -543,8 +548,7 @@ M  END
         tests = [
             ('c1cccnc1C(=O)O.[Na]', 'c1cccnc1C(=O)O'),
             ('c1cccnc1C(=O)[O-].[Na+]', 'c1cccnc1C(=O)O'),
-            ('[Na].[Cl]', '[Na].[Cl]'),
-            ('[Na+].[Cl-]', '[Na+].[Cl-]'),
+            ('[Na].[Cl]', '[Na].[Cl]'), ('[Na+].[Cl-]', '[Na+].[Cl-]'),
             ('c1cccnc1[NH3+].O=C(O)C(O)C(O)C(=O)O', 'c1cccnc1N'),
             ('c1cccnc1[NH3+].O=C([O-])[C@H](O)[C@H](O)C(=O)[O-]', 'c1cccnc1N'),
             ('c1cccnc1.ClCCl', 'c1cccnc1'),
@@ -2955,7 +2959,6 @@ M  END'''
             sm.GetBondBetweenAtoms(8, 13).GetStereo(),
             Chem.BondStereo.STEREOANY)
 
-
     def testChiralHsInterferingWithSaltStripping(self):
         ' cases where chiral Hs led to duplicates in salt stripper results '
         mb = '''codeine sulfate
@@ -3185,8 +3188,7 @@ M  END'''
         smb, exclude = standardizer.get_parent_molblock(mb)
         inchi1 = Chem.MolBlockToInchi(mb)
         inchi2 = Chem.MolBlockToInchi(smb)
-        self.assertEqual(inchi1,inchi2)
-
+        self.assertEqual(inchi1, inchi2)
 
     def testParseMolblock(self):
         ' Check parse_molbock function '
@@ -3208,7 +3210,6 @@ M  END'''
         mtf = standardizer.parse_molblock(mb, useRDKitChemistry=False)
         self.assertIs(type(mtf), Chem.Mol)
 
-
         mb = ''' wrong valence
   Mrv1810 07121910172D          
 
@@ -3227,7 +3228,6 @@ M  END'''
         self.assertIsNone(mft)
         mff = standardizer.parse_molblock(mb, useRDKitChemistry=False)
         self.assertIsNone(mff)
-
 
         mb = '''
   MJ200400                      
@@ -3275,3 +3275,82 @@ M  END
         ms = standardizer.parse_molblock(mb, useRDKitChemistry=True)
         mns = standardizer.parse_molblock(mb, useRDKitChemistry=False)
         self.assertNotEqual(ms.GetNumAtoms(), mns.GetNumAtoms())
+
+    def testGithub24(self):
+        ' Fix for github #24: chirality being removed from tartrate substructures '
+        mb = '''
+  Mrv2108 07072112442D          
+
+  0  0  0     0  0            999 V3000
+M  V30 BEGIN CTAB
+M  V30 COUNTS 21 22 0 0 1
+M  V30 BEGIN ATOM
+M  V30 1 O -2.6527 1.8188 0 0
+M  V30 2 C -1.2459 2.4452 0 0
+M  V30 3 O -1.0849 3.9768 0 0
+M  V30 4 C 0 1.54 0 0 CFG=2
+M  V30 5 O 1.4646 2.0159 0 0
+M  V30 6 B 2.3698 0.77 0 0 CHG=-1
+M  V30 7 O 1.4646 -0.4759 0 0
+M  V30 8 C 0 0 0 0 CFG=1
+M  V30 9 C -1.2459 -0.9052 0 0
+M  V30 10 O -2.6527 -0.2788 0 0
+M  V30 11 O -1.0849 -2.4368 0 0
+M  V30 12 O 3.275 2.0159 0 0
+M  V30 13 C 4.7395 1.54 0 0 CFG=1
+M  V30 14 C 5.9854 2.4452 0 0
+M  V30 15 O 5.8244 3.9768 0 0
+M  V30 16 O 7.3923 1.8188 0 0
+M  V30 17 C 4.7395 0 0 0 CFG=2
+M  V30 18 C 5.9854 -0.9052 0 0
+M  V30 19 O 5.8244 -2.4368 0 0
+M  V30 20 O 7.3923 -0.2788 0 0
+M  V30 21 O 3.275 -0.4759 0 0
+M  V30 END ATOM
+M  V30 BEGIN BOND
+M  V30 1 2 1 2
+M  V30 2 1 2 3
+M  V30 3 1 4 5
+M  V30 4 1 5 6
+M  V30 5 1 6 7
+M  V30 6 1 8 7
+M  V30 7 1 4 8
+M  V30 8 1 8 9 CFG=1
+M  V30 9 2 9 10
+M  V30 10 1 9 11
+M  V30 11 1 6 12
+M  V30 12 1 13 12
+M  V30 13 1 13 14 CFG=1
+M  V30 14 2 14 15
+M  V30 15 1 14 16
+M  V30 16 1 13 17
+M  V30 17 1 17 18 CFG=3
+M  V30 18 2 18 19
+M  V30 19 1 18 20
+M  V30 20 1 17 21
+M  V30 21 1 6 21
+M  V30 22 1 4 2 CFG=3
+M  V30 END BOND
+M  V30 END CTAB
+M  END
+'''
+        # part 1 of the bug: tartrate substructures were being modified:
+        m = Chem.MolFromMolBlock(mb)
+        self.assertEqual(
+            Chem.MolToSmiles(m),
+            'O=C(O)[C@@H]1O[B-]2(O[C@H]1C(=O)O)O[C@@H](C(=O)O)[C@H](C(=O)O)O2')
+        om = standardizer.standardize_mol(m)
+        self.assertEqual(
+            Chem.MolToSmiles(om),
+            'O=C(O)[C@@H]1O[B-]2(O[C@H]1C(=O)O)O[C@@H](C(=O)O)[C@H](C(=O)O)O2')
+        self.assertEqual(
+            Chem.MolToSmiles(
+                Chem.MolFromMolBlock(standardizer.standardize_molblock(mb))),
+            'O=C(O)[C@@H]1O[B-]2(O[C@H]1C(=O)O)O[C@@H](C(=O)O)[C@H](C(=O)O)O2')
+        # part 2 of the bug: multiple tartrates and tartrates not at the beginning of
+        # the molecule were not being flattened
+        m = Chem.MolFromSmiles(
+            'CCC.O[C@H]([C@@H](O)C(O)=O)C(O)=O.O[C@H]([C@@H](O)C(O)=O)C(O)=O')
+        om = standardizer.standardize_mol(m)
+        self.assertEqual(Chem.MolToSmiles(om),
+                         'CCC.O=C(O)C(O)C(O)C(=O)O.O=C(O)C(O)C(O)C(=O)O')
