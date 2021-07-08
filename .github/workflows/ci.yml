@@ -30,6 +30,8 @@ jobs:
         shell: bash -l {0}
         run: conda install rdkit=${{ matrix.rdkit-version }}
       - name: Install chembl_structure_pipeline
+        shell: bash -l {0}
         run: python setup.py install
       - name: Run tests
+        shell: bash -l {0}
         run: nosetests --with-doctest
