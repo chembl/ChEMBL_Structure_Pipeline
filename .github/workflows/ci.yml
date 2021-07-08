@@ -26,9 +26,9 @@ jobs:
           activate-environment: cspipeline
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-      - name: Install RDKit
+      - name: Install RDKit and nose
         shell: bash -l {0}
-        run: conda install rdkit=${{ matrix.rdkit-version }}
+        run: conda install rdkit=${{ matrix.rdkit-version }} nose
       - name: Install chembl_structure_pipeline
         shell: bash -l {0}
         run: python setup.py install
