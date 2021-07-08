@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/chembl/ChEMBL_Structure_Pipeline.svg?branch=master)](https://travis-ci.org/chembl/ChEMBL_Structure_Pipeline)
+[![CI Testing](https://github.com/chembl/ChEMBL_Structure_Pipeline/workflows/CI/badge.svg)](https://github.com/chembl/ChEMBL_Structure_Pipeline/actions?query=workflow%3ACI+branch%3Amain)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # ChEMBL Structure Pipeline

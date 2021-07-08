@@ -3,11 +3,11 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - '**'
+      - main
   push:
     branches:
       - main
-    tags: '**'
+    tags: '*'
 jobs:
   test:
     name: chembl_structure_pipeline (${{ matrix.os }}, ${{ matrix.python-version }}, ${{ matrix.rdkit-version }})
@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
         python-version: ["3.8", "3.9"]
-        rdkit-version: ["2019.09", "2021.03"]
+        rdkit-version: ["2021.03"]
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
