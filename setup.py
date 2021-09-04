@@ -10,4 +10,9 @@ setup(name='chembl_structure_pipeline',
       license='MIT',
       packages=['chembl_structure_pipeline'],
       package_data={'chembl_structure_pipeline': ['data/*']},
+      entry_points = {
+        'console_scripts': 
+        ['chembl_std=chembl_structure_pipeline.chembl_std:main'],
+      },
+
       zip_safe=False)
