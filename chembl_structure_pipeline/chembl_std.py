@@ -36,8 +36,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument('-s', '--standartize', action='store_true', default=True,
-                        help='Whether to perform standartization of input SMILES')
-    parser.add_argument('-p', action='store_true', default=True,
+                        help='Disable standartization of input SMILES')
+    parser.add_argument('-p', action='store_true', default=False,
                         help='Filter molecules using all PAINS filters together')
     parser.add_argument('-A', action='store_true', default=False,
                         help='Filter molecules using all PAINS_A filter separately')
@@ -60,6 +60,9 @@ def main():
         from rdkit.rdBase import BlockLogs
         block = BlockLogs()
         RDLogger.DisableLog('rdApp.*')
+
+    if args.A or args.B or args.C:
+        args.p = False
 
     params = FilterCatalogParams()
     if args.p:
