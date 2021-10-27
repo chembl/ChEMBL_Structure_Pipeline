@@ -100,7 +100,9 @@ was found:
 from .checker import check_molblock
 from .standardizer import standardize_molblock, standardize_mol
 from .standardizer import get_parent_molblock, get_parent_mol
-__version__ = "1.0.0"
+version_file = open(os.path.join('..', 'VERSION'))
+version = version_file.read().strip()
+__version__ = version
 
 #
 #  Copyright (c) 2019 Greg Landrum

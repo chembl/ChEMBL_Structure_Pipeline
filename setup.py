@@ -1,8 +1,11 @@
+import os
 from setuptools import setup
-import chembl_structure_pipeline
+
+version_file = open('VERSION')
+version = version_file.read().strip()
 
 setup(name='chembl_structure_pipeline',
-      version=chembl_structure_pipeline.__version__,
+      version=version,
       description='ChEMBL Structure Pipeline',
       url='https://www.ebi.ac.uk/chembl/',
       author='Greg Landrum',
