@@ -101,7 +101,7 @@ from .checker import check_molblock
 from .standardizer import standardize_molblock, standardize_mol
 from .standardizer import get_parent_molblock, get_parent_mol
 import os
-version_file = open(os.path.join("/".join(__file__.split("/")[:-1]),'..', 'VERSION'))
+version_file = open(os.path.join("/".join(__file__.split("/")[:-1]), 'VERSION'))
 version = version_file.read().strip()
 __version__ = version
 
