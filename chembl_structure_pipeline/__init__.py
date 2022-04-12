@@ -100,6 +100,7 @@ was found:
 from chembl_structure_pipeline.checker import check_molblock
 from chembl_structure_pipeline.standardizer import standardize_molblock, standardize_mol
 from chembl_structure_pipeline.standardizer import get_parent_molblock, get_parent_mol
+__version__ = "1.0.0"
 
 #
 #  Copyright (c) 2019 Greg Landrum
