@@ -97,9 +97,9 @@ was found:
     >>>
 
 """
-from .checker import check_molblock
-from .standardizer import standardize_molblock, standardize_mol
-from .standardizer import get_parent_molblock, get_parent_mol
+from chembl_structure_pipeline.checker import check_molblock
+from chembl_structure_pipeline.standardizer import standardize_molblock, standardize_mol
+from chembl_structure_pipeline.standardizer import get_parent_molblock, get_parent_mol
 
 #
 #  Copyright (c) 2019 Greg Landrum

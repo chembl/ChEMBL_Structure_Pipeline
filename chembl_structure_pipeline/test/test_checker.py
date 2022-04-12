@@ -6,7 +6,7 @@
 #  The contents are covered by the terms of the MIT license
 #  which is included in the file LICENSE, found at the root
 #  of the source tree.
-from .. import checker
+from chembl_structure_pipeline import checker
 import unittest
 from rdkit import Chem
 
