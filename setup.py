@@ -12,6 +12,6 @@ setup(
     package_data={"chembl_structure_pipeline": ["data/*"]},
     zip_safe=False,
     install_requires=[
-          "rdkit-pypi<=2022.3.1"
+          "rdkit-pypi>=2019.03.1,<=2022.3.1"
     ]
 )
