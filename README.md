@@ -14,6 +14,11 @@ From source:
     git clone https://github.com/chembl/ChEMBL_Structure_Pipeline.git
     pip install ./ChEMBL_Structure_Pipeline
 
+Using `pip`, the latest compatible version of `rdkit` may be installed at the same time:
+```
+pip install "./ChEMBL_Structure_Pipeline[rdkit]"
+```
+
 Using conda:
 
 ```bash
@@ -90,6 +95,24 @@ M  END
 
 issues = checker.check_molblock(o_molblock)
 ```
+
+## Development
+
+The packages required to develop this tool (`nose` and `bump2version`) may be installed via
+```
+pip install -e ".[dev]"
+```
+
+Tests can be run via
+```
+make test
+```
+
+Versioning this tool can be controlled via:
+```
+make increment-minor
+```
+The increment can be `major`, `minor`, or `patch`, accordingly, and this will update `setup.py` and `chembl_structure_pipeline/__init__.py`.
 
 ## References
 <a id="1">[1]</a> 
