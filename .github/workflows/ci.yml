@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - master
+      - '*'
   push:
     branches:
-      - master
+      - '*'
     tags: '*'
 jobs:
   test:
@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
-        python-version: ["3.8", "3.9"]
-        rdkit-version: ["2021.03"]
+        python-version: ["3.8", "3.9", "3.10"]
+        rdkit-version: ["2021.03", "2022.03.03"]
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
