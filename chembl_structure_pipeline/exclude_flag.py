@@ -10,14 +10,14 @@ from rdkit import Chem
 
 # Zn not in the list as we have some Zn containing compounds in ChEMBL
 # most of them are simple salts
-METAL_LIST = [
+METAL_LIST = set([
     "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Ga", "Y", "Zr",
     "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Cd", "In", "Sn", "La", "Hf", "Ta",
     "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "Ac",
     "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
     "Yb", "Lu", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
     "Fm", "Md", "No", "Lr", "Ge", "Sb",
-]
+])
 
 
 def exclude_flag(mol, includeRDKitSanitization=True):
