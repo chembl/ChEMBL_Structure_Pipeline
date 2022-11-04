@@ -11,6 +11,6 @@ setup(
     license="MIT",
     packages=["chembl_structure_pipeline"],
     package_data={"chembl_structure_pipeline": ["data/*"]},
-    install_requires=['rdkit==2022.09.01'],
+    install_requires=['rdkit>=2022.09.01'],
     zip_safe=False,
 )
