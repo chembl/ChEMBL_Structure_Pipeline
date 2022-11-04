@@ -16,22 +16,17 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
-        python-version: ["3.8", "3.9"]
-        rdkit-version: ["2021.03"]
+        python-version: ["3.8", "3.9", "3.10"]
+        rdkit-version: ["2022.09.01"]
     steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          channels: conda-forge
-          activate-environment: cspipeline
-          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-      - name: Install RDKit and nose
-        shell: bash -l {0}
-        run: conda install rdkit=${{ matrix.rdkit-version }} nose
-      - name: Install chembl_structure_pipeline
-        shell: bash -l {0}
-        run: python setup.py install
-      - name: Run tests
-        shell: bash -l {0}
-        run: nosetests --with-doctest
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest rdkit==${{ matrix.rdkit-version }}
+      - name: Test with pytest
+        run: |
+          pytest --doctest-modules
