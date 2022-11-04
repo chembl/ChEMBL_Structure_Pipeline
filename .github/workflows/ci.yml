@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install RDKit and nose
         shell: bash -l {0}
-        run: pip install rdkit=${{ matrix.rdkit-version }} nose
+        run: pip install rdkit==${{ matrix.rdkit-version }} nose
       - name: Install chembl_structure_pipeline
         shell: bash -l {0}
         run: python setup.py install
