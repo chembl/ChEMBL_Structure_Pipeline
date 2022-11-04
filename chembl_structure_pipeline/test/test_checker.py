@@ -245,14 +245,14 @@ M  SED   3 SAMPLE DATA FIELD 3
 M  END
 $$$$
 """
-        self.failUnless(checker.PolymerFileChecker.check(polyBlock))
-        self.failIf(checker.PolymerFileChecker.check(dataBlock))
-        self.failUnlessEqual(checker.check_molblock(polyBlock),
+        self.assertTrue(checker.PolymerFileChecker.check(polyBlock))
+        self.assertFalse(checker.PolymerFileChecker.check(dataBlock))
+        self.assertEqual(checker.check_molblock(polyBlock),
                              ((6, 'polymer information in mol file'),
                               (5, 'InChi_RDKit/Mol stereo mismatch'),
                               (2, 'InChI: Proton(s) added/removed'),
                               (2, 'InChI: Ignore polymer data')))
-        self.failUnlessEqual(checker.check_molblock(dataBlock),
+        self.assertEqual(checker.check_molblock(dataBlock),
                              ((2, 'InChI: Ignore polymer data'),))
 
     def test_v3000(self):
@@ -281,11 +281,11 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.V3000FileChecker.check(v3000Block))
-        self.failIf(checker.V3000FileChecker.check(v2000Block))
-        self.failUnlessEqual(checker.check_molblock(v3000Block),
+        self.assertTrue(checker.V3000FileChecker.check(v3000Block))
+        self.assertFalse(checker.V3000FileChecker.check(v2000Block))
+        self.assertEqual(checker.check_molblock(v3000Block),
                              ((6, 'V3000 mol file'),))
-        self.failUnlessEqual(checker.check_molblock(v2000Block),
+        self.assertEqual(checker.check_molblock(v2000Block),
                              ())
 
     def test_has3d(self):
@@ -307,13 +307,13 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.Has3DMolChecker.check(
+        self.assertTrue(checker.Has3DMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.Has3DMolChecker.check(
+        self.assertFalse(checker.Has3DMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((6, 'molecule has 3D coordinates'),))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ())
 
         matchBlock2 = """
@@ -325,7 +325,7 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnlessEqual(checker.check_molblock(matchBlock2),
+        self.assertEqual(checker.check_molblock(matchBlock2),
                              ((2, 'molecule has the 3D flag set for a 2D conformer'),))
 
     def test_bondtypes(self):
@@ -346,12 +346,12 @@ M  END
             mb = baseBlock.replace('ZZZ', str(i))
             m = Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)
             if i < 4:
-                self.failIf(checker.HasIllegalBondTypeMolChecker.check(m))
-                self.failUnlessEqual(checker.check_molblock(mb),
+                self.assertFalse(checker.HasIllegalBondTypeMolChecker.check(m))
+                self.assertEqual(checker.check_molblock(mb),
                                      ())
         else:
-            self.failUnless(checker.HasIllegalBondTypeMolChecker.check(m))
-            self.failUnlessEqual(checker.check_molblock(mb),
+            self.assertTrue(checker.HasIllegalBondTypeMolChecker.check(m))
+            self.assertEqual(checker.check_molblock(mb),
                                  ((7, 'Error 108 (no InChI; Unrecognized bond type: 8) inp'),
                                   (5, 'molecule has a bond with an illegal type'),))
 
@@ -378,13 +378,13 @@ M  END
   3  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.HasOverlappingAtomsMolChecker.check(
+        self.assertTrue(checker.HasOverlappingAtomsMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.HasOverlappingAtomsMolChecker.check(
+        self.assertFalse(checker.HasOverlappingAtomsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((5, 'molecule has two (or more) atoms with exactly the same coordinates'),))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ())
 
     def test_zeroCoords(self):
@@ -406,14 +406,14 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.ZeroCoordsMolChecker.check(
+        self.assertTrue(checker.ZeroCoordsMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.ZeroCoordsMolChecker.check(
+        self.assertFalse(checker.ZeroCoordsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((6, 'all atoms have zero coordinates'),
                              (5, 'molecule has two (or more) atoms with exactly the same coordinates')))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ())
 
     def test_crossedRingbond(self):
@@ -481,15 +481,15 @@ M  END
  12 13  2  0  0  0  0
 M  END
 """,)
-        self.failUnless(checker.HasCrossedRingBondMolChecker.check(
+        self.assertTrue(checker.HasCrossedRingBondMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((5, 'molecule has a crossed bond in a ring'),
                               (2, 'InChI: Omitted undefined stereo')))
         for mb in nomatchBlocks:
-            self.failIf(checker.HasCrossedRingBondMolChecker.check(
+            self.assertFalse(checker.HasCrossedRingBondMolChecker.check(
                 Chem.MolFromMolBlock(mb, sanitize=False, removeHs=False)))
-            self.failUnlessEqual(checker.check_molblock(mb),
+            self.assertEqual(checker.check_molblock(mb),
                                  ())
 
         nomatch2 = """
@@ -505,24 +505,24 @@ M  END
   2  3  2  3  0  0  0
 M  END
 """
-        self.failIf(checker.HasCrossedRingBondMolChecker.check(
+        self.assertFalse(checker.HasCrossedRingBondMolChecker.check(
             Chem.MolFromMolBlock(nomatch2, sanitize=False, removeHs=False)))
 
-        self.failUnlessEqual(checker.check_molblock(nomatch2),
+        self.assertEqual(checker.check_molblock(nomatch2),
                              ((2, 'InChI: Omitted undefined stereo'),))
 
     def test_disallowedRadicals(self):
         matches = [Chem.MolFromSmiles(x) for x in ('C[CH2]', 'C[O]', 'C[N]O')]
         nomatches = [Chem.MolFromSmiles(x) for x in ('[N]=O', 'N[O]', 'CN[O]')]
         for m in matches:
-            self.failUnless(checker.DisallowedRadicalMolChecker.check(m))
+            self.assertTrue(checker.DisallowedRadicalMolChecker.check(m))
             mb = Chem.MolToMolBlock(m)
-            self.failUnlessEqual(checker.check_molblock(mb),
+            self.assertEqual(checker.check_molblock(mb),
                                  ((6, "molecule has a radical that is not found in the known list"),))
         for m in nomatches:
-            self.failIf(checker.DisallowedRadicalMolChecker.check(m))
+            self.assertFalse(checker.DisallowedRadicalMolChecker.check(m))
             mb = Chem.MolToMolBlock(m)
-            self.failUnlessEqual(checker.check_molblock(mb),
+            self.assertEqual(checker.check_molblock(mb),
                                  ())
 
     def test_illegalbondstereo(self):
@@ -544,13 +544,13 @@ M  END
   1  2  1  1  0  0  0
 M  END
 """
-        self.failUnless(checker.HasIllegalBondStereoMolChecker.check(
+        self.assertTrue(checker.HasIllegalBondStereoMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.HasIllegalBondStereoMolChecker.check(
+        self.assertFalse(checker.HasIllegalBondStereoMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((5, 'molecule has a bond with an illegal stereo flag'),))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ((5, 'InChi_RDKit/Mol stereo mismatch'),))
 
     def test_multiplebondstereo(self):
@@ -584,13 +584,13 @@ M  END
   1  2  1  1  0  0  0
 M  END
 """
-        self.failUnless(checker.HasMultipleStereoBondsMolChecker.check(
+        self.assertTrue(checker.HasMultipleStereoBondsMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
+        self.assertFalse(checker.HasMultipleStereoBondsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((2, 'molecule has an atom with multiple stereo bonds'),))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ((2, 'InChI: Ambiguous stereo'),))
 
         # another example, stereobonds *to* stereocenters do not count for this one:
@@ -609,9 +609,9 @@ M  END
   1  2  1  1  0  0  0
 M  END
 """
-        self.failIf(checker.HasMultipleStereoBondsMolChecker.check(
+        self.assertFalse(checker.HasMultipleStereoBondsMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ((5, 'InChi_RDKit/Mol stereo mismatch'),
                               (2, 'molecule has an stereo bond to a stereocenter'),
                               (2, 'InChI: Ambiguous stereo')))
@@ -657,14 +657,14 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.HasStereoBondInRingMolChecker.check(
+        self.assertTrue(checker.HasStereoBondInRingMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.HasStereoBondInRingMolChecker.check(
+        self.assertFalse(checker.HasStereoBondInRingMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((2, 'molecule has a stereo bond in a ring'),
                               (2, 'InChI: Ambiguous stereo')))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ())
 
     def test_stereobondToStereocenter(self):
@@ -710,13 +710,13 @@ M  END
   2  6  1  1  0  0  0
 M  END
 """
-        self.failUnless(checker.HasStereoBondToStereocenterMolChecker.check(
+        self.assertTrue(checker.HasStereoBondToStereocenterMolChecker.check(
             Chem.MolFromMolBlock(matchBlock, sanitize=False, removeHs=False)))
-        self.failIf(checker.HasStereoBondToStereocenterMolChecker.check(
+        self.assertFalse(checker.HasStereoBondToStereocenterMolChecker.check(
             Chem.MolFromMolBlock(nomatchBlock, sanitize=False, removeHs=False)))
-        self.failUnlessEqual(checker.check_molblock(matchBlock),
+        self.assertEqual(checker.check_molblock(matchBlock),
                              ((2, 'molecule has an stereo bond to a stereocenter'), (2, 'InChI: Ambiguous stereo')))
-        self.failUnlessEqual(checker.check_molblock(nomatchBlock),
+        self.assertEqual(checker.check_molblock(nomatchBlock),
                              ())
 
     def test_inchiWarning(self):
@@ -784,10 +784,10 @@ M  END
 M  CHG  2  15  -1  27   1
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
         print(r)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((6, 'InChI: Accepted unusual valence(s)'), (2, 'InChI: Charges were rearranged')))
 
     def test_inchiErrors(self):
@@ -801,9 +801,9 @@ M  END
   2  1  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((7, 'Error 102 (no InChI; Multiple bonds between two atoms) inp'),))
 
         mb = """
@@ -815,9 +815,9 @@ M  END
   1  2  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((7, 'InChI: Unknown element(s)'),))
 
         mb = """
@@ -835,9 +835,9 @@ M  END
   1  2  4  0  0  0  0
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((7, 'Error 132 (no InChI; Atom has 1 or more than 3 aromatic bonds) inp'),))
 
         mb = """
@@ -850,9 +850,9 @@ M  END
   2  6  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((7, 'Error 101 (no InChI; Bond to nonexistent atom) inp'),))
 
         mb = """
@@ -861,12 +861,12 @@ M  END
   0  0  0  0  0  0            999 V2000
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((6, 'InChI: Empty structure'),))
         r = checker.check_molblock(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((6, 'number of atoms less than 1'), (6, 'InChI: Empty structure'),))
 
         mb = """
@@ -918,9 +918,9 @@ M  END
   2 22  1  0  0  0  0
 M  END
 """
-        self.failUnless(checker.InchiChecker.check(mb))
+        self.assertTrue(checker.InchiChecker.check(mb))
         r = checker.InchiChecker.get_inchi_score(mb)
-        self.failUnlessEqual(
+        self.assertEqual(
             r, ((7, "Error 104 (no InChI; Atom 'Si' has more than 20 bonds) inp"),))
 
     def test_illegalInput(self):
@@ -943,7 +943,7 @@ M  END
   1  2  1  1  0  0  0
 M  END
 """
-        self.failUnlessEqual(checker.check_molblock(mb),
+        self.assertEqual(checker.check_molblock(mb),
                              ((7, 'Illegal input'),))
 
     def test_stereochecks(self):

@@ -23,12 +23,12 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install RDKit and nose
+      - name: Install RDKit and pytest
         shell: bash -l {0}
-        run: pip install rdkit==${{ matrix.rdkit-version }} nose
+        run: pip install rdkit==${{ matrix.rdkit-version }} pytest
       - name: Install chembl_structure_pipeline
         shell: bash -l {0}
         run: python setup.py install
       - name: Run tests
         shell: bash -l {0}
-        run: nosetests --with-doctest
+        run: pytest --doctest-modules
