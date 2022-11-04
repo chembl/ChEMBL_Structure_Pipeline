@@ -14,7 +14,13 @@ From source:
     git clone https://github.com/chembl/ChEMBL_Structure_Pipeline.git
     pip install ./ChEMBL_Structure_Pipeline
 
-Using conda:
+With pip:
+
+```bash
+pip install chembl_structure_pipeline
+```
+
+With conda:
 
 ```bash
 conda install -c conda-forge chembl_structure_pipeline
