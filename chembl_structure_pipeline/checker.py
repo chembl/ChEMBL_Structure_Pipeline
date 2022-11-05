@@ -138,7 +138,7 @@ class StereoChecker(CheckerBase):
                     for center in layer.split(','):
                         center = center.replace(";", "")
                         if '*' in center:
-                            n = int(re.sub('(\d+)\*.*','\\1',center))
+                            n = int(re.sub(r"(\d+)\*.*","\\1",center))
                         if center[-1] == '?':
                             nUnspecLayer += 1
                         else:
