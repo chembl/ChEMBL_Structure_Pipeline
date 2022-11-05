@@ -7,17 +7,12 @@
 #  which is included in the file LICENSE, found at the root
 #  of the source tree.
 import os
-import re
 from rdkit import Chem
-from rdkit import Geometry
-from rdkit.Chem import rdinchi
-from collections import Counter
 from rdkit.Chem.MolStandardize import rdMolStandardize
 from rdkit.Chem import rdMolTransforms
 from .exclude_flag import exclude_flag
 import rdkit
 import math
-import sys
 
 rdkversion = rdkit.__version__.split(".")
 if rdkversion < ["2019", "09", "2"]:
