@@ -452,7 +452,7 @@ def get_parent_molblock(ctab, neutralize=True, check_exclusion=True, verbose=Fal
     return Chem.MolToMolBlock(parent, kekulize=False), exclude
 
 
-def standardize_mol(m, check_exclusion=True):
+def standardize_mol(m, check_exclusion=True, sanitize=True):
     if check_exclusion:
         exclude = exclude_flag(m, includeRDKitSanitization=False)
     else:
@@ -466,6 +466,8 @@ def standardize_mol(m, check_exclusion=True):
         m = uncharge_mol(m)
         m = flatten_tartrate_mol(m)
         m = cleanup_drawing_mol(m)
+        if sanitize:
+            Chem.SanitizeMol(m)
 
     return m
 
@@ -508,4 +510,4 @@ def standardize_molblock(ctab, check_exclusion=True):
     if check_exclusion:
         if exclude_flag(m, includeRDKitSanitization=False):
             return ctab
-    return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False))
+    return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False, sanitize=False))

@@ -3383,3 +3383,22 @@ M  END
         self.assertEqual(
             Chem.MolToSmiles(om), "CCC.O=C(O)C(O)C(O)C(=O)O.O=C(O)C(O)C(O)C(=O)O"
         )
+
+    def testGithub16(self):
+
+        m1 = standardizer.standardize_mol(
+            Chem.MolFromSmiles("CC(=O)N1CCN(Cc2c(Cl)c(F)c(-c3ncnc(C)c3)cc2)CC1")
+        )
+        m2 = standardizer.standardize_mol(
+            Chem.MolFromSmiles("CC(=O)N1CCN(Cc2ccc(-c3cc(C)ncn3)c(F)c2Cl)CC1")
+        )
+        self.assertEqual(Chem.MolToSmiles(m1), Chem.MolToSmiles(m2))
+        m1 = standardizer.standardize_mol(
+            Chem.MolFromSmiles("CC(=O)N1CCN(Cc2c(Cl)c(F)c(-c3ncnc(C)c3)cc2)CC1"),
+            sanitize=False,
+        )
+        m2 = standardizer.standardize_mol(
+            Chem.MolFromSmiles("CC(=O)N1CCN(Cc2ccc(-c3cc(C)ncn3)c(F)c2Cl)CC1"),
+            sanitize=False,
+        )
+        self.assertNotEqual(Chem.MolToSmiles(m1), Chem.MolToSmiles(m2))
