@@ -1,5 +1,6 @@
-[![CI Testing](https://github.com/chembl/ChEMBL_Structure_Pipeline/workflows/CI/badge.svg)](https://github.com/chembl/ChEMBL_Structure_Pipeline/actions?query=workflow%3ACI+branch%3Amain)
+[![CI Testing](https://github.com/chembl/ChEMBL_Structure_Pipeline/workflows/CI/badge.svg)](https://github.com/chembl/ChEMBL_Structure_Pipeline/actions?query=workflow%3ACI+branch%3Amaster)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 # ChEMBL Structure Pipeline
 
@@ -7,20 +8,20 @@ ChEMBL protocols used to standardise and salt strip molecules. First used in ChE
 
 Check the [wiki](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki) and paper[[1]](#1) for a detailed description of the different processes.
 
-## Installation (it requires RDKit to work)
+## Installation
 
 From source:
 
     git clone https://github.com/chembl/ChEMBL_Structure_Pipeline.git
     pip install ./ChEMBL_Structure_Pipeline
 
-With pip:
+with pip:
 
 ```bash
 pip install chembl_structure_pipeline
 ```
 
-With conda:
+with conda:
 
 ```bash
 conda install -c conda-forge chembl_structure_pipeline
@@ -100,4 +101,3 @@ issues = checker.check_molblock(o_molblock)
 ## References
 <a id="1">[1]</a> 
 Bento, A.P., Hersey, A., Félix, E. et al. An open source chemical structure curation pipeline using RDKit. J Cheminform 12, 51 (2020). https://doi.org/10.1186/s13321-020-00456-1
-
