@@ -52,15 +52,15 @@ Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
 Odd pyridine/pyridazine oxide structure	[C,N;-;D2,D3:1]-[N+2;D3:2]-[O-;D1:3]>>[*-0:1]=[*+1:2]-[*-:3]
 """
 _normalizer_params = rdMolStandardize.CleanupParameters()
-_normalizer = rdMolStandardize.NormalizerFromData(_normalization_transforms,
-                                                  _normalizer_params)
+_normalizer = rdMolStandardize.NormalizerFromData(
+    _normalization_transforms, _normalizer_params
+)
 
-_alkoxide_pattern = Chem.MolFromSmarts('[Li,Na,K;+0]-[#7,#8;+0]')
+_alkoxide_pattern = Chem.MolFromSmarts("[Li,Na,K;+0]-[#7,#8;+0]")
 
 
 def normalize_mol(m):
-    """
-    """
+    """ """
     Chem.FastFindRings(m)
     if m.HasSubstructMatch(_alkoxide_pattern):
         m = Chem.RWMol(m)
@@ -73,7 +73,7 @@ def normalize_mol(m):
 
 
 def remove_hs_from_mol(m):
-    """ removes most Hs
+    """removes most Hs
 
     Hs that are preserved by the RDKit's Chem.RemoveHs() will not
     be removed.
@@ -82,7 +82,7 @@ def remove_hs_from_mol(m):
     - Hs with a wedged/dashed bond to them
     - Hs bonded to atoms with tetrahedral stereochemistry set
     - Hs bonded to atoms that have three (or more) ring bonds that are not simply protonated
-    - Hs bonded to atoms in a non-default valence state that are not simply protonated 
+    - Hs bonded to atoms in a non-default valence state that are not simply protonated
 
 
     For the above, the definition of "simply protonated" is an atom with charge = +1 and
@@ -96,28 +96,39 @@ def remove_hs_from_mol(m):
         m.UpdatePropertyCache(strict=False)
     SENTINEL = 100
     for atom in m.GetAtoms():
-        if atom.GetAtomicNum() == 1 and atom.GetDegree(
-        ) == 1 and not atom.GetIsotope():
+        if atom.GetAtomicNum() == 1 and atom.GetDegree() == 1 and not atom.GetIsotope():
             nbr = atom.GetNeighbors()[0]
             bnd = atom.GetBonds()[0]
             preserve = False
-            if bnd.GetBondDir() in (Chem.BondDir.BEGINWEDGE, Chem.BondDir.BEGINDASH) or \
-                    (bnd.HasProp("_MolFileBondStereo") and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)):
+            if bnd.GetBondDir() in (
+                Chem.BondDir.BEGINWEDGE,
+                Chem.BondDir.BEGINDASH,
+            ) or (
+                bnd.HasProp("_MolFileBondStereo")
+                and bnd.GetUnsignedProp("_MolFileBondStereo") in (1, 6)
+            ):
                 preserve = True
             else:
-                is_protonated = nbr.GetFormalCharge() == 1 and \
-                    nbr.GetExplicitValence() == \
-                    Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())+1
-                if nbr.GetChiralTag() in (Chem.ChiralType.CHI_TETRAHEDRAL_CCW,
-                                          Chem.ChiralType.CHI_TETRAHEDRAL_CW):
+                is_protonated = (
+                    nbr.GetFormalCharge() == 1
+                    and nbr.GetExplicitValence()
+                    == Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()) + 1
+                )
+                if nbr.GetChiralTag() in (
+                    Chem.ChiralType.CHI_TETRAHEDRAL_CCW,
+                    Chem.ChiralType.CHI_TETRAHEDRAL_CW,
+                ):
                     preserve = True
                 elif not is_protonated:
-                    if nbr.GetExplicitValence() > Chem.GetPeriodicTable(
-                    ).GetDefaultValence(nbr.GetAtomicNum()):
+                    if (
+                        nbr.GetExplicitValence()
+                        > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())
+                    ):
                         preserve = True
                     else:
                         ringBonds = [
-                            b for b in nbr.GetBonds()
+                            b
+                            for b in nbr.GetBonds()
                             if m.GetRingInfo().NumBondRings(b.GetIdx())
                         ]
                         if len(ringBonds) >= 3:
@@ -134,8 +145,7 @@ def remove_hs_from_mol(m):
 
 
 def remove_sgroups_from_mol(m):
-    """ removes all Sgroups
-    """
+    """removes all Sgroups"""
     Chem.ClearMolSubstanceGroups(m)
     return m
 
@@ -206,9 +216,8 @@ def _check_and_straighten_at_triple_bond(at, bond, conf):
     nbrs = [x.GetIdx() for x in at.GetNeighbors()]
     angle = rdMolTransforms.GetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1])
     # are we off by more than a degree?
-    if (abs(abs(angle) - math.pi) > 0.017):
-        rdMolTransforms.SetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1],
-                                    math.pi)
+    if abs(abs(angle) - math.pi) > 0.017:
+        rdMolTransforms.SetAngleRad(conf, nbrs[0], at.GetIdx(), nbrs[1], math.pi)
 
 
 def _cleanup_triple_bonds(m):
@@ -216,8 +225,10 @@ def _cleanup_triple_bonds(m):
     if conf.Is3D():
         raise ValueError("can only operate on 2D conformers")
     for bond in m.GetBonds():
-        if bond.GetBondType() == Chem.BondType.TRIPLE and m.GetRingInfo(
-        ).NumBondRings(bond.GetIdx()) == 0:
+        if (
+            bond.GetBondType() == Chem.BondType.TRIPLE
+            and m.GetRingInfo().NumBondRings(bond.GetIdx()) == 0
+        ):
             at = bond.GetBeginAtom()
             if at.GetDegree() == 2:
                 _check_and_straighten_at_triple_bond(at, bond, conf)
@@ -230,13 +241,12 @@ def _cleanup_allenes(m):
     conf = m.GetConformer()
     if conf.Is3D():
         raise ValueError("can only operate on 2D conformers")
-    p = Chem.MolFromSmarts('*=[C;R0]=*')
+    p = Chem.MolFromSmarts("*=[C;R0]=*")
     for match in m.GetSubstructMatches(p):
         angle = rdMolTransforms.GetAngleRad(conf, match[0], match[1], match[2])
         # are we off by more than a degree?
-        if (abs(abs(angle) - math.pi) > 0.017):
-            rdMolTransforms.SetAngleRad(conf, match[0], match[1], match[2],
-                                        math.pi)
+        if abs(abs(angle) - math.pi) > 0.017:
+            rdMolTransforms.SetAngleRad(conf, match[0], match[1], match[2], math.pi)
 
 
 def cleanup_drawing_mol(m):
@@ -248,8 +258,7 @@ def cleanup_drawing_mol(m):
     if conf.Is3D():
         for i in range(m.GetNumAtoms()):
             if abs(conf.GetAtomPosition(i).z) >= 0.0001:
-                raise ValueError(
-                    "cleanup_drawing_mol() only works for 2D molecules")
+                raise ValueError("cleanup_drawing_mol() only works for 2D molecules")
         conf.Set3D(False)
     Chem.FastFindRings(m)
     _cleanup_triple_bonds(m)
@@ -258,7 +267,7 @@ def cleanup_drawing_mol(m):
 
 
 def flatten_tartrate_mol(m):
-    tartrate = Chem.MolFromSmarts('OC(=O)C(O)C(O)C(=O)O')
+    tartrate = Chem.MolFromSmarts("OC(=O)C(O)C(O)C(=O)O")
     # make sure we only match free tartrate/tartaric acid fragments
     params = Chem.AdjustQueryParameters.NoAdjustments()
     params.adjustDegree = True
@@ -268,10 +277,8 @@ def flatten_tartrate_mol(m):
     if matches:
         m = Chem.Mol(m)
         for match in matches:
-            m.GetAtomWithIdx(match[3]).SetChiralTag(
-                Chem.ChiralType.CHI_UNSPECIFIED)
-            m.GetAtomWithIdx(match[5]).SetChiralTag(
-                Chem.ChiralType.CHI_UNSPECIFIED)
+            m.GetAtomWithIdx(match[3]).SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
+            m.GetAtomWithIdx(match[5]).SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
     return m
 
 
@@ -280,17 +287,14 @@ _solvents_file = os.path.join(_data_dir, "solvents.smi")
 _salts_file = os.path.join(_data_dir, "salts.smi")
 
 
-def get_fragment_parent_mol(m,
-                            check_exclusion=False,
-                            neutralize=False,
-                            verbose=False):
+def get_fragment_parent_mol(m, check_exclusion=False, neutralize=False, verbose=False):
     basepath = os.path.dirname(os.path.abspath(__file__))
     with open(_solvents_file) as inf:
         solvents = []
         for l in inf:
-            if not l or l[0] == '#':
+            if not l or l[0] == "#":
                 continue
-            l = l.strip().split('\t')
+            l = l.strip().split("\t")
             if len(l) != 2:
                 continue
             solvents.append((l[0], Chem.MolFromSmarts(l[1])))
@@ -307,11 +311,15 @@ def get_fragment_parent_mol(m,
     keep = [1] * len(frags)
     for nm, solv in solvents:
         for i, frag in enumerate(frags):
-            if keep[i] and frag.GetNumAtoms() == solv.GetNumAtoms() \
-                and frag.GetNumBonds() == solv.GetNumBonds() \
-                and frag.HasSubstructMatch(solv):
+            if (
+                keep[i]
+                and frag.GetNumAtoms() == solv.GetNumAtoms()
+                and frag.GetNumBonds() == solv.GetNumBonds()
+                and frag.HasSubstructMatch(solv)
+            ):
                 keep[i] = 0
-                if (verbose): print(f'matched solvent {nm}')
+                if verbose:
+                    print(f"matched solvent {nm}")
         if not max(keep):
             break
     if not max(keep):
@@ -329,9 +337,9 @@ def get_fragment_parent_mol(m,
     with open(_salts_file) as inf:
         salts = []
         for l in inf:
-            if not l or l[0] == '#':
+            if not l or l[0] == "#":
                 continue
-            l = l.strip().split('\t')
+            l = l.strip().split("\t")
             if len(l) != 2:
                 continue
             salts.append((l[0], Chem.MolFromSmarts(l[1])))
@@ -348,10 +356,14 @@ def get_fragment_parent_mol(m,
 
     for nm, salt in salts:
         for i, frag in enumerate(frags):
-            if keep[i] and frag.GetNumAtoms() == salt.GetNumAtoms() \
-                and frag.GetNumBonds() == salt.GetNumBonds() \
-                and frag.HasSubstructMatch(salt):
-                if (verbose): print(f'matched salt {nm}')
+            if (
+                keep[i]
+                and frag.GetNumAtoms() == salt.GetNumAtoms()
+                and frag.GetNumBonds() == salt.GetNumBonds()
+                and frag.HasSubstructMatch(salt)
+            ):
+                if verbose:
+                    print(f"matched salt {nm}")
                 keep[i] = 0
         if not max(keep):
             break
@@ -377,11 +389,13 @@ def get_fragment_parent_mol(m,
         # want to risk a full sanitization:
         cfrag.ClearComputedProps()
         cfrag.UpdatePropertyCache(False)
-        Chem.SanitizeMol(cfrag,
-                         sanitizeOps=Chem.SANITIZE_SYMMRINGS
-                         | Chem.SANITIZE_FINDRADICALS
-                         | Chem.SANITIZE_SETAROMATICITY
-                         | Chem.SANITIZE_ADJUSTHS)
+        Chem.SanitizeMol(
+            cfrag,
+            sanitizeOps=Chem.SANITIZE_SYMMRINGS
+            | Chem.SANITIZE_FINDRADICALS
+            | Chem.SANITIZE_SETAROMATICITY
+            | Chem.SANITIZE_ADJUSTHS,
+        )
 
         seenSmis.add(Chem.MolToSmiles(cfrag))
     if len(seenSmis) == 1:
@@ -423,23 +437,18 @@ def get_isotope_parent_mol(m):
 
 def get_parent_mol(m, neutralize=True, check_exclusion=True, verbose=False):
     ipar = get_isotope_parent_mol(m)
-    res, exclude = get_fragment_parent_mol(ipar,
-                                           neutralize=neutralize,
-                                           check_exclusion=check_exclusion,
-                                           verbose=verbose)
+    res, exclude = get_fragment_parent_mol(
+        ipar, neutralize=neutralize, check_exclusion=check_exclusion, verbose=verbose
+    )
     return res, exclude
 
 
-def get_parent_molblock(ctab,
-                        neutralize=True,
-                        check_exclusion=True,
-                        verbose=False):
+def get_parent_molblock(ctab, neutralize=True, check_exclusion=True, verbose=False):
     m = Chem.MolFromMolBlock(ctab, sanitize=False, removeHs=False)
     reapply_molblock_wedging(m)
-    parent, exclude = get_parent_mol(m,
-                                     neutralize=neutralize,
-                                     check_exclusion=check_exclusion,
-                                     verbose=verbose)
+    parent, exclude = get_parent_mol(
+        m, neutralize=neutralize, check_exclusion=check_exclusion, verbose=verbose
+    )
     return Chem.MolToMolBlock(parent, kekulize=False), exclude
 
 
@@ -464,12 +473,11 @@ def standardize_mol(m, check_exclusion=True):
 def reapply_molblock_wedging(m):
     for b in m.GetBonds():
         # only do the wedgeing if the bond doesn't already have something there:
-        if b.GetBondDir() == Chem.BondDir.NONE and b.HasProp(
-                "_MolFileBondStereo"):
+        if b.GetBondDir() == Chem.BondDir.NONE and b.HasProp("_MolFileBondStereo"):
             val = b.GetProp("_MolFileBondStereo")
-            if val == '1':
+            if val == "1":
                 b.SetBondDir(Chem.BondDir.BEGINWEDGE)
-            elif val == '6':
+            elif val == "6":
                 b.SetBondDir(Chem.BondDir.BEGINDASH)
 
 
