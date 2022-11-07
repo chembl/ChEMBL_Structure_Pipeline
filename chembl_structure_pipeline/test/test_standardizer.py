@@ -375,6 +375,28 @@ M  END
         nm = standardizer.standardize_mol(m)
         self.assertEqual(Chem.MolToSmiles(nm), "CNS(C)(=O)=O")
 
+    def testNormalize_azide(self):
+
+        mb = """
+  MJ221601
+
+  4  3  0  0  0  0  0  0  0  0999 V2000
+    1.0104   -1.2441    0.0000 N   0  5  0  0  0  0  0  0  0  0  0  0
+    1.7249   -1.6566    0.0000 N   0  3  0  0  0  0  0  0  0  0  0  0
+    2.4412   -2.0701    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    1.0104   -0.4170    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  3  0  0  0  0
+  4  1  1  6  0  0  0
+M  END
+"""
+        m = Chem.MolFromMolBlock(mb, sanitize=False)
+        self.assertEqual(Chem.MolToSmiles(m), "C[N-][N+]#N")
+        nm = standardizer.normalize_mol(m)
+        self.assertEqual(Chem.MolToSmiles(nm), "C[N-]=[N+]=[N-]")
+        nm = standardizer.standardize_mol(m)
+        self.assertEqual(Chem.MolToSmiles(nm), "C[N-]=[N+]=[N-]")
+
     def testNormalize1(self):
         tests = [
             ("CN(C)(C)C", "C[N+](C)(C)C"),
