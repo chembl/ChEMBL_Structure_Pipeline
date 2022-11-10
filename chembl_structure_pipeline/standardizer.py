@@ -50,7 +50,7 @@ Bad amide tautomer1	[C:1]([OH1;D1:2])=;!@[NH1:3]>>[C:1](=[OH0:2])-[NH2:3]
 Bad amide tautomer2	[C:1]([OH1;D1:2])=;!@[NH0:3]>>[C:1](=[OH0:2])-[NH1:3]
 Halogen with no neighbors	[F,Cl,Br,I;X0;+0:1]>>[*-1:1]
 Odd pyridine/pyridazine oxide structure	[C,N;-;D2,D3:1]-[N+2;D3:2]-[O-;D1:3]>>[*-0:1]=[*+1:2]-[*-:3]
-Odd azide	[C:1]-[N-:2][N+:3]#[N:4]>>[C:1]-[N:2]=[N+:3]=[N-:4]
+Odd azide	[*:1]-[N-:2][N+:3]#[N:4]>>[*:1]-[N:2]=[N+:3]=[N-:4]
 """
 _normalizer_params = rdMolStandardize.CleanupParameters()
 _normalizer = rdMolStandardize.NormalizerFromData(
