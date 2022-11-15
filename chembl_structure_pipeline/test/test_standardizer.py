@@ -393,9 +393,9 @@ M  END
         m = Chem.MolFromMolBlock(mb, sanitize=False)
         self.assertEqual(Chem.MolToSmiles(m), "C[N-][N+]#N")
         nm = standardizer.normalize_mol(m)
-        self.assertEqual(Chem.MolToSmiles(nm), "C[N-]=[N+]=[N-]")
+        self.assertEqual(Chem.MolToSmiles(nm), "CN=[N+]=[N-]")
         nm = standardizer.standardize_mol(m)
-        self.assertEqual(Chem.MolToSmiles(nm), "C[N-]=[N+]=[N-]")
+        self.assertEqual(Chem.MolToSmiles(nm), "CN=[N+]=[N-]")
 
     def testNormalize1(self):
         tests = [
