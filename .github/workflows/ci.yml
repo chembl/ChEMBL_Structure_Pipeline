@@ -30,13 +30,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest rdkit==${{ matrix.rdkit-version }}
+          pip install pytest build rdkit==${{ matrix.rdkit-version }}
       - name: Test with pytest
         run: |
           pytest --doctest-modules
 
       - name: Build wheels
-        run: python3 -m build
+        run: python -m build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
