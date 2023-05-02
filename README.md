@@ -125,7 +125,7 @@ issues = checker.check_molblock(o_molblock)
 from chembl_structure_pipeline import checker
 
 SMILES = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-parent_smiles = checker.check_mol_from_smiles(SMILES)
+issues = checker.check_mol_from_smiles(SMILES)
 
 ```
 
