@@ -508,3 +508,17 @@ def check_molblock(mb):
     if tpl:
         res.append(tpl)
     return tuple(sorted(res, reverse=True))
+
+
+def check_mol_from_smiles(smiles: str, sanitize=False):
+    """
+    Use the check_molblock function to determine
+    if the molecule has any issues based on
+    a given SMILES string.
+    Args (str): SMILES string.
+    Returns (tuple): Issues with smiles
+    """
+    mol = Chem.MolFromSmiles(smiles, sanitize)
+    if mol:
+        mol_block = Chem.MolToMolBlock(mol)
+        return check_molblock(mol_block)

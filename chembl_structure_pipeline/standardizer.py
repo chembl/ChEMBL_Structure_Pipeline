@@ -453,6 +453,25 @@ def get_parent_molblock(ctab, neutralize=True, check_exclusion=True, verbose=Fal
     return Chem.MolToMolBlock(parent, kekulize=False), exclude
 
 
+def get_parent_mol_from_smiles(
+    smiles: str, get_smiles: bool = False, sanitize: bool = False
+):
+    """
+    Use the get_parent_molblock function to retraive the parent molblock
+    using the given SMILES string
+    Args (str): SMILES string.
+    Returns (mol): parent mol.
+    """
+    mol = Chem.MolFromSmiles(smiles, sanitize)
+    if mol:
+        mol_block = Chem.MolToMolBlock(mol)
+        if get_smiles:
+            parent_molblock = get_parent_molblock(mol_block)
+            parentsmiles = Chem.MolToSmiles(parent_molblock)
+            return parentsmiles
+        return get_parent_molblock(mol_block)
+
+
 def standardize_mol(m, check_exclusion=True, sanitize=True):
     if check_exclusion:
         exclude = exclude_flag(m, includeRDKitSanitization=False)
@@ -512,3 +531,23 @@ def standardize_molblock(ctab, check_exclusion=True):
         if exclude_flag(m, includeRDKitSanitization=False):
             return ctab
     return Chem.MolToMolBlock(standardize_mol(m, check_exclusion=False, sanitize=False))
+
+
+def standardize_molblock_from_smiles(
+    smiles: str, get_smiles: bool = False, sanitize: bool = False
+):
+    """
+    Use the standardize_molblock function to identify issues and fix it for
+    a molecule based on the given SMILES string.
+    Args (str): SMILES string.
+    Returns (mol): Fixed molecule.
+    """
+    mol = Chem.MolFromSmiles(smiles, sanitize)
+    if mol:
+        mol_block = Chem.MolToMolBlock(mol)
+        if get_smiles:
+            standardized_mol = standardize_molblock(mol_block)
+            rdkit_mol = Chem.MolFromMolBlock(standardized_mol)
+            standardizedsmiles = Chem.MolToSmiles(rdkit_mol)
+            return standardizedsmiles
+        return standardize_molblock(mol_block)
