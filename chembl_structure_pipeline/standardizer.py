@@ -467,7 +467,8 @@ def get_parent_mol_from_smiles(
         mol_block = Chem.MolToMolBlock(mol)
         if get_smiles:
             parent_molblock,_ = get_parent_molblock(mol_block)
-            parentsmiles = Chem.MolToSmiles(parent_molblock)
+            rdkit_mol = Chem.MolFromMolBlock(parent_molblock)
+            parentsmiles = Chem.MolToSmiles(rdkit_mol)
             return parentsmiles
         return get_parent_molblock(mol_block)
 
