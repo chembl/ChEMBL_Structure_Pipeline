@@ -52,6 +52,16 @@ M  END
 
 std_molblock = standardizer.standardize_molblock(o_molblock)
 ```
+> **Note**
+> Using SMILES:
+
+```python
+from chembl_structure_pipeline import standardizer
+
+SMILES = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+std_smiles = standardizer.standardize_molblock_from_smiles(SMILES, get_smiles=True)
+
+```
 
 ### Get the parent compound [(info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#get_parent_molblock)
 
@@ -72,6 +82,17 @@ M  END
 """
 
 parent_molblock, _ = standardizer.get_parent_molblock(o_molblock)
+```
+
+> **Note**
+> Using SMILES:
+
+```python
+from chembl_structure_pipeline import standardizer
+
+SMILES = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+parent_smiles = standardizer.get_parent_mol_from_smiles(SMILES, get_smiles=True)
+
 ```
 
 ### Check a compound [(info)](https://github.com/chembl/ChEMBL_Structure_Pipeline/wiki/Work-done-by-each-step#checkmolecule)
@@ -96,6 +117,16 @@ M  END
 """
 
 issues = checker.check_molblock(o_molblock)
+```
+> **Note**
+> Using SMILES:
+
+```python
+from chembl_structure_pipeline import checker
+
+SMILES = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+parent_smiles = checker.check_mol_from_smiles(SMILES)
+
 ```
 
 ## References
