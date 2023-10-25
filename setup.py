@@ -4,7 +4,7 @@ setup(
     name="chembl_structure_pipeline",
     description="ChEMBL Structure Pipeline",
     url="https://www.ebi.ac.uk/chembl/",
-    author="Greg Landrum",
+    author="Greg Landrum, Eloy Félix",
     author_email="greg.landrum@t5informatics.com",
     license="MIT",
     packages=["chembl_structure_pipeline"],
