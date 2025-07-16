@@ -112,7 +112,7 @@ def remove_hs_from_mol(m):
             else:
                 is_protonated = (
                     nbr.GetFormalCharge() == 1
-                    and nbr.GetExplicitValence()
+                    and nbr.GetValence(Chem.ValenceType.EXPLICIT)
                     == Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()) + 1
                 )
                 if nbr.GetChiralTag() in (
@@ -122,7 +122,7 @@ def remove_hs_from_mol(m):
                     preserve = True
                 elif not is_protonated:
                     if (
-                        nbr.GetExplicitValence()
+                        nbr.GetValence(Chem.ValenceType.EXPLICIT)
                         > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())
                     ):
                         preserve = True
