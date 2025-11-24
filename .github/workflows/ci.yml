@@ -39,8 +39,9 @@ jobs:
         run: python -m build
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: dist
           path: dist/*
 
   upload_all:
@@ -52,9 +53,9 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: "3.x"
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       with:
-        name: artifact
+        name: dist
         path: dist
     - uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
