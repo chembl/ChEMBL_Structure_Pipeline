@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.rdkit-version }}
           path: dist/*
 
   upload_all:
@@ -53,9 +53,9 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: "3.x"
-    - uses: actions/download-artifact@v4
+    - name: Download artifacts from all matrix runs
+      uses: actions/download-artifact@v4
       with:
-        name: dist
         path: dist
     - uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
