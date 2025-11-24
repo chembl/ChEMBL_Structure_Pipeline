@@ -72,6 +72,13 @@ def normalize_mol(m):
     res = _normalizer.normalize(m)
     return res
 
+def _assess_explicit_valence_for_rdkit_version(rdkit_version, atom_neighbor):
+    rdkit_version = rdkit.__version__
+    if tuple(map(int, rdkit_version.split("."))) >= (2025, 9, 1):
+        return(atom_neighbor.GetValence(Chem.ValenceType.EXPLICIT))
+    else:
+        return(atom_neighbor.GetExplicitValence())
+
 
 def remove_hs_from_mol(m):
     """removes most Hs
@@ -112,7 +119,7 @@ def remove_hs_from_mol(m):
             else:
                 is_protonated = (
                     nbr.GetFormalCharge() == 1
-                    and nbr.GetExplicitValence()
+                    and _assess_explicit_valence_for_rdkit_version(rdkit.__version__, nbr)
                     == Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum()) + 1
                 )
                 if nbr.GetChiralTag() in (
@@ -122,7 +129,7 @@ def remove_hs_from_mol(m):
                     preserve = True
                 elif not is_protonated:
                     if (
-                        nbr.GetExplicitValence()
+                        _assess_explicit_valence_for_rdkit_version(rdkit.__version__, nbr)
                         > Chem.GetPeriodicTable().GetDefaultValence(nbr.GetAtomicNum())
                     ):
                         preserve = True
