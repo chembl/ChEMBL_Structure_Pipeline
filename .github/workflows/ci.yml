@@ -62,6 +62,13 @@ jobs:
         mkdir dist
         find dist -name "*.whl" -exec cp {} dist/ \;
         find dist -name "*.tar.gz" -exec cp {} dist/ \;
+        
+    # Debug: list the files found
+    - name: List files to upload
+      run: |
+        echo "Final package list:"
+        ls -l dist
+        
     - uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
         user: __token__
