@@ -57,13 +57,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: dist
-    - name: Flatten dist packages
+    - name: Gather distribution files
       run: |
-        mkdir dist_flat
-        find dist -name "*.whl" -exec cp {} dist_flat/ \;
-        find dist -name "*.tar.gz" -exec cp {} dist_flat/ \;
+        mkdir dist
+        find dist -name "*.whl" -exec cp {} dist/ \;
+        find dist -name "*.tar.gz" -exec cp {} dist/ \;
     - uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
-        packages_dir: dist_flat
+        packages_dir: dist
