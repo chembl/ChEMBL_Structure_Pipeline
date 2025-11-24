@@ -53,23 +53,52 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: "3.x"
-    - name: Download artifacts from all matrix runs
+        
+    - name: Download all matrix artifacts
       uses: actions/download-artifact@v4
       with:
-        path: dist
-    - name: Gather distribution files
+        path: artifacts    # ← all artifacts will be placed under this folder, each in its own subfolder
+
+    - name: Show downloaded artifact structure (debug)
       run: |
-        mkdir dist
-        find dist -name "*.whl" -exec cp {} dist/ \;
-        find dist -name "*.tar.gz" -exec cp {} dist/ \;
-        
-    # Debug: list the files found
-    - name: List files to upload
+        echo "=== top-level artifacts folder ==="
+        ls -la
+        echo "=== artifacts tree ==="
+        find artifacts -maxdepth 3 -type d -print
+        echo "=== files found inside artifacts (all) ==="
+        find artifacts -type f -print || true
+
+    - name: Collect only wheel and sdist files into clean dist/
       run: |
-        echo "Final package list:"
-        ls -l dist
+        # ensure clean output folder
+        rm -rf dist
+        mkdir -p dist
+
+        # copy only .whl and .tar.gz files from any nested artifact folder into dist/
+        # also print what we copy so the log shows it clearly
+        echo "Copying .whl files:"
+        find artifacts -type f -name "*.whl" -print -exec cp {} dist/ \; || true
+
+        echo "Copying .tar.gz files:"
+        find artifacts -type f -name "*.tar.gz" -print -exec cp {} dist/ \; || true
+
+        echo "Copying .zip sdists (if any):"
+        find artifacts -type f -name "*.zip" -print -exec cp {} dist/ \; || true
+
+    - name: List final dist folder
+      run: |
+        echo "=== Final dist contents ==="
+        ls -la dist || true
+        echo "=== Final dist file details ==="
+        for f in dist/*; do
+          if [ -e "$f" ]; then
+            echo "FILE: $f"
+            file "$f" || true
+          fi
+        done
         
-    - uses: pypa/gh-action-pypi-publish@v1.5.1
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
